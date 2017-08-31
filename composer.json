@@ -1,5 +1,5 @@
 {
-    "name": "laravel/quick",
+    "name": "d-scribe/laraquick",
     "type": "library",
     "description": "A collection of classes to be extended/used in laravel applications for quick development",
     "license": "MIT",
