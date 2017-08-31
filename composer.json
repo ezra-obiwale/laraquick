@@ -1,0 +1,31 @@
+{
+    "name": "laravel/quick",
+    "type": "library",
+    "description": "A collection of classes to be extended/used in laravel applications for quick development",
+    "license": "MIT",
+    "keywords": [
+        "laravel",
+        "quick",
+        "api",
+        "web",
+        "controller",
+        "traits"
+    ],
+    "authors": [
+        {
+            "name": "Ezra Obiwale",
+            "email": "contact@ezraobiwale.com",
+            "homepage": "http://ezraobiwale.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=5.6.0",
+        "laravel/framework": "^5.4.*",
+    },
+    "autoload": {
+        "psr-4": {
+            "Laraquick\\": "src/"
+        }
+    }
+}
