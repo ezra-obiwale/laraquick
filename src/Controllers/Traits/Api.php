@@ -28,6 +28,14 @@ trait Api
      * @return mixed
      */
     abstract protected function model();
+    
+    /**
+     * Should return the validation rules
+     *
+     * @param boolean $forUpdate Indicates whether the validation should be for update or not
+     * @return array
+     */
+    abstract protected function validationRules($forUpdate = false);
 
     /**
      * The model to use in the index method. Defaults to @see model()
@@ -78,14 +86,6 @@ trait Api
     {
         return $this->model();
     }
-    
-    /**
-     * Should return the validation rules
-     *
-     * @param boolean $forUpdate Indicates whether the validation should be for update or not
-     * @return array
-     */
-    abstract protected function validationRules($forUpdate = false);
 
     /**
      * Called before sending the response
@@ -174,7 +174,7 @@ trait Api
      * @param array $rules
      * @return void
      */
-    protected function validate(array $data, array $rules)
+    protected function isValid(array $data, array $rules)
     {
         $this->validator = Validator::make($data, $rules);
         return !$this->validator->fails();
@@ -202,7 +202,7 @@ trait Api
      */
     public function store(Request $request)
     {
-        if (!$this->validate($request->all(), $this->validationRules()))
+        if (!$this->isValid($request->all(), $this->validationRules()))
             return $this->error($this->validationErrorMessage(), $this->validator->errors());
 
         $model = $this->storeModel();
@@ -245,7 +245,7 @@ trait Api
      */
     public function update(Request $request, $id)
     {
-        if (!$this->validate($request->all(), $this->validationRules(true)))
+        if (!$this->isValid($request->all(), $this->validationRules(true)))
             return $this->error($this->validationErrorMessage(), $this->validator->errors());
         $model = $this->updateModel();
 
