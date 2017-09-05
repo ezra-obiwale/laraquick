@@ -192,7 +192,12 @@ trait Api
             ? $model->simplePaginate($length)
             : $model::simplePaginate($length);
         if ($resp = $this->beforeIndexResponse($items)) return $resp;
-        return $this->success($items);
+        $resp = [];
+        $items = $items->toArray();
+        $resp['data'] = $items['data'];
+        unset($items['data']);
+        $resp['meta'] = $items;
+        return $this->success($resp);
     }
 
     /**
