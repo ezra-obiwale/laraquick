@@ -195,8 +195,10 @@ trait Api
         $resp = [];
         $items = $items->toArray();
         $resp['data'] = $items['data'];
-        unset($items['data']);
-        $resp['meta']['pagination'] = $items;
+        if (count($resp['data'])) {
+            unset($items['data']);
+            $resp['meta']['pagination'] = $items;
+        }
         return $this->success($resp);
     }
 
