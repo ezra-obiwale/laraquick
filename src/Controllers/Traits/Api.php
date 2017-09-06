@@ -101,7 +101,7 @@ trait Api
      * Called after validation but before create method is called
      *
      * @param array $data
-     * @return void
+     * @return mixed The response to send or null
      */
     protected function beforeCreate(array &$data)
     {
@@ -131,7 +131,7 @@ trait Api
      * Called after validation but before update method is called
      *
      * @param array $data
-     * @return void
+     * @return mixed The response to send or null
      */
     protected function beforeUpdate(array &$data)
     {
@@ -215,10 +215,11 @@ trait Api
         $model = $this->storeModel();
         $data = $request->all();
 
-        $this->beforeCreate($data);
+        if ($resp = $this->beforeCreate($data)) return $resp;
+
         $data = is_object($model)
-            ? $model->create($request->all())
-            : $model::create($request->all());
+            ? $model->create($data)
+            : $model::create($data);
 
         if (!$data) return $this->error($this->createFailedMessage(), null, 500);
 
@@ -262,7 +263,8 @@ trait Api
         if (!$item) return $this->notFound();
 
         $data = $request->all();
-        $this->beforeUpdate($data);
+        if ($resp = $this->beforeUpdate($data)) return $resp;
+        
         $result = $item->update($data);
 
         if (!$result) return $this->error($this->updateFailedMessage(), null, 500);
