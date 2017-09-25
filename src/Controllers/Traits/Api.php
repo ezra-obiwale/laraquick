@@ -28,7 +28,7 @@ trait Api
      * @return mixed
      */
     abstract protected function model();
-    
+
     /**
      * Should return the validation rules
      *
@@ -38,6 +38,38 @@ trait Api
     abstract protected function validationRules($forUpdate = false);
 
     /**
+     * Indicates whether validation should be strict and throw errors if unwanted
+     * values exists
+     *
+     * @return boolean
+     */
+    protected function strictValidation()
+    {
+        return false;
+    }
+
+    /**
+     * Checks the request data against validation rules
+     *
+     * @param array $data
+     * @param array $rules
+     * @param boolean $ignoreStrict Indicates whether to ignore strict validation
+     * @return void
+     */
+    protected function checkRequestData(array $data, array $rules, $ignoreStrict = false)
+    {
+        $this->validator = Validator::make($data, $rules);
+        if ($this->validator->fails())
+            return $this->error($this->validationErrorMessage(), $this->validator->errors());
+
+        if (!$ignoreStrict && $this->strictValidation()) {
+            $left_overs = collection($data)->except(array_keys($rules));
+            if ($left_overs->count())
+                return $this->error('Too many parameters', null, 406);
+        }
+    }
+
+    /**
      * The model to use in the index method. Defaults to @see model()
      *
      * @return mixed
@@ -45,6 +77,16 @@ trait Api
     protected function indexModel()
     {
         return $this->model();
+    }
+
+    /**
+     * Sets the default pagination length
+     *
+     * @return integer
+     */
+    protected function defaultPaginationLength()
+    {
+        return 15;
     }
 
     /**
@@ -168,38 +210,37 @@ trait Api
     }
 
     /**
-     * Validates request with validation rules
-     *
-     * @param array $data
-     * @param array $rules
-     * @return void
-     */
-    protected function isValid(array $data, array $rules)
-    {
-        $this->validator = Validator::make($data, $rules);
-        return !$this->validator->fails();
-    }
-
-    /**
      * Display a listing of the resource.
      * @return Response
      */
     public function index()
     {
         $model = $this->indexModel();
-        $length = request()->query('length') ? : 50;
-        $items = is_object($model)
+        $length = request()->query('length') ? : $this->defaultPaginationLength();
+        if ($length == 'all')
+            $data = is_object($model)
+            ? $model->all()
+            : $model::all();
+        else
+            $data = is_object($model)
             ? $model->simplePaginate($length)
             : $model::simplePaginate($length);
-        if ($resp = $this->beforeIndexResponse($items)) return $resp;
-        $resp = [];
-        $items = $items->toArray();
-        $resp['data'] = $items['data'];
-        if (count($resp['data'])) {
-            unset($items['data']);
-            $resp['meta']['pagination'] = $items;
+        if ($resp = $this->beforeIndexResponse($data)) return $resp;
+        $items = $data->toArray();
+        if (method_exists($model, 'fractality')) {
+            $data = is_object($model)
+                ? $model->fractality($data)->toArray()
+                : $model::fractality($data)->toArray();
         }
-        return $this->success($resp);
+        else {
+            $data = $items['data'];
+        }
+        $meta = null;
+        if (count($data)) {
+            unset($items['data']);
+            $meta['pagination'] = $items;
+        }
+        return $this->success($data, 200, $meta);
     }
 
     /**
@@ -209,11 +250,11 @@ trait Api
      */
     public function store(Request $request)
     {
-        if (!$this->isValid($request->all(), $this->validationRules()))
-            return $this->error($this->validationErrorMessage(), $this->validator->errors());
+        $data = $request->all();
+        if ($resp = $this->checkRequestData($data, $this->validationRules()))
+            return $resp;
 
         $model = $this->storeModel();
-        $data = $request->all();
 
         if ($resp = $this->beforeCreate($data)) return $resp;
 
@@ -224,7 +265,8 @@ trait Api
         if (!$data) return $this->error($this->createFailedMessage(), null, 500);
 
         if ($resp = $this->beforeCreateResponse($data)) return $resp;
-        return $this->success($data);
+
+        return $this->success(method_exists($data, 'fractalize') ? $data->fractalize()->toArray() : $data);
     }
 
     /**
@@ -242,7 +284,7 @@ trait Api
         if (!$item) return $this->notFound();
 
         if ($resp = $this->beforeShowResponse($item)) return $resp;
-        return $this->success($item);
+        return $this->success(method_exists($item, 'fractalize') ? $item->fractalize()->toArray() : $item);
     }
 
     /**
@@ -253,8 +295,10 @@ trait Api
      */
     public function update(Request $request, $id)
     {
-        if (!$this->isValid($request->all(), $this->validationRules(true)))
-            return $this->error($this->validationErrorMessage(), $this->validator->errors());
+        $data = $request->all();
+        if ($resp = $this->checkRequestData($data, $this->validationRules(true)))
+            return $resp;
+
         $model = $this->updateModel();
 
         $item = is_object($model)
@@ -262,15 +306,14 @@ trait Api
             : $model::find($id);
         if (!$item) return $this->notFound();
 
-        $data = $request->all();
         if ($resp = $this->beforeUpdate($data)) return $resp;
-        
+
         $result = $item->update($data);
 
         if (!$result) return $this->error($this->updateFailedMessage(), null, 500);
 
         if ($resp = $this->beforeUpdateResponse($item)) return $resp;
-        return $this->success($item);
+        return $this->success(method_exists($item, 'fractalize') ? $item->fractalize()->toArray() : $item);
     }
 
     /**
@@ -293,6 +336,6 @@ trait Api
         if (!$result) return $this->error($this->deleteFailedMessage(), null, 500);
 
         if ($resp = $this->beforeDeleteResponse($item)) return $resp;
-        return $this->success($item);
+        return $this->success(method_exists($item, 'fractalize') ? $item->fractalize()->toArray() : $item);
     }
 }

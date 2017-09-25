@@ -12,12 +12,14 @@ trait Respond {
      * @param integer $code
      * @return Response
      */
-    protected function success($data, $code = 200)
+    protected function success($data, $code = 200, $meta = null)
     {
-        return response()->json([
+        $resp = [
             "status" => true,
             "data" => $data
-        ], $code);
+        ];
+        if ($meta) $resp['meta'] = $meta;
+        return response()->json($resp, $code);
     }
 
     /**
