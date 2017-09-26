@@ -1,7 +1,7 @@
 <?php
 namespace Laraquick\Models\Traits;
 
-use Iterator;
+use Spatie\Fractalistic\ArraySerializer;
 
 trait Fractal
 {
@@ -20,12 +20,14 @@ trait Fractal
     /**
      * Fractalize many models of this class
      *
-     * @param Iterator $items
+     * @param Traversable|array $items
      * @return void
      */
-    public static function fractality(Iterator $items)
+    public static function fractality($items)
     {
-        return collect($items)->map([self, 'fractalize']);
+        return fractal($items, function ($item) {
+            return $item->transform();
+        })->serializeWith(new ArraySerializer());
     }
 
     abstract public function transform();

@@ -229,14 +229,14 @@ trait Api
         $items = $data->toArray();
         if (method_exists($model, 'fractality')) {
             $data = is_object($model)
-                ? $model->fractality($data)->toArray()
-                : $model::fractality($data)->toArray();
+                ? $model->fractality($data)
+                : $model::fractality($data);
         }
         else {
             $data = $items['data'];
         }
         $meta = null;
-        if (count($data)) {
+        if ($length != 'all' && count($data)) {
             unset($items['data']);
             $meta['pagination'] = $items;
         }
@@ -262,11 +262,11 @@ trait Api
             ? $model->create($data)
             : $model::create($data);
 
-        if (!$data) return $this->error($this->createFailedMessage(), null, 500);
+        if (!$data) return $this->createFailedError();
 
         if ($resp = $this->beforeCreateResponse($data)) return $resp;
 
-        return $this->success(method_exists($data, 'fractalize') ? $data->fractalize()->toArray() : $data);
+        return $this->success(method_exists($data, 'fractalize') ? $data->fractalize() : $data);
     }
 
     /**
@@ -281,10 +281,10 @@ trait Api
             ? $model->find($id)
             : $model::find($id);
 
-        if (!$item) return $this->notFound();
+        if (!$item) return $this->notFoundError();
 
         if ($resp = $this->beforeShowResponse($item)) return $resp;
-        return $this->success(method_exists($item, 'fractalize') ? $item->fractalize()->toArray() : $item);
+        return $this->success(method_exists($item, 'fractalize') ? $item->fractalize() : $item);
     }
 
     /**
@@ -304,16 +304,16 @@ trait Api
         $item = is_object($model)
             ? $model->find($id)
             : $model::find($id);
-        if (!$item) return $this->notFound();
+        if (!$item) return $this->notFoundError();
 
         if ($resp = $this->beforeUpdate($data)) return $resp;
 
         $result = $item->update($data);
 
-        if (!$result) return $this->error($this->updateFailedMessage(), null, 500);
+        if (!$result) return $this->updateFailedError();
 
         if ($resp = $this->beforeUpdateResponse($item)) return $resp;
-        return $this->success(method_exists($item, 'fractalize') ? $item->fractalize()->toArray() : $item);
+        return $this->success(method_exists($item, 'fractalize') ? $item->fractalize() : $item);
     }
 
     /**
@@ -328,14 +328,14 @@ trait Api
             ? $model->find($id)
             : $model::find($id);
 
-        if (!$item) return $this->notFound();
+        if (!$item) return $this->notFoundError();
 
         $this->beforeDelete($item);
         $result = $item->delete();
 
-        if (!$result) return $this->error($this->deleteFailedMessage(), null, 500);
+        if (!$result) return $this->deleteFailedError();
 
         if ($resp = $this->beforeDeleteResponse($item)) return $resp;
-        return $this->success(method_exists($item, 'fractalize') ? $item->fractalize()->toArray() : $item);
+        return $this->success(method_exists($item, 'fractalize') ? $item->fractalize() : $item);
     }
 }

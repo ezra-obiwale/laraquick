@@ -1,10 +1,10 @@
 <?php
-
 namespace Laraquick\Controllers\Traits;
 
 use Illuminate\Http\Response;
 
-trait Respond {
+trait Respond
+{
     /**
      * Called on a successful action
      *
@@ -39,59 +39,54 @@ trait Respond {
         if ($errors) $resp["errors"] = $errors;
         return response()->json($resp, $code);
     }
-    
+
     /**
-     * Error message for when a resource is not found
+     * Called when validation fails
      *
-     * @return string
+     * @return Response
      */
-    protected function notFoundMessage() {
-        return 'Resource not found';
+    protected function validationError()
+    {
+        return $this->error('Validation error', null);
     }
 
     /**
-     * Error message for when validation fails
+     * Called when create action fails
      *
-     * @return string
+     * @return Response
      */
-    protected function validationErrorMessage() {
-        return 'Validation error';
-    }
-
-    /**
-     * Error message for when create action fails
-     *
-     * @return string
-     */
-    protected function createFailedMessage() {
-        return 'Create failed';
+    protected function createFailedError()
+    {
+        return $this->error('Create failed', null, 500);
     }
 
     /**
      * Error message for when an update action fails
      *
-     * @return string
+     * @return Response
      */
-    protected function updateFailedMessage() {
-        return 'Update failed';
+    protected function updateFailedError()
+    {
+        return $this->error('Update failed', null, 500);
     }
 
     /**
-     * Error message for when a delete action fails
+     * Called when a delete action fails
      *
-     * @return string
+     * @return Response
      */
-    protected function deleteFailedMessage() {
-        return 'Delete failed';
+    protected function deleteFailedError()
+    {
+        return $this->error('Delete failed', null, 500);
     }
-    
+
     /**
      * Create a 404 not found error response
      *
-     * @return void
+     * @return Response
      */
-    final protected function notFound()
+    final protected function notFoundError()
     {
-        return $this->error($this->notFoundMessage(), null, 404);
+        return $this->error('Resource not found', null, 404);
     }
 }
