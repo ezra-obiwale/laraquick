@@ -14,7 +14,7 @@ trait Fractal
     {
         return fractal($this, function () {
             return $this->transform();
-        });
+        })->serializeWith(new ArraySerializer());
     }
 
     /**

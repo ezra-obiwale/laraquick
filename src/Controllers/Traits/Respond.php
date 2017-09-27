@@ -43,11 +43,12 @@ trait Respond
     /**
      * Called when validation fails
      *
+     * @param mixed $errors
      * @return Response
      */
-    protected function validationError()
+    protected function validationError($errors)
     {
-        return $this->error('Validation error', null);
+        return $this->error('Validation error', $errors);
     }
 
     /**

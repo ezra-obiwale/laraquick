@@ -60,7 +60,7 @@ trait Api
     {
         $this->validator = Validator::make($data, $rules);
         if ($this->validator->fails())
-            return $this->error($this->validationErrorMessage(), $this->validator->errors());
+            return $this->validationError($this->validator->errors());
 
         if (!$ignoreStrict && $this->strictValidation()) {
             $left_overs = collection($data)->except(array_keys($rules));
