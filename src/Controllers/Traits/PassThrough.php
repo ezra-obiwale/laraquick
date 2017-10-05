@@ -19,7 +19,7 @@ trait PassThrough
 
     public function model()
     {
-        
+
     }
 
     /**
@@ -31,11 +31,11 @@ trait PassThrough
     protected function methodMap($action = null)
     {
         $map = [
-            'index'     => 'GET',
-            'create'    => 'POST',
-            'show'      => 'GET',
-            'update'    => 'PUT',
-            'delete'    => 'DELETE'
+            'index' => 'GET',
+            'create' => 'POST',
+            'show' => 'GET',
+            'update' => 'PUT',
+            'delete' => 'DELETE'
         ];
 
         if ($action) return $map[$action];
@@ -54,43 +54,48 @@ trait PassThrough
      *
      * @return array
      */
-    public function indexHeaders() {
+    public function indexHeaders()
+    {
         return $this->headers();
     }
-    
+
     /**
      * Headers to send with create request
      *
      * @return array
      */
-    public function createHeaders() {
+    public function createHeaders()
+    {
         return $this->headers();
     }
-    
+
     /**
      * Headers to send with show request
      *
      * @return array
      */
-    public function showHeaders() {
+    public function showHeaders()
+    {
         return $this->headers();
     }
-    
+
     /**
      * Headers to send with update request
      *
      * @return array
      */
-    public function updateHeaders() {
+    public function updateHeaders()
+    {
         return $this->headers();
     }
-    
+
     /**
      * Headers to send with delete request
      *
      * @return array
      */
-    public function deleteHeaders() {
+    public function deleteHeaders()
+    {
         return $this->headers();
     }
 
@@ -106,7 +111,8 @@ trait PassThrough
      *
      * @return string
      */
-    private function to() {
+    private function to()
+    {
         $to = self::toUrl();
         if ($to[strlen($to) - 1] !== '/')
             $to .= '/';
@@ -119,22 +125,57 @@ trait PassThrough
      * @param string $action
      * @return Response
      */
-    private function respond($action, $resp) {
+    private function respond($action, $resp)
+    {
         $beforeMethod = 'before' . ucfirst($action) . 'Response';
         $this->responseStatusCode = Http::getStatusCode();
         if ($response = $this->$beforeMethod($resp)) return $response;
         return response()->json($resp, Http::getStatusCode());
     }
 
-    private function request($action, $id = null, $data = null) {
+    protected function request($action, $id = null, $data = null)
+    {
         $options = [
             'query' => request()->query(),
             'headers' => $this->indexHeaders()
         ];
         if ($data) $options['json'] = $data;
         $method = $this->methodMap($action);
-        $resp = Http::request($method, self::to() . $id, $options);
+        $resp = $this->httpRequest($method, self::to() . $id, $options);
         return $this->respond($action, $resp);
+    }
+
+    /**
+     * Shortcut for making http requests
+     *
+     * @param string $method GET|POST|PUT|PATCH|DELETE ...
+     * @param string $url
+     * @param array $options
+     * @return array
+     */
+    protected function httpRequest($method, $url, array $options = [])
+    {
+        return Http::request($method, $url, $options);
+    }
+
+    /**
+     * Shortcut to get the status code of the last request
+     *
+     * @return integer
+     */
+    protected function httpStatusCode()
+    {
+        return Http::getStatusCode();
+    }
+
+    /**
+     * Shortcut to get the raw response object of the guzzle request
+     *
+     * @return void
+     */
+    protected function httpResponse()
+    {
+        return Http::rawResponse();
     }
 
     /**
