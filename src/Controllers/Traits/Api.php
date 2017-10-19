@@ -227,7 +227,7 @@ trait Api
             ? $model->simplePaginate($length)
             : $model::simplePaginate($length);
         if ($resp = $this->beforeIndexResponse($data)) return $resp;
-        return $this->paginatedList($data);
+        return $this->paginatedList($data->toArray());
     }
 
     /**
