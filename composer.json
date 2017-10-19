@@ -21,8 +21,7 @@
     ],
     "require": {
         "php": ">=5.6.0",
-        "laravel/framework": "~5.4",
-        "spatie/laravel-fractal": "^4.0",
+        "laravel/framework": "~5.5",
         "guzzlehttp/guzzle": "~6.0"
     },
     "autoload": {
