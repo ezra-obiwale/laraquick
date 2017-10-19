@@ -33,10 +33,10 @@ trait Api
      * Should return the validation rules
      *
      * @param array $data The data being validated
-     * @param boolean $forUpdate Indicates whether the validation should be for update or not
+     * @param mixed $id Id of the model being updated, if such were the case
      * @return array
      */
-    abstract protected function validationRules(array $data, $forUpdate = false);
+    abstract protected function validationRules(array $data, $id = null);
 
     /**
      * Indicates whether validation should be strict and throw errors if unwanted
@@ -283,7 +283,7 @@ trait Api
     public function update(Request $request, $id)
     {
         $data = $request->all();
-        if ($resp = $this->checkRequestData($data, $this->validationRules($data, true)))
+        if ($resp = $this->checkRequestData($data, $this->validationRules($data, $id)))
             return $resp;
 
         $model = $this->updateModel();
