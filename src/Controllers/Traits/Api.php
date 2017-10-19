@@ -32,10 +32,11 @@ trait Api
     /**
      * Should return the validation rules
      *
+     * @param array $data The data being validated
      * @param boolean $forUpdate Indicates whether the validation should be for update or not
      * @return array
      */
-    abstract protected function validationRules($forUpdate = false);
+    abstract protected function validationRules(array $data, $forUpdate = false);
 
     /**
      * Indicates whether validation should be strict and throw errors if unwanted
@@ -251,7 +252,7 @@ trait Api
     public function store(Request $request)
     {
         $data = $request->all();
-        if ($resp = $this->checkRequestData($data, $this->validationRules()))
+        if ($resp = $this->checkRequestData($data, $this->validationRules($data)))
             return $resp;
 
         $model = $this->storeModel();
@@ -296,7 +297,7 @@ trait Api
     public function update(Request $request, $id)
     {
         $data = $request->all();
-        if ($resp = $this->checkRequestData($data, $this->validationRules(true)))
+        if ($resp = $this->checkRequestData($data, $this->validationRules($data, true)))
             return $resp;
 
         $model = $this->updateModel();

@@ -20,7 +20,7 @@ class Http
 
     private static function processResponse()
     {
-        return json_decode(strval(self::$response->getBody()));
+        return json_decode(strval(self::$response->getBody()), true);
     }
 
     private static function req($method, array $args)
