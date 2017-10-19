@@ -228,20 +228,16 @@ trait Api
             : $model::simplePaginate($length);
         if ($resp = $this->beforeIndexResponse($data)) return $resp;
         $items = $data->toArray();
-        if (method_exists($model, 'fractality')) {
-            $data = is_object($model)
-                ? $model->fractality($data)
-                : $model::fractality($data);
-        }
-        else {
-            $data = $items['data'];
-        }
+        $data = $items['data'];
         $meta = null;
         if ($length != 'all' && count($data)) {
             unset($items['data']);
             $meta['pagination'] = $items;
         }
-        return $this->success($data, 200, $meta);
+        return response()->json([
+            'data' => $data,
+            'meta' => $meta
+        ], 200);
     }
 
     /**
@@ -267,7 +263,7 @@ trait Api
 
         if ($resp = $this->beforeCreateResponse($data)) return $resp;
 
-        return $this->success(method_exists($data, 'fractalize') ? $data->fractalize() : $data);
+        return response()->json($data, 201);
     }
 
     /**
@@ -285,7 +281,7 @@ trait Api
         if (!$item) return $this->notFoundError();
 
         if ($resp = $this->beforeShowResponse($item)) return $resp;
-        return $this->success(method_exists($item, 'fractalize') ? $item->fractalize() : $item);
+        return response()->json($item, 200);
     }
 
     /**
@@ -314,7 +310,7 @@ trait Api
         if (!$result) return $this->updateFailedError();
 
         if ($resp = $this->beforeUpdateResponse($item)) return $resp;
-        return $this->success(method_exists($item, 'fractalize') ? $item->fractalize() : $item);
+        return response()->json($item, 202);
     }
 
     /**
@@ -337,6 +333,6 @@ trait Api
         if (!$result) return $this->deleteFailedError();
 
         if ($resp = $this->beforeDeleteResponse($item)) return $resp;
-        return $this->success(method_exists($item, 'fractalize') ? $item->fractalize() : $item);
+        return response()->json($item, 202);
     }
 }

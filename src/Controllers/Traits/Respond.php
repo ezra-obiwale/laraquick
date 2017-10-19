@@ -5,22 +5,6 @@ use Illuminate\Http\Response;
 
 trait Respond
 {
-    /**
-     * Called on a successful action
-     *
-     * @param mixed $data
-     * @param integer $code
-     * @return Response
-     */
-    protected function success($data, $code = 200, $meta = null)
-    {
-        $resp = [
-            "status" => true,
-            "data" => $data
-        ];
-        if ($meta) $resp['meta'] = $meta;
-        return response()->json($resp, $code);
-    }
 
     /**
      * Called when an error occurs while performing an action
@@ -33,7 +17,6 @@ trait Respond
     protected function error($message, $errors = null, $code = 400)
     {
         $resp = [
-            "status" => false,
             "message" => $message
         ];
         if ($errors) $resp["errors"] = $errors;
