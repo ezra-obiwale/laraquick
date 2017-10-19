@@ -34,16 +34,13 @@ trait Respond
      * @return void
      */
     protected function paginatedList(array $items, $code = 200) {
-        $data = $items['data'];
-        $meta = null;
-        if (request()->query('length') != 'all' && count($data)) {
+        $resp['data'] = $items['data'];
+        if (request()->query('length') != 'all' && count($items['data'])) {
             unset($items['data']);
             $meta['pagination'] = $items;
+            $resp['meta']['pagination'] = $items;
         }
-        return response()->json([
-            'data' => $data,
-            'meta' => $meta
-        ], $code);
+        return response()->json($resp, $code);
     }
 
     /**
