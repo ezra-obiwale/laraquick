@@ -227,17 +227,7 @@ trait Api
             ? $model->simplePaginate($length)
             : $model::simplePaginate($length);
         if ($resp = $this->beforeIndexResponse($data)) return $resp;
-        $items = $data->toArray();
-        $data = $items['data'];
-        $meta = null;
-        if ($length != 'all' && count($data)) {
-            unset($items['data']);
-            $meta['pagination'] = $items;
-        }
-        return response()->json([
-            'data' => $data,
-            'meta' => $meta
-        ], 200);
+        return $this->paginatedList($data);
     }
 
     /**

@@ -2,6 +2,7 @@
 namespace Laraquick\Controllers\Traits;
 
 use Illuminate\Http\Response;
+use Illuminate\Database\Eloquent\Collection;
 
 trait Respond
 {
@@ -21,6 +22,28 @@ trait Respond
         ];
         if ($errors) $resp["errors"] = $errors;
         return response()->json($resp, $code);
+    }
+
+    /**
+     * Called when return a list of paginated items. 
+     * 
+     * The data is extracted while the others are placed in meta.
+     *
+     * @param array $items
+     * @param integer $code
+     * @return void
+     */
+    protected function paginatedList(array $items, $code = 200) {
+        $data = $items['data'];
+        $meta = null;
+        if (request()->query('length') != 'all' && count($data)) {
+            unset($items['data']);
+            $meta['pagination'] = $items;
+        }
+        return response()->json([
+            'data' => $data,
+            'meta' => $meta
+        ], $code);
     }
 
     /**
