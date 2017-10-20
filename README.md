@@ -16,9 +16,18 @@ composer require d-scribe/laraquick
 
 ## Dependencies
 
+### v1.*
+
+- PHP               >=      7.0
+- Laravel           -       ~5.5
+- Guzzle            -       ~6.0
+
+### v0.*
+
 - PHP               >=     5.6.0
 - Laravel           -      5.4.*
 - Laravel Fractal   -      ^4.0
+- Guzzle            -       ~6.0
 
 ## Example
 
