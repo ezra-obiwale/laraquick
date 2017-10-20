@@ -36,7 +36,7 @@ class BookController extends Controller {
         return Book::class;
     }
 
-    protected function validationRules($forUpdate = false) {
+    protected function validationRules(array $data, $id = null) {
         return [
             'title' => 'required|max:200',
             'author' => 'required|max:50',
