@@ -59,6 +59,10 @@ class BookController extends Controller {
 And with just the above, the controller would take care of listing (w/ pagination),
 and all `CRUD` operations and give the right JSON responses.
 
+```php
+Route::resource('books', 'BookController');
+```
+
 ## API Documentation
 
 Coming soon
