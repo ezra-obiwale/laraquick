@@ -16,9 +16,18 @@ composer require d-scribe/laraquick
 
 ## Dependencies
 
+### v1.*
+
+- PHP               >=      7.0
+- Laravel           -       ~5.5
+- Guzzle            -       ~6.0
+
+### v0.*
+
 - PHP               >=     5.6.0
 - Laravel           -      5.4.*
 - Laravel Fractal   -      ^4.0
+- Guzzle            -       ~6.0
 
 ## Example
 
@@ -36,7 +45,7 @@ class BookController extends Controller {
         return Book::class;
     }
 
-    protected function validationRules($forUpdate = false) {
+    protected function validationRules(array $data, $id = null) {
         return [
             'title' => 'required|max:200',
             'author' => 'required|max:50',
@@ -49,6 +58,10 @@ class BookController extends Controller {
 
 And with just the above, the controller would take care of listing (w/ pagination),
 and all `CRUD` operations and give the right JSON responses.
+
+```php
+Route::apiResource('books', 'BookController');
+```
 
 ## API Documentation
 
