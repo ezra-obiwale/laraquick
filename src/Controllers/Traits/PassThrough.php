@@ -135,9 +135,10 @@ trait PassThrough
 
     protected function request($action, $id = null, $data = null)
     {
+        $headerMethod = $action . 'Headers';
         $options = [
             'query' => request()->query(),
-            'headers' => $this->indexHeaders()
+            'headers' => $this->$headerMethod()
         ];
         if ($data) $options['json'] = $data;
         $method = $this->methodMap($action);
