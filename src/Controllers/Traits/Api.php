@@ -4,6 +4,7 @@ namespace Laraquick\Controllers\Traits;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use DB;
 
 /**
  * A colletion of methods to assist in quick controller generation
@@ -245,14 +246,21 @@ trait Api
 
         if ($resp = $this->beforeCreate($data)) return $resp;
 
+        DB::beginTransaction();
         $data = is_object($model)
             ? $model->create($data)
             : $model::create($data);
 
-        if (!$data) return $this->createFailedError();
+        if (!$data) {
+            DB::rollback();
+            return $this->createFailedError();
+        }
 
-        if ($resp = $this->beforeCreateResponse($data)) return $resp;
+        if ($resp = $this->beforeCreateResponse($data)) {
+            return $resp;
+        }
 
+        DB::commit();
         return response()->json($data, 201);
     }
 
@@ -295,11 +303,18 @@ trait Api
 
         if ($resp = $this->beforeUpdate($data)) return $resp;
 
+        DB::beginTransaction();
         $result = $item->update($data);
 
-        if (!$result) return $this->updateFailedError();
+        if (!$result) {
+            DB::rollback();
+            return $this->updateFailedError();
+        }
 
-        if ($resp = $this->beforeUpdateResponse($item)) return $resp;
+        if ($resp = $this->beforeUpdateResponse($item)) {
+            return $resp;
+        }
+        DB::commit();
         return response()->json($item, 202);
     }
 
@@ -319,10 +334,16 @@ trait Api
 
         $this->beforeDelete($item);
         $result = $item->delete();
+        
+        if (!$result) {
+            DB::rollback();
+            return $this->deleteFailedError();
+        }
 
-        if (!$result) return $this->deleteFailedError();
-
-        if ($resp = $this->beforeDeleteResponse($item)) return $resp;
+        if ($resp = $this->beforeDeleteResponse($item)) {
+            return $resp;
+        }
+        DB::commit();
         return response()->json($item, 202);
     }
 }
