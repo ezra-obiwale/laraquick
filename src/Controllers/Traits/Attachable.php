@@ -4,6 +4,10 @@ namespace Laraquick\Controllers\Traits;
 
 use Illuminate\Http\Response;
 
+/**
+ * Simplifies many-to-many attachments and detachments
+ * 
+ */
 trait Attachable
 {
 

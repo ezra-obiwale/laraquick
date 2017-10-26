@@ -2,6 +2,10 @@
 
 namespace Laraquick\Controllers\Traits;
 
+/**
+ * Simplifies add, removing and syncing many-to-many relations
+ * 
+ */
 trait Pivotable {
 
     use Attachable;
