@@ -58,14 +58,7 @@ trait Attachable
         if (!$group) return $this->notFound();
         try {
             $items = request()->input($paramKey);
-            $existing = $group->$relation()->whereIn('ids', $items)->get(['id']);
-            if ($existing->count()) {
-                $ids = $existing->pluck('id');
-                $items = $ids->diff($items)->all();
-            }
-            if (count($items)) {
-                $group->$relation()->attach($items);
-            }
+            $group->$relation()->attach($items);
             return response()->json($group->$relation);
         }
         catch (\Exception $e) {
