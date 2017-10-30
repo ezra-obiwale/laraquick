@@ -17,7 +17,7 @@ trait Referer {
         $referer = request()->headers->get('referer');
         $refOrigin = $this->originFromUrl($referer);
         foreach ($url as $urll) {
-            $urlOrigin = $this->originFromUrl($url);
+            $urlOrigin = $this->originFromUrl($urll);
             if ($refOrigin == $urlOrigin) return;
         }
         throw new \Exception($referer . ' is not a valid domain.');

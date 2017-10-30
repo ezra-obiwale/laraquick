@@ -89,7 +89,7 @@ trait Respond
      *
      * @return Response
      */
-    final protected function notFoundError()
+    protected function notFoundError()
     {
         return $this->error('Resource not found', null, 404);
     }
