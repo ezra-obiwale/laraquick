@@ -34,8 +34,8 @@ trait Respond
      * @return void
      */
     protected function paginatedList(array $items, $code = 200) {
-        $resp['data'] = $items['data'];
-        if (request()->query('length') != 'all' && count($items['data'])) {
+        $resp['data'] = array_key_exists('data', $items) ? $items['data'] : $items;
+        if (request()->query('length') != 'all' && count($resp['data'])) {
             unset($items['data']);
             $meta['pagination'] = $items;
             $resp['meta']['pagination'] = $items;
