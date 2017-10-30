@@ -3,11 +3,8 @@
 namespace Laraquick\Controllers\Traits;
 
 use Illuminate\Http\Response;
+use Log;
 
-/**
- * Simplifies many-to-many attachments and detachments
- * 
- */
 trait Attachable
 {
 
@@ -50,7 +47,7 @@ trait Attachable
     */
     public function attach($id, $relation, $paramKey = 'items')
     {
-        if (!$this->validate(request()->all(), [
+        if (!$this->validate(request(), [
             $paramKey => 'required|array'
         ]))
             return $this->error($this->validationErrorMessage(), $this->validator->errors());
@@ -61,10 +58,18 @@ trait Attachable
         if (!$group) return $this->notFound();
         try {
             $items = request()->input($paramKey);
-            $group->$relation()->attach($items);
-            return $this->success($items);
+            $existing = $group->$relation()->whereIn('ids', $items)->get(['id']);
+            if ($existing->count()) {
+                $ids = $existing->pluck('id');
+                $items = $ids->diff($items)->all();
+            }
+            if (count($items)) {
+                $group->$relation()->attach($items);
+            }
+            return response()->json($group->$relation);
         }
         catch (\Exception $e) {
+            Log::error($e->getMessage());
             return $this->error('Something went wrong. Are you sure the items exists?');
         }
     }
@@ -79,7 +84,7 @@ trait Attachable
     */
     public function detach($id, $relation, $paramKey = 'items')
     {
-        if (!$this->validate(request()->all(), [
+        if (!$this->validate(request(), [
             $paramKey => 'required|array'
         ]))
             return $this->error($this->validationErrorMessage(), $this->validator->errors());
@@ -91,9 +96,10 @@ trait Attachable
         try {
             $items = request()->input($paramKey);
             $group->$relation()->detach($items);
-            return $this->success($items);
+            return response()->json($group->$relation);
         }
         catch (\Exception $e) {
+            Log::error($e->getMessage());
             return $this->error('Something went wrong. Are you sure the items exists?');
         }
     }
@@ -108,7 +114,7 @@ trait Attachable
     */
     public function sync($id, $relation, $paramKey = 'items')
     {
-        if (!$this->validate(request()->all(), [
+        if (!$this->validate(request(), [
             $paramKey => 'required|array'
         ]))
             return $this->error($this->validationErrorMessage(), $this->validator->errors());
@@ -124,9 +130,10 @@ trait Attachable
             $resp['removed'] = $resp['detached'];
             unset($resp['attached']);
             unset($resp['detached']);
-            return $this->success($resp);
+            return response()->json($group->$relation);
         }
         catch (\Exception $e) {
+            Log::error($e->getMessage());
             return $this->error('Something went wrong. Are you sure the items exists?');
         }
     }
