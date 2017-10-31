@@ -4,6 +4,8 @@ namespace Laraquick\Controllers\Traits;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Database\Eloquent\Model;
+
 use DB;
 
 /**
@@ -157,7 +159,7 @@ trait Api
      * @param mixed $data
      * @return mixed The response to send or null
      */
-    protected function beforeCreateResponse(&$data)
+    protected function beforeCreateResponse(Model &$data)
     {
     }
 
@@ -167,7 +169,7 @@ trait Api
      * @param mixed $data
      * @return mixed The response to send or null
      */
-    protected function beforeShowResponse(&$data)
+    protected function beforeShowResponse(Model &$data)
     {
     }
 
@@ -187,7 +189,7 @@ trait Api
      * @param mixed $data
      * @return mixed The response to send or null
      */
-    protected function beforeUpdateResponse(&$data)
+    protected function beforeUpdateResponse(Model &$data)
     {
     }
 
@@ -197,7 +199,7 @@ trait Api
      * @param mixed $data
      * @return void
      */
-    protected function beforeDelete(&$data)
+    protected function beforeDelete(Model &$data)
     {
     }
 
@@ -207,7 +209,7 @@ trait Api
      * @param mixed $data
      * @return mixed The response to send or null
      */
-    protected function beforeDeleteResponse(&$data)
+    protected function beforeDeleteResponse(Model &$data)
     {
     }
 
