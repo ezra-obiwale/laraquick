@@ -18,29 +18,7 @@ trait PassThrough
     protected $responseStatusCode;
 
     public function model()
-    {
-
-    }
-
-    /**
-     * An array map of actions to request methods
-     *
-     * @param string $action The action for which map should be returned
-     * @return array|string
-     */
-    protected function methodMap($action = null)
-    {
-        $map = [
-            'index' => 'GET',
-            'create' => 'POST',
-            'show' => 'GET',
-            'update' => 'PUT',
-            'delete' => 'DELETE'
-        ];
-
-        if ($action) return $map[$action];
-        return $map;
-    }
+    {}
 
     /**
      * The headers to pass into requests
@@ -48,13 +26,20 @@ trait PassThrough
      * @return array
      */
     abstract protected function headers();
+    
+    /**
+     * The url to pass the request to
+     *
+     * @return string
+     */
+    abstract protected function toUrl();
 
     /**
      * Headers to send with index request
      *
      * @return array
      */
-    public function indexHeaders()
+    protected function indexHeaders()
     {
         return $this->headers();
     }
@@ -64,7 +49,7 @@ trait PassThrough
      *
      * @return array
      */
-    public function createHeaders()
+    protected function createHeaders()
     {
         return $this->headers();
     }
@@ -74,7 +59,7 @@ trait PassThrough
      *
      * @return array
      */
-    public function showHeaders()
+    protected function showHeaders()
     {
         return $this->headers();
     }
@@ -84,7 +69,7 @@ trait PassThrough
      *
      * @return array
      */
-    public function updateHeaders()
+    protected function updateHeaders()
     {
         return $this->headers();
     }
@@ -94,17 +79,10 @@ trait PassThrough
      *
      * @return array
      */
-    public function deleteHeaders()
+    protected function deleteHeaders()
     {
         return $this->headers();
     }
-
-    /**
-     * The url to pass the request to
-     *
-     * @return string
-     */
-    abstract public function toUrl();
 
     /**
      * Add / to the url if not added
@@ -133,7 +111,7 @@ trait PassThrough
         return response()->json($resp, Http::getStatusCode());
     }
 
-    protected function request($action, $id = null, $data = null)
+    private function request($action, $id = null, $data = null)
     {
         $headerMethod = $action . 'Headers';
         $options = [
@@ -239,5 +217,25 @@ trait PassThrough
     public function destroy($id)
     {
         return $this->request('delete', $id);
+    }
+    
+    /**
+     * An array map of actions to request methods
+     *
+     * @param string $action The action for which map should be returned
+     * @return array|string
+     */
+    protected function methodMap($action = null)
+    {
+        $map = [
+            'index' => 'GET',
+            'create' => 'POST',
+            'show' => 'GET',
+            'update' => 'PUT',
+            'delete' => 'DELETE'
+        ];
+
+        if ($action) return $map[$action];
+        return $map;
     }
 }

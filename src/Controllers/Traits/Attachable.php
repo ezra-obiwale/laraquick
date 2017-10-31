@@ -5,10 +5,13 @@ namespace Laraquick\Controllers\Traits;
 use Illuminate\Http\Response;
 use Log;
 
+/**
+ * Shortcuts for many-to-many attachments
+ * 
+ * @see https://laravel.com/docs/5.5/eloquent-relationships#updating-many-to-many-relationships
+ */
 trait Attachable
 {
-
-    use Respond;
 
     /**
      * The model to use in the attach method. Defaults to @see model()

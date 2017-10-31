@@ -26,7 +26,7 @@ Route::resource('books', 'App\Http\Controllers\BookController');
 ### $validator
 
 <p class="tip no-bg">
-    @var Illuminate\Support\Facades\Validator
+    protected $validator : `Illuminate\Support\Facades\Validator`
 </p>
 
 The validator object used in [validation](#checkrequestdata-).
@@ -176,6 +176,8 @@ Called when updating a model.
 <p class="tip no-bg">
     public function destroy(`mixed` $id) : `Illuminate\Http\Response`
 </p>
+
+Called when deleting a model.
 
 ## Validation Methods
 

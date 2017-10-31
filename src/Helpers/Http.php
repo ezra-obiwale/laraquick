@@ -6,13 +6,20 @@ use GuzzleHttp\Exception\RequestException;
 use Illuminate\Support\Facades\Log;
 use Exception;
 
+/**
+ * @method mixed DELETE($url, $_ = null)
+ * @method mixed GET($url, $_ = null)
+ * @method mixed PATCH($url, $_ = null)
+ * @method mixed POST($url, $_ = null)
+ * @method mixed PUT($url, $_ = null)
+ */
 class Http
 {
 
     private static $client;
     private static $response;
 
-    private static function client()
+    public static function client()
     {
         if (!self::$client) self::$client = new Client;
         return self::$client;
