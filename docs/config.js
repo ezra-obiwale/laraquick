@@ -21,6 +21,10 @@ docute.init({
             path: '/controllers/traits/attachable'
             },
             {
+            title: 'Crud',
+            path: '/controllers/traits/crud'
+            },
+            {
             title: 'PassThrough',
             path: '/controllers/traits/pass-through'
             },
@@ -35,6 +39,10 @@ docute.init({
             {
             title: 'Respond',
             path: '/controllers/traits/respond'
+            },
+            {
+            title: 'Web',
+            path: '/controllers/traits/web'
             },
         ]
         },
