@@ -61,7 +61,7 @@ trait Attachable
         if (!$group) return $this->notFoundError();
         try {
             $items = request()->input($paramKey);
-            $group->$relation()->attach($items);
+            $group->$relation()->syncWithoutDetaching($items);
             return response()->json($group->$relation);
         }
         catch (\Exception $e) {
