@@ -42,6 +42,14 @@ The status code of response.
 
 The raw response object.
 
+### response ( )
+
+<p class="tip no-bg">
+    public static function response ( ) : `mixed`
+</p>
+
+The processed response object.
+
 ### client ( )
 
 <p class="tip no-bg">

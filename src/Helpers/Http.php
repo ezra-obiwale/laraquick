@@ -59,6 +59,10 @@ class Http
         return self::$response;
     }
 
+    public static function response() {
+        return self::processResponse();
+    }
+
     public static function __callStatic($method, $args)
     {
         return self::req($method, $args);
