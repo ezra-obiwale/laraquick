@@ -25,16 +25,16 @@ trait Api
 
     protected function showResponse(Model $data)
     {
-        return response()->json($item, 200);
+        return response()->json($data, 200);
     }
 
     protected function updateResponse(Model $data)
     {
-        return response()->json($item, 202);
+        return response()->json($data, 202);
     }
 
     protected function deleteResponse(Model $data)
     {
-        return response()->json($item, 202);
+        return response()->json($data, 202);
     }
 }
