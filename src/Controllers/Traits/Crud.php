@@ -145,6 +145,15 @@ trait Crud
     }
 
     /**
+     * The `GET` parameter that would hold the search query
+     *
+     * @return string
+     */
+    protected function sortParam() {
+        return 'sort';
+    }
+
+    /**
      * Sets the default pagination length
      *
      * @return integer
@@ -275,6 +284,32 @@ trait Crud
     }
 
     /**
+     * Applies sort to the given model based on the given string
+     *  
+     * @param string $string Format is column:direction,column:direction
+     * @param string $model
+     * @return string
+     */
+    private function sort($string, $model) {
+        $isObject = is_object($model);
+        foreach (explode(',', $string) as $sorter) {
+            $sorter = trim($sorter);
+            if (!$sorter) continue;
+
+            $parts = explode(':', $sorter);
+            $col = trim($parts[0]);
+            $dir = count($parts) > 1 
+                ? trim($parts[1])
+                : 'asc';
+
+            $model = $isObject
+                ? $model->orderBy($col, $dir)
+                : $model::orderBy($col, $dir);
+        }
+        return $model;
+    }
+
+    /**
      * Display a listing of the resource.
      * @return Response
      */
@@ -285,6 +320,10 @@ trait Crud
         }
         else {
             $model = $this->indexModel();
+        }
+
+        if ($sorter = request($this->sortParam())) {
+            $model = $this->sort($sorter, $model);
         }
 
         $length = request('length', $this->defaultPaginationLength());

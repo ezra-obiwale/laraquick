@@ -207,6 +207,15 @@ The number of items per page in the pagination can be determined by the `GET`
 query `length=10`. If this is not provided, [method defaultPaginationLength](#defaultpaginationlength-)
 is used. It defaults to 15.
 
+If `GET` query parameter specified in [searchQueryParam()](#searchqueryparam-)
+exists, [searchModel()](#searchmodel-) is called with the query and the returned
+model is used instead of [indexModel](#indexmodel-).
+
+Also, if `GET` query parameter specified in [sortParam()](#sortparam-)
+exists, the sorting instruction in the value is applied on the model used.
+The format for sorting is `column:direction,column:direction,...`, e.g.
+`created_at:desc,first_name:asc,last_name:desc`.
+
 ### store ( `...` )
 
 <p class="tip no-bg">
@@ -357,3 +366,12 @@ is 15.
 </p>
 
 The parameter in the `GET` query which holds the string to search with.
+
+### sortParam ( )
+
+<p class="tip no-bg">
+    protected function sortParam ( ) : `string`
+</p>
+
+The parameter in the `GET` query which holds the string to sort by.
+The expected format of the value in the query is `column:direction,column:direction,...`.
