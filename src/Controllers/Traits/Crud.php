@@ -41,10 +41,44 @@ trait Crud
      */
     abstract protected function validationRules(array $data, $id = null);
 
+    /**
+     * Called for the response to method index()
+     *
+     * @param array $data
+     * @return Response|array
+     */
     abstract protected function indexResponse(array $data);
+
+    /**
+     * Called for the response to method store()
+     *
+     * @param Model $data
+     * @return Response|array
+     */
     abstract protected function storeResponse(Model $data);
+
+    /**
+     * Called for the response to method show()
+     *
+     * @param Model $data
+     * @return Response|array
+     */
     abstract protected function showResponse(Model $data);
+
+    /**
+     * Called for the response to method update()
+     *
+     * @param Model $data
+     * @return Response|array
+     */
     abstract protected function updateResponse(Model $data);
+
+    /**
+     * Called for the response to method delete()
+     *
+     * @param Model $data
+     * @return Response|array
+     */
     abstract protected function deleteResponse(Model $data);
 
     /**
@@ -87,6 +121,27 @@ trait Crud
     protected function indexModel()
     {
         return $this->model();
+    }
+
+    /**
+     * The model to use in the index method when @see searchQueryParam() exists in the `GET` query.
+     * 
+     * It should return the model after the query conditions have been implemented.
+     * Defaults to @see model()
+     *
+     * @return mixed
+     */
+    protected function searchModel($query) {
+        return $this->indexModel();
+    }
+
+    /**
+     * The `GET` parameter that would hold the search query
+     *
+     * @return string
+     */
+    protected function searchQueryParam() {
+        return 'query';
     }
 
     /**
@@ -225,8 +280,14 @@ trait Crud
      */
     public function index()
     {
-        $model = $this->indexModel();
-        $length = request()->query('length') ? : $this->defaultPaginationLength();
+        if ($query = request($this->searchQueryParam())) {
+            $model = $this->searchModel($query);
+        }
+        else {
+            $model = $this->indexModel();
+        }
+
+        $length = request('length', $this->defaultPaginationLength());
         if ($length == 'all')
             $data = is_object($model)
             ? $model->all()
@@ -342,7 +403,7 @@ trait Crud
 
         $this->beforeDelete($item);
         $result = $item->delete();
-        
+
         if (!$result) {
             DB::rollback();
             return $this->deleteFailedError();

@@ -136,13 +136,28 @@ public function indexModel ( ) {
 }
 ```
 
+### searchModel ( `...` )
+
+<p class="tip no-bg">
+    protected function searchModel ( `string` $query ) : `string`
+</p>
+
+Called when getting the list of models and [searchQueryParam()](#searchqueryparam-)
+exists in the `GET` query. Defaults to [indexModel()][#indexmodel-].
+
+```php
+public function indexModel ( ) {
+    return Book::with('author');
+}
+```
+
 ### storeModel ( )
 
 <p class="tip no-bg">
     public function storeModel ( ) : `string`
 </p>
 
-Called when creating a model instance.
+Called when creating a model instance. Defaults to [indexModel()][#indexmodel-].
 
 ```php
 public function storeModel ( ) {
@@ -156,7 +171,7 @@ public function storeModel ( ) {
     protected function updateModel ( ) : `string`
 </p>
 
-Called when updating a model instance.
+Called when updating a model instance. Defaults to [indexModel()][#indexmodel-].
 
 ```php
 public function updateModel ( ) {
@@ -170,7 +185,7 @@ public function updateModel ( ) {
     protected function deleteModel ( ) : `string`
 </p>
 
-Called when deleting a model instance.
+Called when deleting a model instance. Defaults to [indexModel()][#indexmodel-].
 
 ```php
 public function deleteModel ( ) {
@@ -334,3 +349,11 @@ If the method returns anything not equivalent to `null`, it becomes the sent res
 
 The default pagination length for [listing paginated models](#index-). The default
 is 15.
+
+### searchQueryParam ( )
+
+<p class="tip no-bg">
+    protected function searchQueryParam ( ) : `string`
+</p>
+
+The parameter in the `GET` query which holds the string to search with.
