@@ -62,7 +62,9 @@ trait Attachable
         try {
             $items = request()->input($paramKey);
             $group->$relation()->syncWithoutDetaching($items);
-            return response()->json($group->$relation);
+            return response()->json([
+                'status' => 'ok'
+            ]);
         }
         catch (\Exception $e) {
             Log::error($e->getMessage());
@@ -92,7 +94,9 @@ trait Attachable
         try {
             $items = request()->input($paramKey);
             $group->$relation()->detach($items);
-            return response()->json($group->$relation);
+            return response()->json([
+                'status' => 'ok'
+            ]);
         }
         catch (\Exception $e) {
             Log::error($e->getMessage());
@@ -126,7 +130,9 @@ trait Attachable
             $resp['removed'] = $resp['detached'];
             unset($resp['attached']);
             unset($resp['detached']);
-            return response()->json($group->$relation);
+            return response()->json([
+                'status' => 'ok'
+            ]);
         }
         catch (\Exception $e) {
             Log::error($e->getMessage());
