@@ -63,6 +63,11 @@ and all `CRUD` operations and give the right JSON responses.
 Route::apiResource('books', 'BookController');
 ```
 
-## API Documentation
+### What if Web and not API?
 
-Coming soon
+Oh, that's covered too with the version 1.5 and above. Just swap out the `Api`
+trait for its `Web` counterpart, and you're good.
+
+## Documentation
+
+[Get a full walk-through](http://laraquick.ezraobiwale.com)
