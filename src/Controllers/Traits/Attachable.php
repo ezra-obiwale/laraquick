@@ -58,7 +58,7 @@ trait Attachable
         $group = is_object($model)
             ? $model->find($id)
             : $model::find($id);
-        if (!$group) return $this->notFound();
+        if (!$group) return $this->notFoundError();
         try {
             $items = request()->input($paramKey);
             $group->$relation()->attach($items);
@@ -88,7 +88,7 @@ trait Attachable
         $group = is_object($model)
             ? $model->find($id)
             : $model::find($id);
-        if (!$group) return $this->notFound();
+        if (!$group) return $this->notFoundError();
         try {
             $items = request()->input($paramKey);
             $group->$relation()->detach($items);
@@ -118,7 +118,7 @@ trait Attachable
         $group = is_object($model)
             ? $model->find($id)
             : $model::find($id);
-        if (!$group) return $this->notFound();
+        if (!$group) return $this->notFoundError();
         try {
             $items = request()->input($paramKey);
             $resp = $group->$relation()->sync($items);
