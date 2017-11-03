@@ -23,6 +23,11 @@ trait Web
     {
         return back()->withStatus('Delete successful');
     }
+    
+    protected function deleteManyResponse($deletedCount)
+    {
+        return back()->withStatus("Deleted $deletedCount item(s) successfully");
+    }
 
     protected function error($message, $errors = null, $code = 400)
     {

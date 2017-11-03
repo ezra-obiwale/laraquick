@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use DB;
 
 /**
- * A colletion of methods to assist in quick controller generation
+ * A collection of methods to assist in quick controller generation
  *
  */
 trait Api
@@ -36,5 +36,12 @@ trait Api
     protected function deleteResponse(Model $data)
     {
         return response()->json($data, 202);
+    }
+
+    protected function deleteManyResponse($deletedCount)
+    {
+        return response()->json([
+            "message" => "$deletedCount item(s) deleted successfully"
+        ], 202);
     }
 }

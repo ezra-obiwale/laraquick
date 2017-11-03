@@ -296,6 +296,14 @@ can be manipulated as it is passed by reference.
 
 If the method returns anything not equivalent to `null`, it becomes the sent response.
 
+### rollbackCreate ( )
+
+<p class="tip no-bg">
+    protected function rollbackCreate( ) : `null`
+</p>
+
+Called when there's an issue with creating a resource.
+
 ### beforeCreateResponse ( `...` )
 
 <p class="tip no-bg">
@@ -318,6 +326,14 @@ manipulated as it is passed by reference.
 
 If the method returns anything not equivalent to `null`, it becomes the sent response.
 
+### rollbackUpdate ( )
+
+<p class="tip no-bg">
+    protected function rollbackUpdate( ) : `null`
+</p>
+
+Called when there's an issue with updating a resource.
+
 ### beforeUpdateResponse ( `...` )
 
 <p class="tip no-bg">
@@ -339,6 +355,24 @@ Called before a delete/destory operation. Parameter `$data` is the model to be d
 
 If the method returns anything not equivalent to `null`, it becomes the sent response.
 
+### beforeDeleteMany ( `...` )
+
+<p class="tip no-bg">
+    protected function beforeDeleteMany( `array` &$data) : `Illuminate\Http\Response | null`
+</p>
+
+Called before a delete/destory many operation. Parameter `$data` request data.
+
+If the method returns anything not equivalent to `null`, it becomes the sent response.
+
+### rollbackDelete ( )
+
+<p class="tip no-bg">
+    protected function rollbackDelete( ) : `null`
+</p>
+
+Called when there's an issue with deleting a resource.
+
 ### beforeDeleteResponse ( `...` )
 
 <p class="tip no-bg">
@@ -347,6 +381,17 @@ If the method returns anything not equivalent to `null`, it becomes the sent res
 
 Called before the success response on the delete operation is sent. Parameter `$data`
 is the delete model.
+
+If the method returns anything not equivalent to `null`, it becomes the sent response.
+
+### beforeDeleteManyResponse ( `...` )
+
+<p class="tip no-bg">
+    protected function beforeDeleteManyResponse(`integer` $deletedCount) : `Illuminate\Http\Response | null`
+</p>
+
+Called before the success response on the delete many operation is sent. Parameter `$deletedCount`
+is the number of items successfully deleted.
 
 If the method returns anything not equivalent to `null`, it becomes the sent response.
 

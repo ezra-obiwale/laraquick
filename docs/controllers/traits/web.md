@@ -33,6 +33,14 @@ Redirects to the previous page with a status message.
 
 Redirects to the previous page with a status message.
 
+### deleteManyResponse ( `...` )
+
+<p class="tip no-bg">
+    protected function deleteManyResponse ( `integer` $data ) : `Illuminate\Http\RedirectResponse`
+</p>
+
+Redirects to the previous page with a status message bearing the number of successfully delete items.
+
 ## Overriden Methods
 
 ### error ( `...` )

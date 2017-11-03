@@ -19,3 +19,8 @@ development.
 ## Helpers
 
 - [Http](/helpers/http)
+
+## Contribution
+
+Contributions are absolutely welcome. Create a PR and I'll as swiftly as possible
+merge it up.

@@ -71,3 +71,8 @@ trait for its `Web` counterpart, and you're good.
 ## Documentation
 
 [Get a full walk-through](http://laraquick.ezraobiwale.com)
+
+## Contribution
+
+Contributions are absolutely welcome. Create a PR and I'll as swiftly as possible
+merge it up.

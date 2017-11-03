@@ -33,7 +33,7 @@ trait Crud
     abstract protected function model();
 
     /**
-     * Should return the validation rules
+     * Should return the validation rules for when using @see store() and @see update().
      *
      * @param array $data The data being validated
      * @param mixed $id Id of the model being updated, if such were the case
@@ -80,6 +80,14 @@ trait Crud
      * @return Response|array
      */
     abstract protected function deleteResponse(Model $data);
+
+    /**
+     * Called for the response to method deleteMany()
+     *
+     * @param integer $deletedCount
+     * @return Response|array
+     */
+    abstract protected function deleteManyResponse($deleteCount);
 
     /**
      * Indicates whether validation should be strict and throw errors if unwanted
@@ -131,7 +139,8 @@ trait Crud
      *
      * @return mixed
      */
-    protected function searchModel($query) {
+    protected function searchModel($query)
+    {
         return $this->indexModel();
     }
 
@@ -140,7 +149,8 @@ trait Crud
      *
      * @return string
      */
-    protected function searchQueryParam() {
+    protected function searchQueryParam()
+    {
         return 'query';
     }
 
@@ -149,7 +159,8 @@ trait Crud
      *
      * @return string
      */
-    protected function sortParam() {
+    protected function sortParam()
+    {
         return 'sort';
     }
 
@@ -224,12 +235,31 @@ trait Crud
     }
 
     /**
+     * Called when an error occurs in a create operation
+     *
+     * @return void
+     */
+    protected function rollbackCreate()
+    {
+    }
+
+    /**
      * Called on success but before sending the response
      *
      * @param mixed $data
      * @return mixed The response to send or null
      */
     protected function beforeCreateResponse(Model &$data)
+    {
+    }
+
+    /**
+     * Called on success but before sending the response
+     *
+     * @param mixed $data
+     * @return mixed The response to send or null
+     */
+    protected function beforeCreateManyResponse(Model &$data)
     {
     }
 
@@ -254,6 +284,15 @@ trait Crud
     }
 
     /**
+     * Called when an error occurs in a update operation
+     *
+     * @return void
+     */
+    protected function rollbackUpdate()
+    {
+    }
+
+    /**
      * Called on success but before sending the response
      *
      * @param mixed $data
@@ -274,6 +313,15 @@ trait Crud
     }
 
     /**
+     * Called when an error occurs in a delete operation
+     *
+     * @return void
+     */
+    protected function rollbackDelete()
+    {
+    }
+
+    /**
      * Called on success but before sending the response
      *
      * @param mixed $data
@@ -284,13 +332,34 @@ trait Crud
     }
 
     /**
+     * Called when the model has been found but before deleting
+     *
+     * @param mixed $data
+     * @return void
+     */
+    protected function beforeDeleteMany(array &$data)
+    {
+    }
+
+    /**
+     * Called on success but before sending the response
+     *
+     * @param integer $deleteCount
+     * @return mixed The response to send or null
+     */
+    protected function beforeDeleteManyResponse($deletedCount)
+    {
+    }
+
+    /**
      * Applies sort to the given model based on the given string
      *  
      * @param string $string Format is column:direction,column:direction
      * @param string $model
      * @return string
      */
-    private function sort($string, $model) {
+    private function sort($string, $model)
+    {
         $isObject = is_object($model);
         foreach (explode(',', $string) as $sorter) {
             $sorter = trim($sorter);
@@ -298,7 +367,7 @@ trait Crud
 
             $parts = explode(':', $sorter);
             $col = trim($parts[0]);
-            $dir = count($parts) > 1 
+            $dir = count($parts) > 1
                 ? trim($parts[1])
                 : 'asc';
 
@@ -352,14 +421,15 @@ trait Crud
 
         $model = $this->storeModel();
 
+        DB::beginTransaction();
         if ($resp = $this->beforeCreate($data)) return $resp;
 
-        DB::beginTransaction();
         $data = is_object($model)
             ? $model->create($data)
             : $model::create($data);
 
         if (!$data) {
+            $this->rollbackCreate();
             DB::rollback();
             return $this->createFailedError();
         }
@@ -409,12 +479,13 @@ trait Crud
             : $model::find($id);
         if (!$item) return $this->notFoundError();
 
+        DB::beginTransaction();
         if ($resp = $this->beforeUpdate($data)) return $resp;
 
-        DB::beginTransaction();
         $result = $item->update($data);
 
         if (!$result) {
+            $this->rollbackUpdate();
             DB::rollback();
             return $this->updateFailedError();
         }
@@ -440,10 +511,12 @@ trait Crud
 
         if (!$item) return $this->notFoundError();
 
+        DB::beginTransaction();
         $this->beforeDelete($item);
         $result = $item->delete();
 
         if (!$result) {
+            $this->rollbackDelete();
             DB::rollback();
             return $this->deleteFailedError();
         }
@@ -453,5 +526,36 @@ trait Crud
         }
         DB::commit();
         return $this->deleteResponse($item);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     * @param int $id
+     * @return Response
+     */
+    public function destroyMany(Request $request)
+    {
+        $model = $this->model();
+        $data = $request->all();
+        if (!array_key_exists('ids', $data)) {
+            throw new \Exception('Ids not found');
+        }
+        DB::beginTransaction();
+        $this->beforeDeleteMany($data);
+        $result = is_object($model)
+            ? $model->whereIn('id', $data['ids'])->delete()
+            : $model::whereIn('id', $data['ids'])->delete();
+
+        if (!$result) {
+            $this->rollbackDelete();
+            DB::rollback();
+            return $this->deleteFailedError();
+        }
+
+        if ($resp = $this->beforeDeleteManyResponse($result)) {
+            return $resp;
+        }
+        DB::commit();
+        return $this->deleteManyResponse($result);
     }
 }

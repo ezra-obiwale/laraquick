@@ -49,3 +49,12 @@ Returns `$data` with response code 202
 </p>
 
 Returns `$data` with response code 202
+
+### deleteManyResponse ( `...` )
+
+<p class="tip no-bg">
+    protected function deleteManyResponse ( `integer` $deletedCount ) : `Illuminate\Http\Response`
+</p>
+
+Returns a message bearing the number of successfully deleted item.
+The response code is 202.
