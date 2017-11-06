@@ -33,15 +33,25 @@ trait Api
         return response()->json($data, 202);
     }
 
-    protected function deleteResponse(Model $data)
+    protected function destroyResponse(Model $data)
     {
         return response()->json($data, 202);
     }
 
-    protected function deleteManyResponse($deletedCount)
+    protected function forceDestroyResponse(Model $data)
+    {
+        return response()->json($data, 202);
+    }
+
+    protected function destroyManyResponse($deletedCount)
     {
         return response()->json([
             "message" => "$deletedCount item(s) deleted successfully"
         ], 202);
+    }
+    
+    protected function restoreDestroyedResponse(Model $data)
+    {
+        return response()->json($data, 202);
     }
 }
