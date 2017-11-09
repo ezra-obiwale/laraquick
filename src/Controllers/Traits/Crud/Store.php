@@ -6,6 +6,7 @@ use Illuminate\Http\Response;
 use Illuminate\Database\Eloquent\Model;
 
 use DB;
+use Log;
 
 /**
  * Methods for storing a resource
@@ -60,14 +61,20 @@ trait Store
 
         $model = $this->storeModel();
 
-        DB::beginTransaction();
-        if ($resp = $this->beforeStore($data)) return $resp;
+        try {
+            DB::beginTransaction();
+            if ($resp = $this->beforeStore($data)) return $resp;
 
-        $data = is_object($model)
-            ? $model->create($data)
-            : $model::create($data);
+            $data = is_object($model)
+                ? $model->create($data)
+                : $model::create($data);
 
-        if (!$data) {
+            if (!$data) {
+                throw new \Exception(500);
+            }
+        }
+        catch (\Exception $ex) {
+            Log::error('Store: ' . $ex->getMessage(), [$data]);
             $this->rollbackStore();
             DB::rollback();
             return $this->storeFailedError();

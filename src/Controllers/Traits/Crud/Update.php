@@ -6,6 +6,7 @@ use Illuminate\Http\Response;
 use Illuminate\Database\Eloquent\Model;
 
 use DB;
+use Log;
 
 /**
  * Methods for updating a resource
@@ -73,12 +74,18 @@ trait Update
             : $model::find($id);
         if (!$item) return $this->notFoundError();
 
-        DB::beginTransaction();
-        if ($resp = $this->beforeUpdate($data)) return $resp;
+        try {
+            DB::beginTransaction();
+            if ($resp = $this->beforeUpdate($data)) return $resp;
 
-        $result = $item->update($data);
+            $result = $item->update($data);
 
-        if (!$result) {
+            if (!$result) {
+                throw new \Exception(500);
+            }
+        }
+        catch (\Exception $ex) {
+            Log::error('Update: ' . $ex->getMessage(), [$data]);
             $this->rollbackUpdate();
             DB::rollback();
             return $this->updateFailedError();

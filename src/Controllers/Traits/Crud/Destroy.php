@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Database\Eloquent\Model;
 use DB;
+use Log;
 
 /**
  * Methods for destorying a single resource
@@ -74,11 +75,17 @@ trait Destroy
 
         if (!$item) return $this->notFoundError();
 
-        DB::beginTransaction();
-        $this->beforeDestroy($item);
-        $result = $item->delete();
+        try {
+            DB::beginTransaction();
+            $this->beforeDestroy($item);
+            $result = $item->delete();
 
-        if (!$result) {
+            if (!$result) {
+                throw new \Exception(500);
+            }
+        }
+        catch (\Exception $ex) {
+            Log::error('Delete: ' . $ex->getMessage(), [$data]);
             $this->rollbackDestroy();
             DB::rollback();
             return $this->destroyFailedError();
