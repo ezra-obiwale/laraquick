@@ -42,7 +42,7 @@ The error response for a target resource doesn't exist.
     protected function paginatedList ( `array` $items, `integer` $code = 200 ) : `Illuminate\Http\Response`
 </p>
 
-The error response for a paginated array of items. The array must contain key `data`.
+The response for a paginated array of items. The array must contain key `data`.
 Other keys aside this are put into `meta->pagination`.
 
 ### validationError ( `...` )
