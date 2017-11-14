@@ -11,12 +11,10 @@ development.
 
 - [Api](/controllers/traits/api)
 - [Attachable](/controllers/traits/attachable)
-- [Crud](/controllers/traits/crud)
 - [PassThrough](/controllers/traits/pass-through)
 - [Pivotable](/controllers/traits/pivotable)
 - [Referer](/controllers/traits/referer)
 - [Respond](/controllers/traits/respond)
-- [Web](/controllers/traits/web)
 
 ## Helpers
 
