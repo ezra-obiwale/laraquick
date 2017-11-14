@@ -15,7 +15,7 @@ docute.init({
     nav: [
         {
             title: 'Home',
-            path: '/home'
+            path: '/'
         },
         {
             title: 'Controllers',
