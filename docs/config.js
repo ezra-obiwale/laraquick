@@ -1,4 +1,5 @@
 docute.init({
+    landing: true,
     repo: 'ezra-obiwale/laraquick',
     twitter: 'ezraobiwale',
     'edit-link': 'https://github.com/ezra-obiwale/laraquick/blob/master/docs/README.md',
