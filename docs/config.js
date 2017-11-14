@@ -1,5 +1,5 @@
 docute.init({
-    landing: true,
+    landing: 'landing.html',
     repo: 'ezra-obiwale/laraquick',
     twitter: 'ezraobiwale',
     'edit-link': 'https://github.com/ezra-obiwale/laraquick/blob/master/docs/README.md',
@@ -16,7 +16,7 @@ docute.init({
     nav: [
         {
             title: 'Home',
-            path: '/'
+            path: '/home'
         },
         {
             title: 'Controllers',
