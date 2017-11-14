@@ -41,6 +41,22 @@ trait Attachable
     }
 
     /**
+     * Fetches a paginated list of related items
+     *
+     * @param mixed $id
+     * @param string $relation
+     * @return Response
+     */
+    public function attached($id, $relation) {
+        $model = $this->attachModel();
+        $model = is_object($model) 
+            ? $model->findOrFail($id)
+            : $model::findOrFail($id);
+        $list = $model->$relation()->simplePaginate();
+        return $this->paginatedList($list->toArray());
+    }
+
+    /**
      * Attaches a list of items to the object at the given id
      *
      * @param int $id
@@ -48,20 +64,21 @@ trait Attachable
      * @param string $paramKey
      * @return Response
     */
-    public function attach($id, $relation, $paramKey = 'items')
+    public function attach($id, $relation, $paramKey = null)
     {
+        $paramKey = $paramKey ?: $relation;
         if (!$this->validate(request(), [
             $paramKey => 'required|array'
         ]))
             return $this->error($this->validationErrorMessage(), $this->validator->errors());
         $model = $this->attachModel();
-        $group = is_object($model)
+        $model = is_object($model)
             ? $model->find($id)
             : $model::find($id);
-        if (!$group) return $this->notFoundError();
+        if (!$model) return $this->notFoundError();
         try {
             $items = request()->input($paramKey);
-            $group->$relation()->syncWithoutDetaching($items);
+            $model->$relation()->syncWithoutDetaching($items);
             return response()->json([
                 'status' => 'ok'
             ]);
@@ -80,20 +97,21 @@ trait Attachable
      * @param string $paramKey
      * @return Response
     */
-    public function detach($id, $relation, $paramKey = 'items')
+    public function detach($id, $relation, $paramKey = null)
     {
+        $paramKey = $paramKey ?: $relation;
         if (!$this->validate(request(), [
             $paramKey => 'required|array'
         ]))
             return $this->error($this->validationErrorMessage(), $this->validator->errors());
         $model = $this->detachModel();
-        $group = is_object($model)
+        $model = is_object($model)
             ? $model->find($id)
             : $model::find($id);
-        if (!$group) return $this->notFoundError();
+        if (!$model) return $this->notFoundError();
         try {
             $items = request()->input($paramKey);
-            $group->$relation()->detach($items);
+            $model->$relation()->detach($items);
             return response()->json([
                 'status' => 'ok'
             ]);
@@ -112,20 +130,21 @@ trait Attachable
      * @param string $paramKey
      * @return Response
     */
-    public function sync($id, $relation, $paramKey = 'items')
+    public function sync($id, $relation, $paramKey = null)
     {
+        $paramKey = $paramKey ?: $relation;
         if (!$this->validate(request(), [
             $paramKey => 'required|array'
         ]))
             return $this->error($this->validationErrorMessage(), $this->validator->errors());
         $model = $this->syncModel();
-        $group = is_object($model)
+        $model = is_object($model)
             ? $model->find($id)
             : $model::find($id);
-        if (!$group) return $this->notFoundError();
+        if (!$model) return $this->notFoundError();
         try {
             $items = request()->input($paramKey);
-            $resp = $group->$relation()->sync($items);
+            $resp = $model->$relation()->sync($items);
             $resp['added'] = $resp['attached'];
             $resp['removed'] = $resp['detached'];
             unset($resp['attached']);

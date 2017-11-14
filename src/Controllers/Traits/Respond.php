@@ -59,7 +59,7 @@ trait Respond
      *
      * @return Response
      */
-    protected function createFailedError()
+    protected function storeFailedError()
     {
         return $this->error('Create failed', null, 500);
     }
@@ -79,9 +79,19 @@ trait Respond
      *
      * @return Response
      */
-    protected function deleteFailedError()
+    protected function destroyFailedError()
     {
         return $this->error('Delete failed', null, 500);
+    }
+
+    /**
+     * Called when a restore deleted action fails
+     *
+     * @return Response
+     */
+    protected function restoreFailedError()
+    {
+        return $this->error('Restoration failed', null, 500);
     }
 
     /**
