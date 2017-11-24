@@ -1,7 +1,7 @@
 # Attachable Trait
 
 Shortcut methods to making working with related many-to-many models faster. It is
-intended to be used with the [Api trait](/controllers/traits/api).
+intended to be used with the [Api trait](/v1/controllers/traits/api).
 
 <p class="tip">
     See [Laravel Doc](https://laravel.com/docs/5.5/eloquent-relationships#updating-many-to-many-relationships)
@@ -11,7 +11,7 @@ intended to be used with the [Api trait](/controllers/traits/api).
     These methods are meant to be called from within custom endpoint methods and
     not used directly as the parameters would need to be customized.
 
-    For ready-made endpoint methods, use the [Pivotable trait](/controllers/traits/pivotable).
+    For ready-made endpoint methods, use the [Pivotable trait](/v1/controllers/traits/pivotable).
 </p>
 
 ## Route Methods
@@ -65,7 +65,7 @@ models to attach to the base model.
     protected function attachModel ( ) : string
 </p>
 
-The base model to be used for when attaching. Defaults to [Api trait's method model ( )](/controllers/traits/api#model-).
+The base model to be used for when attaching. Defaults to [Api trait's method model ( )](/v1/controllers/traits/api#model-).
 
 ### detachModel ( )
 
@@ -73,7 +73,7 @@ The base model to be used for when attaching. Defaults to [Api trait's method mo
     protected function detachModel ( ) : string
 </p>
 
-The base model to be used for when detaching. Defaults to [Api trait's method model ( )](/controllers/traits/api#model-).
+The base model to be used for when detaching. Defaults to [Api trait's method model ( )](/v1/controllers/traits/api#model-).
 
 ### syncModel ( )
 
@@ -81,4 +81,4 @@ The base model to be used for when detaching. Defaults to [Api trait's method mo
     protected function syncModel ( ) : string
 </p>
 
-The base model to be used for when synching. Defaults to [Api trait's method model ( )](/controllers/traits/api#model-).
+The base model to be used for when synching. Defaults to [Api trait's method model ( )](/v1/controllers/traits/api#model-).

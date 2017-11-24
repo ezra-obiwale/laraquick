@@ -1,10 +1,10 @@
 # Api Trait
 
 <p class="tip">
-This trait uses the [Crud trait](/controllers/traits/crud).
+This trait uses the [Crud trait](/v1/controllers/traits/crud).
 </p>
 
-This trait implements the response methods of the [Crud trait](/controllers/traits/crud).
+This trait implements the response methods of the [Crud trait](/v1/controllers/traits/crud).
 It is meant to be used on controllers meant for API endpoints.
 
 ## Implemented Methods
@@ -15,7 +15,7 @@ It is meant to be used on controllers meant for API endpoints.
     protected function indexResponse ( `mixed` $data ) : `Illuminate\Http\Response`
 </p>
 
-Returns the [Respond trait's paginatedList](/controllers/traits/respond#paginatedlist-)
+Returns the [Respond trait's paginatedList](/v1/controllers/traits/respond#paginatedlist-)
 method response after applying it to the `$data`.
 
 ### storeResponse ( `...` )

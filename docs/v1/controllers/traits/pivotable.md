@@ -1,9 +1,9 @@
 # Pivotable Trait
 
-This trait adds endpoint-ready methods for using the [Attachable trait](/controllers/traits/attachable).
+This trait adds endpoint-ready methods for using the [Attachable trait](/v1/controllers/traits/attachable).
 
 <p class="tip">
-This trait uses the [Attachable trait](/controllers/traits/attachable).
+This trait uses the [Attachable trait](/v1/controllers/traits/attachable).
 </p>
 
 ## Endpoint Methods

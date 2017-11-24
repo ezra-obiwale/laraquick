@@ -1,10 +1,10 @@
 # Web Trait
 
 <p class="tip">
-This trait uses the [Crud trait](/controllers/traits/crud).
+This trait uses the [Crud trait](/v1/controllers/traits/crud).
 </p>
 
-This trait implements some response methods of the [Crud trait](/controllers/traits/crud).
+This trait implements some response methods of the [Crud trait](/v1/controllers/traits/crud).
 It is meant to be used on controllers meant for web endpoints.
 
 ## Implemented Methods
@@ -51,4 +51,4 @@ Redirects to the previous page with a status message bearing the number of succe
 
 Redirects to the previous page with a status message and errors, if available.
 
-This covers for all error messages coming from the [Crud trait](/controllers/traits/crud).
+This covers for all error messages coming from the [Crud trait](/v1/controllers/traits/crud).

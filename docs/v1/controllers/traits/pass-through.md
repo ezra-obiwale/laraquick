@@ -3,16 +3,16 @@
 A collection of methods to help pass requests to another server. The
 controller serves as a passage to the actual server that's to deal with the request.
 
-It uses the [Api trait](/controllers/traits/api). Since the request would be passed
-along, there won't be any need for the [Api trait's abstract method model( )](/controllers/traits/api#model-).
+It uses the [Api trait](/v1/controllers/traits/api). Since the request would be passed
+along, there won't be any need for the [Api trait's abstract method model( )](/v1/controllers/traits/api#model-).
 The method has therefore been implemented. 
 
-The [abstract method validationRules ( `...` )](/controllers/traits/api#validationrules-)
+The [abstract method validationRules ( `...` )](/v1/controllers/traits/api#validationrules-)
 must however still be implemented as validations can be made on this server before
 passing on the action processing server.
 
 <p class="tip">
-This trait also uses the [Http helper class](/helpers/http).
+This trait also uses the [Http helper class](/v1/helpers/http).
 </p>
 
 ## Properties
@@ -142,7 +142,7 @@ Called when deleting a model.
     protected function httpRequest ( `string` $method, `string` $url, `array` $options = [] ) : `mixed`
 </p>
 
-A shortcut to [Http request( `...` )](/helpers/http#request-).
+A shortcut to [Http request( `...` )](/v1/helpers/http#request-).
 
 ### httpResponse ( )
 
@@ -150,7 +150,7 @@ A shortcut to [Http request( `...` )](/helpers/http#request-).
     protected function httpResponse ( ) : `mixed`
 </p>
 
-A shortcut to [Http rawResponse( `...` )](/helpers/http#rawresponse-).
+A shortcut to [Http rawResponse( `...` )](/v1/helpers/http#rawresponse-).
 
 ### httpStatusCode ( )
 
@@ -158,7 +158,7 @@ A shortcut to [Http rawResponse( `...` )](/helpers/http#rawresponse-).
     protected function httpStatusCode ( ) : `mixed`
 </p>
 
-A shortcut to [Http getStatusCode( `...` )](/helpers/http#getstatuscode-).
+A shortcut to [Http getStatusCode( `...` )](/v1/helpers/http#getstatuscode-).
 
 ### methodMap ( )
 

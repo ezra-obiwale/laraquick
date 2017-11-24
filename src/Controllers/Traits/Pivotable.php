@@ -32,6 +32,17 @@ trait Pivotable {
     }
 
     /**
+     * Fetches a list of attached items
+     *
+     * @param mixed $id
+     * @return mixed
+     */
+    public function items($id)
+    {
+        return $this->attached($id, $this->relation());
+    }    
+
+    /**
      * Attaches a list of items to the object at the given id
      *
      * @param int $id
