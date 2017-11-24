@@ -1,7 +1,7 @@
 # Crud Trait
 
 Adds all necessary methods for a complete CRUD operation on the given model.
-It uses the [Respond](/controllers/traits/respond) trait.
+It uses the [Respond](/v1/controllers/traits/respond) trait.
 
 ## Usage
 

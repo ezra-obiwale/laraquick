@@ -9,16 +9,16 @@ development.
 
 ## Controller Traits
 
-- [Api](/controllers/traits/api)
-- [Attachable](/controllers/traits/attachable)
-- [PassThrough](/controllers/traits/pass-through)
-- [Pivotable](/controllers/traits/pivotable)
-- [Referer](/controllers/traits/referer)
-- [Respond](/controllers/traits/respond)
+- [Api](/v1/controllers/traits/api)
+- [Attachable](/v1/controllers/traits/attachable)
+- [PassThrough](/v1/controllers/traits/pass-through)
+- [Pivotable](/v1/controllers/traits/pivotable)
+- [Referer](/v1/controllers/traits/referer)
+- [Respond](/v1/controllers/traits/respond)
 
 ## Helpers
 
-- [Http](/helpers/http)
+- [Http](/v1/helpers/http)
 
 ## Contribution
 
