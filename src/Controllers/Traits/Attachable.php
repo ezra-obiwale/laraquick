@@ -68,7 +68,7 @@ trait Attachable
     {
         $paramKey = $paramKey ?: $relation;
         if (!$this->validate(request(), [
-            $paramKey => 'required'
+            $paramKey => 'required|array'
         ]))
             return $this->error($this->validationErrorMessage(), $this->validator->errors());
         $model = $this->attachModel();
@@ -101,7 +101,7 @@ trait Attachable
     {
         $paramKey = $paramKey ?: $relation;
         if (!$this->validate(request(), [
-            $paramKey => 'required'
+            $paramKey => 'required|array'
         ]))
             return $this->error($this->validationErrorMessage(), $this->validator->errors());
         $model = $this->detachModel();
@@ -134,7 +134,7 @@ trait Attachable
     {
         $paramKey = $paramKey ?: $relation;
         if (!$this->validate(request(), [
-            $paramKey => 'required'
+            $paramKey => 'required|array'
         ]))
             return $this->error($this->validationErrorMessage(), $this->validator->errors());
         $model = $this->syncModel();

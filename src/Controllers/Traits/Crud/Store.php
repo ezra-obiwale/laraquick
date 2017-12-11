@@ -70,7 +70,7 @@ trait Store
                 : $model::create($data);
 
             if (!$data) {
-                throw new \Exception(500);
+                throw new \Exception('Create method returned falsable', null, 500);
             }
         }
         catch (\Exception $ex) {

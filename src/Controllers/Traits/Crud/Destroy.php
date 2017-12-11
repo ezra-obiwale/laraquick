@@ -81,7 +81,7 @@ trait Destroy
             $result = $item->delete();
 
             if (!$result) {
-                throw new \Exception(500);
+                throw new \Exception('Delete method returned falsable', 500);
             }
         }
         catch (\Exception $ex) {
