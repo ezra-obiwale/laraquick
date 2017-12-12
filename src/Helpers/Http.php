@@ -3,8 +3,8 @@ namespace Laraquick\Helpers;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
-use Illuminate\Support\Facades\Log;
 use Exception;
+use Log;
 
 /**
  * @method mixed DELETE($url, $_ = null)
@@ -46,13 +46,20 @@ class Http
 
         return self::processResponse();
     }
+    
+    public static function requestAsync($method, $url, $_ = null) {
+        $args = func_get_args();
+        array_shift($args);
+        $args[1]['http_errors'] = false;
+        return call_user_func_array([self::client(), $method . 'Async'], $args);
+    }
 
     public static function hasErrors() {
         return self::getStatusCode() >= 400;
     }
 
     public static function getStatusCode() {
-        return self::$response->getStatusCode();
+        return self::$response ? self::$response->getStatusCode() : 0;
     }
 
     public static function rawResponse() {

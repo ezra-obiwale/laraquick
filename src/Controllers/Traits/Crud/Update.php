@@ -81,7 +81,7 @@ trait Update
             $result = $item->update($data);
 
             if (!$result) {
-                throw new \Exception(500);
+                throw new \Exception('Update method returned falsable', null, 500);
             }
         }
         catch (\Exception $ex) {

@@ -2,6 +2,8 @@
 
 namespace Laraquick\Controllers\Traits;
 
+use Log;
+
 trait Referer {
 
     /**
@@ -11,16 +13,36 @@ trait Referer {
      * @throws \Exception
      * @return void
      */
-    protected function verifyReferer($url)
+    protected function verifyReferer($url, $allowSubdomains = false)
     {
         if (!is_array($url)) $url = [$url];
         $referer = request()->headers->get('referer');
         $refOrigin = $this->originFromUrl($referer);
         foreach ($url as $urll) {
-            $urlOrigin = $this->originFromUrl($urll);
-            if ($refOrigin == $urlOrigin) return;
+            if ($this->urlsMatch($referer, $urll, $allowSubdomains)) {
+                return;
+            }
         }
         throw new \Exception($referer . ' is not a valid domain.');
+    }
+
+    protected function urlsMatch($url1, $url2, $ignoreSubdomains = false) {
+        $refOrigin = $this->originFromUrl($url1);
+        $urlOrigin = $this->originFromUrl($url2);
+        if ($refOrigin == $urlOrigin) {
+            return true;
+        }
+        else if ($ignoreSubdomains) {
+            $refParts = explode('.', $refOrigin);
+            array_shift($refParts);
+            $urlParts = explode('.', $urlOrigin);
+            array_shift($urlParts);
+
+            if (join('.', $refParts) == join('.', $urlParts)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

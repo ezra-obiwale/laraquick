@@ -102,7 +102,7 @@ trait Index
         $length = request('length', $this->defaultPaginationLength());
         if ($length == 'all')
             $data = is_object($model)
-            ? $model->all()
+            ? $model->get()
             : $model::all();
         else
             $data = is_object($model)
