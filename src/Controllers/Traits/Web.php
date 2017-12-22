@@ -18,7 +18,7 @@ trait Web
         return $back;
     }
 
-    protected function storeResponse($data)
+    protected function storeResponse(Model $data)
     {
         return back()->withStatus('Create successful');
     }
