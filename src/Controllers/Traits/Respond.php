@@ -18,6 +18,7 @@ trait Respond
     protected function error($message, $errors = null, $code = 400)
     {
         $resp = [
+			"status" => "error",
             "message" => $message
         ];
         if ($errors) $resp["errors"] = $errors;
@@ -40,7 +41,7 @@ trait Respond
             $meta['pagination'] = $items;
             $resp['meta']['pagination'] = $items;
         }
-        return response()->json($resp, $code);
+		return $this->success($resp, $code);
     }
 
     /**
