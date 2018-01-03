@@ -8,6 +8,16 @@ use DB;
 trait Web
 {
     use Crud;
+	
+    /**
+     * Called when an action is successfully processed.
+     *
+     * @param string $message
+     * @return Response
+     */
+	protected function success($status) {
+		return back()->withStatus($status);
+	}
     
     protected function error($message, $errors = null, $code = 400)
     {
@@ -20,31 +30,31 @@ trait Web
 
     protected function storeResponse(Model $data)
     {
-        return back()->withStatus('Create successful');
+        return $this->success('Create successful');
     }
 
     protected function updateResponse(Model $data)
     {
-        return back()->withStatus('Update successful');
+        return $this->success('Update successful');
     }
 
     protected function destroyResponse(Model $data)
     {
-        return back()->withStatus('Delete successful');
+        return $this->success('Delete successful');
     }
     
     protected function forceDestroyResponse(Model $data)
     {
-        return back()->withStatus('Permanent delete successful');
+        return $this->success('Permanent delete successful');
     }
     
     protected function destroyManyResponse($deletedCount)
     {
-        return back()->withStatus("Deleted $deletedCount item(s) successfully");
+        return $this->success("Deleted $deletedCount item(s) successfully");
     }    
     
     protected function restoreDestroyedResponse(Model $data)
     {
-        return back()->withStatus('Restoration successful');
+        return $this->success('Restoration successful');
     }
 }
