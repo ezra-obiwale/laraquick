@@ -1,3 +1,7 @@
+## 3.0.1
+
+Created model helper trait
+
 ## 3.0.0
 
 Changed response structure to:
