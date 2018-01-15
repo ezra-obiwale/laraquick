@@ -14,8 +14,14 @@ abstract class WithSoftDeletes extends Model
     {
         $fillable = $this->fillable;
         $fillable[] = 'id';
-        return collect(parent::toArray())
+		// Show only fillables
+        $array = collect(parent::toArray())
             ->only($fillable)
             ->all();
+		// Add loaded relations
+		foreach (array_keys($this->relations) as $relation) {
+			$array[$relation] = $this->$relation;
+		}
+		return $array;
     }
 }
