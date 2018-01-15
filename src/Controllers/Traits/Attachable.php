@@ -40,6 +40,13 @@ trait Attachable
         return $this->model();
     }
 
+    private function treatRelation($model, &$relation) {
+        if (!method_exists($model, $relation)) {
+            // change relation to camel case
+            $relation = camel_case(str_replace('-', '_', $relation));
+        }
+    }
+
     /**
      * Fetches a paginated list of related items
      *
@@ -52,6 +59,7 @@ trait Attachable
         $model = is_object($model) 
             ? $model->findOrFail($id)
             : $model::findOrFail($id);
+        $this->treatRelation($model, $relation);
         $list = $model->$relation()->simplePaginate();
         return $this->paginatedList($list->toArray());
     }
@@ -78,6 +86,7 @@ trait Attachable
         if (!$model) return $this->notFoundError();
         try {
             $items = request()->input($paramKey);
+            $this->treatRelation($model, $relation);
             $model->$relation()->syncWithoutDetaching($items);
             return response()->json([
                 'status' => 'ok'
@@ -111,6 +120,7 @@ trait Attachable
         if (!$model) return $this->notFoundError();
         try {
             $items = request()->input($paramKey);
+            $this->treatRelation($model, $relation);
             $model->$relation()->detach($items);
             return response()->json([
                 'status' => 'ok'
@@ -144,6 +154,7 @@ trait Attachable
         if (!$model) return $this->notFoundError();
         try {
             $items = request()->input($paramKey);
+            $this->treatRelation($model, $relation);
             $resp = $model->$relation()->sync($items);
             $resp['added'] = $resp['attached'];
             $resp['removed'] = $resp['detached'];
