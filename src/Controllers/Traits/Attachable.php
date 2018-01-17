@@ -4,6 +4,7 @@ namespace Laraquick\Controllers\Traits;
 
 use Illuminate\Http\Response;
 use Log;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * Shortcuts for many-to-many attachments
@@ -47,6 +48,16 @@ trait Attachable
         }
     }
 
+    protected function prepareAttachItems($items, Model $model, $relation) {
+        return $items;
+    }
+    protected function prepareDetachItems($items, Model $model, $relation) {
+        return $items;
+    }
+    protected function prepareSyncItems($items, Model $model, $relation) {
+        return $items;
+    }
+
     /**
      * Fetches a paginated list of related items
      *
@@ -87,14 +98,14 @@ trait Attachable
         try {
             $items = request()->input($paramKey);
             $this->treatRelation($model, $relation);
-            $model->$relation()->syncWithoutDetaching($items);
+            $model->$relation()->syncWithoutDetaching($this->prepareAttachItems($items, $model, $relation));
             return response()->json([
                 'status' => 'ok'
             ]);
         }
         catch (\Exception $e) {
             Log::error($e->getMessage());
-            return $this->error('Something went wrong. Are you sure the items exists?');
+            return $this->error('Something went wrong. Are you sure the ' . str_replace('_', ' ', $paramKey) . ' exists?');
         }
     }
 
@@ -121,14 +132,14 @@ trait Attachable
         try {
             $items = request()->input($paramKey);
             $this->treatRelation($model, $relation);
-            $model->$relation()->detach($items);
+            $model->$relation()->detach($this->prepareDetachItems($items, $model, $relation));
             return response()->json([
                 'status' => 'ok'
             ]);
         }
         catch (\Exception $e) {
             Log::error($e->getMessage());
-            return $this->error('Something went wrong. Are you sure the items exists?');
+            return $this->error('Something went wrong. Are you sure the ' . str_replace('_', ' ', $paramKey) . ' exists?');
         }
     }
 
@@ -155,7 +166,7 @@ trait Attachable
         try {
             $items = request()->input($paramKey);
             $this->treatRelation($model, $relation);
-            $resp = $model->$relation()->sync($items);
+            $resp = $model->$relation()->sync($this->prepareSyncItems($items, $model, $relation));
             $resp['added'] = $resp['attached'];
             $resp['removed'] = $resp['detached'];
             unset($resp['attached']);
@@ -166,7 +177,7 @@ trait Attachable
         }
         catch (\Exception $e) {
             Log::error($e->getMessage());
-            return $this->error('Something went wrong. Are you sure the items exists?');
+            return $this->error('Something went wrong. Are you sure the ' . str_replace('_', ' ', $paramKey) . ' exists?');
         }
     }
 
