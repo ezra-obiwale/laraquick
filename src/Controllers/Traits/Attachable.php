@@ -94,7 +94,7 @@ trait Attachable
         }
         catch (\Exception $e) {
             Log::error($e->getMessage());
-            return $this->error('Something went wrong. Are you sure the items exists?');
+            return $this->error('Something went wrong. Are you sure the ' . str_replace('_', ' ', $paramKey) . ' exists?');
         }
     }
 
@@ -128,7 +128,7 @@ trait Attachable
         }
         catch (\Exception $e) {
             Log::error($e->getMessage());
-            return $this->error('Something went wrong. Are you sure the items exists?');
+            return $this->error('Something went wrong. Are you sure the ' . str_replace('_', ' ', $paramKey) . ' exists?');
         }
     }
 
@@ -166,7 +166,7 @@ trait Attachable
         }
         catch (\Exception $e) {
             Log::error($e->getMessage());
-            return $this->error('Something went wrong. Are you sure the items exists?');
+            return $this->error('Something went wrong. Are you sure the ' . str_replace('_', ' ', $paramKey) . ' exists?');
         }
     }
 
