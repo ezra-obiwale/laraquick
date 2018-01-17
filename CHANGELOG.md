@@ -1,3 +1,15 @@
+## 3.0.3
+
+Made attach/detach/sync error message more custom to the parameter key or relation
+name
+
+Added methods `prepareAttachItems`, `prepareDetachItems`, `prepareSyncItems` to **Attachable**
+
+## 3.0.2
+
+Converted **Attachable** public methods' `$relation` to camelCase if it doesn't exist
+on the model in the default form.
+
 ## 3.0.1
 
 Created model helper trait
