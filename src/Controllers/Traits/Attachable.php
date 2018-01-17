@@ -41,19 +41,52 @@ trait Attachable
         return $this->model();
     }
 
-    private function treatRelation($model, &$relation) {
+    /**
+     * Treats the relation string
+     *
+     * @param Model $model
+     * @param string $relation
+     * @return void
+     */
+    private function treatRelation(Model $model, &$relation) {
         if (!method_exists($model, $relation)) {
             // change relation to camel case
             $relation = camel_case(str_replace('-', '_', $relation));
         }
     }
 
+    /**
+     * Prepares the items to attach to the model on the given relation
+     *
+     * @param mixed $items
+     * @param Model $model
+     * @param string $relation
+     * @return void
+     */
     protected function prepareAttachItems($items, Model $model, $relation) {
         return $items;
     }
+
+    /**
+     * Prepares the items to detach to the model on the given relation
+     *
+     * @param mixed $items
+     * @param Model $model
+     * @param string $relation
+     * @return void
+     */
     protected function prepareDetachItems($items, Model $model, $relation) {
         return $items;
     }
+
+    /**
+     * Prepares the items to sync to the model on the given relation
+     *
+     * @param mixed $items
+     * @param Model $model
+     * @param string $relation
+     * @return void
+     */
     protected function prepareSyncItems($items, Model $model, $relation) {
         return $items;
     }
