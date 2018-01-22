@@ -16,7 +16,7 @@ composer require d-scribe/laraquick
 
 ## Dependencies
 
-### v1.*
+### >= v1.*
 
 - PHP               >=      7.0
 - Laravel           -       ~5.5
