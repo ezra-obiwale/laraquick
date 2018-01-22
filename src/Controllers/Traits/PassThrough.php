@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Laraquick\Helpers\Http;
+use Laraquick\Models\Dud;
 
 /**
  * A collection of methods to assist in quick controller generation
@@ -45,11 +46,11 @@ trait PassThrough
     }
 
     /**
-     * Headers to send with create request
+     * Headers to send with store request
      *
      * @return array
      */
-    protected function createHeaders()
+    protected function storeHeaders()
     {
         return $this->headers();
     }
@@ -75,11 +76,11 @@ trait PassThrough
     }
 
     /**
-     * Headers to send with delete request
+     * Headers to send with destroy request
      *
      * @return array
      */
-    protected function deleteHeaders()
+    protected function destroyHeaders()
     {
         return $this->headers();
     }
@@ -105,9 +106,12 @@ trait PassThrough
      */
     private function respond($action, $resp)
     {
-        $beforeMethod = 'before' . ucfirst($action) . 'Response';
         $this->responseStatusCode = Http::getStatusCode();
-        if ($response = $this->$beforeMethod($resp)) return $response;
+
+        $beforeMethod = 'before' . ucfirst($action) . 'Response';
+        $param = $action === 'index' ? $resp : (new Dud)->forceFill($resp);
+
+        if ($response = $this->$beforeMethod($param)) return $response;
         return response()->json($resp, Http::getStatusCode());
     }
 
@@ -174,12 +178,12 @@ trait PassThrough
     public function store(Request $request)
     {
         $data = $request->all();
-        if ($resp = $this->checkRequestData($data, $this->validationRules()))
+        if ($resp = $this->checkRequestData($data, $this->validationRules($data)))
             return $resp;
 
-        if ($resp = $this->beforeCreate($data)) return $resp;
+        if ($resp = $this->beforeStore($data)) return $resp;
 
-        return $this->request('create', null, $data);
+        return $this->request('store', null, $data);
     }
 
     /**
@@ -201,7 +205,7 @@ trait PassThrough
     public function update(Request $request, $id)
     {
         $data = $request->all();
-        if ($resp = $this->checkRequestData($data, $this->validationRules(true)))
+        if ($resp = $this->checkRequestData($data, $this->validationRules($data, $id)))
             return $resp;
 
         if ($resp = $this->beforeUpdate($data)) return $resp;
@@ -216,7 +220,7 @@ trait PassThrough
      */
     public function destroy($id)
     {
-        return $this->request('delete', $id);
+        return $this->request('destroy', $id);
     }
     
     /**
@@ -229,10 +233,10 @@ trait PassThrough
     {
         $map = [
             'index' => 'GET',
-            'create' => 'POST',
+            'store' => 'POST',
             'show' => 'GET',
             'update' => 'PUT',
-            'delete' => 'DELETE'
+            'destroy' => 'DELETE'
         ];
 
         if ($action) return $map[$action];
