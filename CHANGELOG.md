@@ -1,3 +1,12 @@
+## 3.0.4
+
+Created Dud model
+
+PassThrough Trait:
+- Updated methed names with *create* to *store*
+- Updated method names with *delete* to *destroy*
+- Ensured using validation rules work as expected
+
 ## 3.0.3
 
 Made attach/detach/sync error message more custom to the parameter key or relation
