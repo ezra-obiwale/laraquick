@@ -25,7 +25,7 @@ class AsyncCall implements ShouldQueue
 	 * @param array $args The arguments to pass to the called function
      * @return void
      */
-    public function __construct($callable, array $args)
+    public function __construct($callable, array $args = [])
     {
         $this->callable = $callable;
         $this->args = $args;
