@@ -1,3 +1,8 @@
+## 3.0.5
+
+Response method `paginatedList()` now takes a third parameter, an array
+of custom meta fields.
+
 ## 3.0.4
 
 Created Dud model
