@@ -33,12 +33,12 @@ trait Respond
      * @param integer $code
      * @return void
      */
-    protected function paginatedList(array $items, $code = 200) {
+    protected function paginatedList(array $items, $code = 200, array $meta = []) {
         $resp['data'] = array_key_exists('data', $items) ? $items['data'] : $items;
         if (request()->query('length') != 'all' && count($resp['data'])) {
             unset($items['data']);
             $meta['pagination'] = $items;
-            $resp['meta']['pagination'] = $items;
+            $resp['meta'] = $meta;
         }
         return response()->json($resp, $code);
     }
