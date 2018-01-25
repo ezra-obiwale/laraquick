@@ -1,7 +1,7 @@
 ## 3.1.0
 
 `Laraquick\Models\Traits\Helper` now has an `except` scope method to remove provided
-columns from selection. Thanks @mykeels.
+columns from selection. Thanks [@mykeels](https://github.com/mykeels).
 
 ## 3.0.5
 
