@@ -104,4 +104,14 @@ trait Respond
     {
         return $this->error('Resource not found', null, 404);
     }
+	
+    /**
+     * Create a model not set error response
+     *
+     * @return Response
+     */
+	protected function modelNotSetError()
+	{
+		return $this->error('Model not set for action', null, 500);
+	}
 }

@@ -9,6 +9,13 @@ use Illuminate\Http\Response;
  */
 trait Index
 {
+	
+    /**
+     * Create a model not set error response
+     *
+     * @return Response
+     */
+	abstract protected function modelNotSetError();
     /**
      * The model to use in the index method.
      *
@@ -90,10 +97,19 @@ trait Index
     {
         if ($query = request($this->searchQueryParam())) {
             $model = $this->searchModel($query);
+			if (!$model) {
+				logger()->error('Search model undefined');
+			}
         }
         else {
             $model = $this->indexModel();
+			if (!$model) {
+				logger()->error('Index model undefined');
+			}
         }
+		if (!$model) {
+			return $this->modelNotSetError();
+		}
 
         if ($sorter = request($this->sortParam())) {
             $model = $this->sort($sorter, $model);
@@ -140,10 +156,19 @@ trait Index
     {
         if ($query = request($this->searchQueryParam())) {
             $model = $this->searchModel($query);
+			if (!$model) {
+				logger()->error('Search model undefined');
+			}
         }
         else {
             $model = $this->indexModel();
+			if (!$model) {
+				logger()->error('Index model undefined');
+			}
         }
+		if (!$model) {
+			return $this->modelNotSetError();
+		}
 
         if ($sorter = request($this->sortParam())) {
             $model = $this->sort($sorter, $model);

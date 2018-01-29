@@ -1,3 +1,8 @@
+## 3.2.0
+
+- Check that model methods do not return falsable
+- The model being updated is now passed as the second parameter to `beforeUpdate`
+
 ## 3.1.0
 
 `Laraquick\Models\Traits\Helper` now has an `except` scope method to remove provided

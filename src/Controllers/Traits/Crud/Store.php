@@ -14,6 +14,13 @@ use Log;
  */
 trait Store
 {
+	
+    /**
+     * Create a model not set error response
+     *
+     * @return Response
+     */
+	abstract protected function modelNotSetError();
 
     /**
      * The model to use in the store method.
@@ -60,6 +67,10 @@ trait Store
             return $resp;
 
         $model = $this->storeModel();
+		if (!$model) {
+			logger()->error('Store model undefined');
+			return $this->modelNotSetError();
+		}
 
         try {
             DB::beginTransaction();

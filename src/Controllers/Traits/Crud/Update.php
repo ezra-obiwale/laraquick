@@ -39,10 +39,11 @@ trait Update
     /**
      * Called after validation but before update method is called
      *
-     * @param array $data
+     * @param array $data The data to update the model with
+     * @param Model $model The model to be updated
      * @return mixed The response to send or null
      */
-    protected function beforeUpdate(array &$data)
+    protected function beforeUpdate(array &$data, Model $model)
     {
     }
 
@@ -76,7 +77,7 @@ trait Update
 
         try {
             DB::beginTransaction();
-            if ($resp = $this->beforeUpdate($data)) return $resp;
+            if ($resp = $this->beforeUpdate($data, $item)) return $resp;
 
             $result = $item->update($data);
 
