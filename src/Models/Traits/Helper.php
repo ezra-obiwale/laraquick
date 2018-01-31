@@ -46,10 +46,7 @@ trait Helper
         $array = collect(parent::toArray())
             ->only($fillable)
             ->all();
-        // Add loaded relations
-        foreach (array_keys($this->relations) as $relation) {
-            $array[$relation] = $this->$relation;
-        }
-        return $array;
+        // merge with relations and return
+        return array_merge($array, $this->relations);
     }
 }
