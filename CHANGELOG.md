@@ -1,3 +1,9 @@
+## 3.3.0
+
+- Exempted `$hidden` attributes in model helper trait
+- Added method `validationMessages()` to the validation trait
+- Used `validationMessages()` in both storing and updating.
+
 ## 3.2.0
 
 - Check that model methods do not return falsable
