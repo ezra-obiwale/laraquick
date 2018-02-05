@@ -41,10 +41,12 @@ trait Helper
     public function toArray()
     {
         $fillable = $this->fillable;
-        $fillable[] = 'id';
-        // Show only fillables
+        array_unshift($fillable, 'id');
         $array = collect(parent::toArray())
+            // Show only fillables
             ->only($fillable)
+            // Hide hidden ones
+            ->except($this->hidden)
             ->all();
         // merge with relations and return
         return array_merge($array, $this->relations);
