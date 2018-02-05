@@ -52,4 +52,15 @@ trait Validation {
      * @return array
      */
     abstract protected function validationRules(array $data, $id = null);
+
+    /**
+     * The validation messages to use with the @see validationRules()
+     *
+     * @param array $data The data being validated
+     * @param mixed $id The id of the mode being updated, if such were the case
+     * @return array
+     */
+    protected function validationMessages(array $data, $id = null) {
+        return [];
+    }
 }

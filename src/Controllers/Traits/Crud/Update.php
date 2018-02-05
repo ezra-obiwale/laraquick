@@ -65,7 +65,7 @@ trait Update
     public function update(Request $request, $id)
     {
         $data = $request->all();
-        if ($resp = $this->checkRequestData($data, $this->validationRules($data, $id)))
+        if ($resp = $this->checkRequestData($data, $this->validationRules($data, $id), $this->validationMessages($data, $id)))
             return $resp;
 
         $model = $this->updateModel();
