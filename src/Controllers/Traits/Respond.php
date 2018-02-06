@@ -98,11 +98,12 @@ trait Respond
     /**
      * Create a 404 not found error response
      *
+     * @param string $message The message to send with a 404 status code
      * @return Response
      */
-    protected function notFoundError()
+    protected function notFoundError($message = null)
     {
-        return $this->error('Resource not found', null, 404);
+        return $this->error($message ?: 'Resource not found', null, 404);
     }
 	
     /**
