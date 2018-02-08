@@ -1,3 +1,7 @@
+## 3.3.1
+
+Fixed notFoundError consistency issue'
+
 ## 3.3.0
 
 - Exempted `$hidden` attributes in model helper trait
