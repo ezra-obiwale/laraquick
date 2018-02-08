@@ -1,3 +1,8 @@
+## 3.3.1
+
+Allowed custom `notFoundError` messages
+Allowed success method in api to have zero params
+
 ## 3.3.0
 
 - Exempted `$hidden` attributes in model helper trait
