@@ -20,23 +20,22 @@ trait Api
      * @param integer $code
      * @return Response
      */
-	protected function success($response, $code = 200) {
-		$resp = [
-			'status' => array_key_exists('status', $response) ?
-				$response['status'] : 'ok'
-		];
-		if (is_array($response)) {
-			$resp = array_merge($resp, $response);
-		}
-		else if (is_string($response)) {
-			$resp['message'] = $response;
-		}
-		else {
-			$resp['data'] = $response;
-		}
-		
-		return response()->json($resp, $code);
-	}
+    protected function success($response = null, $code = 200)
+    {
+        $resp = [
+            'status' => is_array($response) && array_key_exists('status', $response)
+             ? $response['status'] : 'ok'
+        ];
+        if (is_array($response)) {
+            $resp = array_merge($resp, $response);
+        } elseif (is_string($response)) {
+            $resp['message'] = $response;
+        } elseif ($response) {
+            $resp['data'] = $response;
+        }
+        
+        return response()->json($resp, $code);
+    }
 
     protected function indexResponse($data)
     {
@@ -70,7 +69,7 @@ trait Api
 
     protected function destroyManyResponse($deletedCount)
     {
-		return $this->success("$deletedCount item(s) deleted successfully", 202);
+        return $this->success("$deletedCount item(s) deleted successfully", 202);
     }
     
     protected function restoreDestroyedResponse(Model $data)
