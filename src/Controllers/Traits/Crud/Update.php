@@ -20,7 +20,7 @@ trait Update
      *
      * @return Response
      */
-    abstract protected function notFoundError();
+    abstract protected function notFoundError($message = null);
 
     /**
      * Error message for when an update action fails

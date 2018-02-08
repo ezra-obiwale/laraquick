@@ -16,7 +16,7 @@ trait Show
      *
      * @return Response
      */
-    abstract protected function notFoundError();
+    abstract protected function notFoundError($message = null);
 	
     /**
      * Create a model not set error response
