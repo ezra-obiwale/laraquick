@@ -1,4 +1,4 @@
-## 3.3.2
+## 3.3.3
 
 Ensured exceptions in `beforeResponse` methods are caught
 Ensured method `rollback` is called on the caught errors
