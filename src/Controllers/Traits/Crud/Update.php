@@ -84,16 +84,16 @@ trait Update
             if (!$result) {
                 throw new \Exception('Update method returned falsable', null, 500);
             }
+
+            if ($resp = $this->beforeUpdateResponse($item)) {
+                return $resp;
+            }
         }
         catch (\Exception $ex) {
             Log::error('Update: ' . $ex->getMessage(), [$data]);
             $this->rollbackUpdate();
             DB::rollback();
             return $this->updateFailedError();
-        }
-
-        if ($resp = $this->beforeUpdateResponse($item)) {
-            return $resp;
         }
         DB::commit();
         return $this->updateResponse($item);

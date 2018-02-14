@@ -83,16 +83,16 @@ trait Store
             if (!$data) {
                 throw new \Exception('Create method returned falsable', null, 500);
             }
+
+            if ($resp = $this->beforeStoreResponse($data)) {
+                return $resp;
+            }
         }
         catch (\Exception $ex) {
             Log::error('Store: ' . $ex->getMessage(), [$data]);
             $this->rollbackStore();
             DB::rollback();
             return $this->storeFailedError();
-        }
-
-        if ($resp = $this->beforeStoreResponse($data)) {
-            return $resp;
         }
 
         DB::commit();
