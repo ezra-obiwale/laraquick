@@ -83,16 +83,16 @@ trait Destroy
             if (!$result) {
                 throw new \Exception('Delete method returned falsable', 500);
             }
+
+            if ($resp = $this->beforeDestroyResponse($item)) {
+                return $resp;
+            }
         }
         catch (\Exception $ex) {
             Log::error('Delete: ' . $ex->getMessage(), [$data]);
             $this->rollbackDestroy();
             DB::rollback();
             return $this->destroyFailedError();
-        }
-
-        if ($resp = $this->beforeDestroyResponse($item)) {
-            return $resp;
         }
         DB::commit();
         return $this->destroyResponse($item);
