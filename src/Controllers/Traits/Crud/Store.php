@@ -14,13 +14,13 @@ use Log;
  */
 trait Store
 {
-	
+    
     /**
      * Create a model not set error response
      *
      * @return Response
      */
-	abstract protected function modelNotSetError();
+    abstract protected function modelNotSetError();
 
     /**
      * The model to use in the store method.
@@ -62,19 +62,22 @@ trait Store
      */
     public function store(Request $request)
     {
-        $data = $request->all();
-        if ($resp = $this->validateRequest($data, $this->validationRules($data), $this->validationMessages($data)))
+        if ($resp = $this->validateRequest()) {
             return $resp;
+        }
 
+        $data = $request->all();
         $model = $this->storeModel();
-		if (!$model) {
-			logger()->error('Store model undefined');
-			return $this->modelNotSetError();
-		}
+        if (!$model) {
+            logger()->error('Store model undefined');
+            return $this->modelNotSetError();
+        }
 
         try {
             DB::beginTransaction();
-            if ($resp = $this->beforeStore($data)) return $resp;
+            if ($resp = $this->beforeStore($data)) {
+                return $resp;
+            }
 
             $data = is_object($model)
                 ? $model->create($data)
@@ -87,8 +90,7 @@ trait Store
             if ($resp = $this->beforeStoreResponse($data)) {
                 return $resp;
             }
-        }
-        catch (\Exception $ex) {
+        } catch (\Exception $ex) {
             Log::error('Store: ' . $ex->getMessage(), [$data]);
             $this->rollbackStore();
             DB::rollback();

@@ -1,7 +1,19 @@
+## 3.4.0
+
+- Added method `validateData()`
+- Method `validateRequest()` now only takes parameters `$rules` and `$messages`.
+- Implemented using custom validation messages
+- Deprecated method `checkRequestData()` should be replaced with new method `validateData()`
+- Removed parameter `$ignoreStrict` entirely from method `validateData()`
+
+## 3.3.4
+
+Deprecated method `checkRequestData()` in favour of `validateRequest()`
+
 ## 3.3.3
 
-Ensured exceptions in `beforeResponse` methods are caught
-Ensured method `rollback` is called on the caught errors
+- Ensured exceptions in `beforeResponse` methods are caught
+- Ensured method `rollback` is called on the caught errors
 
 ## 3.3.1
 
@@ -14,6 +26,7 @@ Fixed notFoundError consistency issue'
 - Used `validationMessages()` in both storing and updating.
 - Allowed custom `notFoundError` messages
 - Allowed success method in api to have zero params
+
 ## 3.2.0
 
 - Check that model methods do not return falsable

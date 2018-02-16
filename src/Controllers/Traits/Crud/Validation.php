@@ -3,7 +3,8 @@ namespace Laraquick\Controllers\Traits\Crud;
 
 use Illuminate\Support\Facades\Validator;
 
-trait Validation {
+trait Validation
+{
     
     /**
      * Validator instance
@@ -29,33 +30,46 @@ trait Validation {
      * @param array $data
      * @param array $rules
      * @param boolean $ignoreStrict Indicates whether to ignore strict validation
-     * @deprecated v3.3.4
      * @return void
+     * 
+     * @deprecated v3.3.4
      */
     protected function checkRequestData(array $data, array $rules, $ignoreStrict = false)
     {
-        return $this->validateRequest($data, $rules, $ignoreStrict);
+        return $this->validateData($data, $rules);
+    }
+
+    /**
+     * Checks the data against validation rules
+     *
+     * @param array $data
+     * @param array $rules
+     * @param array $messages
+     * @return void
+     */
+    protected function validateData(array $data, array $rules, array $messages = [])
+    {
+        $this->validator = Validator::make($data, $rules, $messages);
+        if ($this->validator->fails()) {
+            return $this->validationError($this->validator->errors());
+        }
     }
 
     /**
      * Checks the request data against validation rules
      *
-     * @param array $data
      * @param array $rules
-     * @param boolean $ignoreStrict Indicates whether to ignore strict validation
+     * @param array $messages
      * @return void
      */
-    protected function validateRequest(array $data, array $rules, $ignoreStrict = false)
+    protected function validateRequest(array $rules = null, array $message = null)
     {
-        $this->validator = Validator::make($data, $rules);
-        if ($this->validator->fails())
-            return $this->validationError($this->validator->errors());
-
-        if (!$ignoreStrict && $this->strictValidation()) {
-            $left_overs = collection($data)->except(array_keys($rules));
-            if ($left_overs->count())
-                return $this->error('Too many parameters', null, 406);
-        }
+        $data = request()->all();
+        return $this->validateData(
+            $data,
+            $rules ?: $this->validationRules($data),
+            $messages ?: $this->validationMessages($data)
+        );
     }
     
     /**
@@ -74,7 +88,8 @@ trait Validation {
      * @param mixed $id The id of the mode being updated, if such were the case
      * @return array
      */
-    protected function validationMessages(array $data, $id = null) {
+    protected function validationMessages(array $data, $id = null)
+    {
         return [];
     }
 }
