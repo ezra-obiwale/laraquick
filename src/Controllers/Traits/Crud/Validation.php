@@ -29,9 +29,23 @@ trait Validation {
      * @param array $data
      * @param array $rules
      * @param boolean $ignoreStrict Indicates whether to ignore strict validation
+     * @deprecated v3.3.4
      * @return void
      */
     protected function checkRequestData(array $data, array $rules, $ignoreStrict = false)
+    {
+        return $this->validateRequest($data, $rules, $ignoreStrict);
+    }
+
+    /**
+     * Checks the request data against validation rules
+     *
+     * @param array $data
+     * @param array $rules
+     * @param boolean $ignoreStrict Indicates whether to ignore strict validation
+     * @return void
+     */
+    protected function validateRequest(array $data, array $rules, $ignoreStrict = false)
     {
         $this->validator = Validator::make($data, $rules);
         if ($this->validator->fails())

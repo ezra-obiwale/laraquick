@@ -63,7 +63,7 @@ trait Store
     public function store(Request $request)
     {
         $data = $request->all();
-        if ($resp = $this->checkRequestData($data, $this->validationRules($data), $this->validationMessages($data)))
+        if ($resp = $this->validateRequest($data, $this->validationRules($data), $this->validationMessages($data)))
             return $resp;
 
         $model = $this->storeModel();
