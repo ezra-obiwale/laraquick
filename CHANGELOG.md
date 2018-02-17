@@ -1,5 +1,8 @@
 ## 3.4.0
 
+- Fixed typo
+## 3.4.0
+
 - Added method `validateData()`
 - Method `validateRequest()` now only takes parameters `$rules` and `$messages`.
 - Implemented using custom validation messages

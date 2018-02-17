@@ -62,7 +62,7 @@ trait Validation
      * @param array $messages
      * @return void
      */
-    protected function validateRequest(array $rules = null, array $message = null)
+    protected function validateRequest(array $rules = null, array $messages = null)
     {
         $data = request()->all();
         return $this->validateData(
