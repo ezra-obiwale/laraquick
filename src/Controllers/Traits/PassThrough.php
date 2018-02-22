@@ -109,9 +109,16 @@ trait PassThrough
         $this->responseStatusCode = Http::getStatusCode();
 
         $beforeMethod = 'before' . ucfirst($action) . 'Response';
-        $param = $action === 'index' ? $resp : (new Dud)->forceFill($resp);
+        if ($response = $this->$beforeMethod($resp)) return $response;
 
-        if ($response = $this->$beforeMethod($param)) return $response;
+        if (!Http::hasErrors() && $action !== 'index') {
+            if (array_key_exists('data', $resp)) {
+                $resp['data'] = (new Dud)->forceFill($resp['data']);
+            }
+            else {
+                $resp = (new Dud)->forceFill($resp);
+            }
+        }
         return response()->json($resp, Http::getStatusCode());
     }
 
@@ -159,6 +166,15 @@ trait PassThrough
     protected function httpResponse()
     {
         return Http::rawResponse();
+    }
+
+    /**
+     * Check wither the request has errors or not
+     *
+     * @return boolean
+     */
+    protected function hasErrors() {
+        return Http::hasErrors();
     }
 
     /**
