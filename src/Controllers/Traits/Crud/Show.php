@@ -70,7 +70,7 @@ trait Show
      * @param Model $data
      * @return Response|array
      */
-    abstract protected function showResponse(Model $data);
+    abstract protected function showResponse(Model &$data);
     
     
 }
