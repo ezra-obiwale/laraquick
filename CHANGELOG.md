@@ -1,6 +1,7 @@
-## 3.4.0
+## 3.4.1
 
 - Fixed typo
+
 ## 3.4.0
 
 - Added method `validateData()`
