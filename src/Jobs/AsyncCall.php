@@ -19,21 +19,24 @@ class AsyncCall implements ShouldQueue
     protected $callable;
     protected $args;
     protected $failedCallable;
+    protected $failedCallableArgs;
 
     /**
      * Create a new job instance
      *
      * @param callable|array $callable The function to call. @see call_user_func_array()
      * @param array $args The arguments for the callable
-     * @param callable|array $failedCallable The function to call with the thrown exception if the job fails. @see call_user_func()
+     * @param callable|array $failedCallable The function to call with the thrown exception if the job fails. @see call_user_func_array()
+     * @param array $faildCallableArgs Arguments to pass to the failedCallable, along with the thrown exception
      * 
      * @return void
      */
-    public function __construct($callable, array $args = [], $failedCallable = null)
+    public function __construct($callable, array $args = [], $failedCallable = null, $faildCallableArgs = [])
     {
         $this->callable = $callable;
         $this->args = $args;
         $this->failedCallable = $failedCallable;
+        $this->failedCallableArgs = $faildCallableArgs;
     }
 
     /**
@@ -55,7 +58,8 @@ class AsyncCall implements ShouldQueue
     public function failed(Exception $ex)
     {
         if ($this->failedCallable) {
-            call_user_func($this->failedCallable, $ex);
+            array_unshift($this->failedCallableArgs, $ex);
+            call_user_func_array($this->failedCallable, $this->failedCallableArgs);
         }
     }
 }
