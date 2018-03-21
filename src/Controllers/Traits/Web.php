@@ -11,7 +11,8 @@ trait Web
     
     protected function error($message, $errors = null, $code = 400)
     {
-        $back = back()->withMessage($message);
+        $back = back()->withInput()
+            ->withMessage($message);
         if ($errors) {
             $back->withErrors($errors);
         }
