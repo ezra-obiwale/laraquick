@@ -142,7 +142,11 @@ trait Destroy
      */
     public function destroyMany(Request $request)
     {
-        $model = $this->model();
+        $model = $this->destroyModel();
+		if (!$model) {
+			logger()->error('Destroy model undefined');
+			return $this->modelNotSetError();
+		}
         $data = $request->all();
         if (!array_key_exists('ids', $data)) {
             throw new \Exception('Ids not found');
@@ -151,8 +155,8 @@ trait Destroy
         $this->beforeDestroyMany($data);
 
         $result = is_object($model)
-            ? $model->find($data['ids'])->delete()
-            : $model::find($data['ids'])->delete();
+            ? $model->whereIn('id', $data['ids'])->delete()
+            : $model::whereIn('id', $data['ids'])->delete();
 
         if (!$result) {
             $this->rollbackDestroyMany();
@@ -160,7 +164,7 @@ trait Destroy
             return $this->destroyFailedError();
         }
 
-        if ($resp = $this->beforeDestroyManyResponse($result)) {
+        if ($resp = $this->beforeDestroyManyResponse($result, $data['ids'])) {
             return $resp;
         }
         DB::commit();
