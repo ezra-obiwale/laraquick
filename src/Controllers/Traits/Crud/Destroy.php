@@ -167,8 +167,8 @@ trait Destroy
         $this->beforeDestroyMany($data);
 
         $result = is_object($model)
-            ? $model->find($data['ids'])->delete()
-            : $model::find($data['ids'])->delete();
+            ? $model->whereIn('id', $data['ids'])->delete()
+            : $model::whereIn('id', $data['ids'])->delete();
 
         if (!$result) {
             $this->rollbackDestroyMany();
@@ -176,7 +176,7 @@ trait Destroy
             return $this->destroyFailedError();
         }
 
-        if ($resp = $this->beforeDestroyManyResponse($result)) {
+        if ($resp = $this->beforeDestroyManyResponse($result, $data['ids'])) {
             return $resp;
         }
         DB::commit();
