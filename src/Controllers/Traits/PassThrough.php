@@ -109,7 +109,7 @@ trait PassThrough
         $this->responseStatusCode = Http::getStatusCode();
 
         $beforeMethod = 'before' . ucfirst($action) . 'Response';
-        $param = $action === 'index' ? $resp : (new Dud)->forceFill($resp);
+        $param = $action === 'index' ? $resp : (new Dud)->forceFill($resp ?: []);
 
         if ($response = $this->$beforeMethod($param)) return $response;
         return response()->json($resp, Http::getStatusCode());
