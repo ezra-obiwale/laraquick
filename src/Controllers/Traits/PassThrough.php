@@ -196,8 +196,8 @@ trait PassThrough
     public function store(Request $request)
     {
         $data = $request->all();
-        // if ($resp = $this->validateRequest($data, $this->validationRules($data)))
-        //     return $resp;
+        if ($resp = $this->validateRequest($data, $this->validationRules($data)))
+            return $resp;
 
         if ($resp = $this->beforeStore($data)) return $resp;
 
