@@ -1,6 +1,6 @@
 <?php
 
-namespace Laraquick\Controllers\Traits;
+namespace Laraquick\Controllers\Traits\Helpers;
 
 use Illuminate\Http\Response;
 use Log;

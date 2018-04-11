@@ -2,7 +2,6 @@
 namespace Laraquick\Controllers\Traits;
 
 use Illuminate\Database\Eloquent\Model;
-
 use DB;
 
 /**
@@ -11,7 +10,7 @@ use DB;
  */
 trait Api
 {
-    use Crud;
+    use Crud\Crud;
 
     /**
      * Called when an action is successfully processed.

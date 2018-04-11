@@ -7,7 +7,7 @@ use DB;
 
 trait Web
 {
-    use Crud;
+    use Crud\Crud;
 	
     /**
      * Called when an action is successfully processed.
