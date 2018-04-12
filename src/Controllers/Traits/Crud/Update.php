@@ -50,9 +50,11 @@ trait Update
     /**
      * Called when an error occurs in a update operation
      *
+     * @param array $data The data from the request
+     * @param Model $model The model from the id
      * @return void
      */
-    protected function rollbackUpdate()
+    protected function rollbackUpdate(array &$data, Model $model)
     {
     }
 
@@ -91,7 +93,13 @@ trait Update
         }
         catch (\Exception $ex) {
             Log::error('Update: ' . $ex->getMessage(), [$data]);
-            $this->rollbackUpdate();
+            try {
+                $this->rollbackUpdate($data, $item);
+            }
+            catch (\Exception $ex) {
+                Log::error($ex->getMessage());
+            }
+            $this->rollbackUpdate($data, $item);
             DB::rollback();
             return $this->updateFailedError();
         }
