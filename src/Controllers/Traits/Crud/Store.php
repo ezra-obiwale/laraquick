@@ -49,10 +49,11 @@ trait Store
     /**
      * Called when an error occurs in a store operation
      *
-     * @param mixed $data
+     * @param array $data The data from the request
+     * @param Model $model The created model
      * @return void
      */
-    protected function rollbackStore($data)
+    protected function rollbackStore(array $data, Model $model)
     {
     }
 
@@ -80,31 +81,31 @@ trait Store
                 return $resp;
             }
 
-            $data = is_object($model)
+            $item = is_object($model)
                 ? $model->create($data)
                 : $model::create($data);
 
-            if (!$data) {
+            if (!$item) {
                 throw new \Exception('Create method returned falsable', null, 500);
             }
 
-            if ($resp = $this->beforeStoreResponse($data)) {
+            if ($resp = $this->beforeStoreResponse($item)) {
                 return $resp;
             }
         } catch (\Exception $ex) {
-            Log::error('Store: ' . $ex->getMessage(), [$data]);
+            Log::error('Store: ' . $ex->getMessage(), $data);
             try {
-                $this->rollbackStore($data);
+                $this->rollbackStore($data, $item);
             }
             catch (\Exception $ex) {
-                Log::error($ex->getMessage());
+                Log::error('Rollback: ' . $ex->getMessage());
             }
             DB::rollback();
             return $this->storeFailedError();
         }
 
         DB::commit();
-        return $this->storeResponse($data);
+        return $this->storeResponse($item);
     }
 
     /**

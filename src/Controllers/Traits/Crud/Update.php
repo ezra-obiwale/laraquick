@@ -97,7 +97,7 @@ trait Update
                 $this->rollbackUpdate($data, $item);
             }
             catch (\Exception $ex) {
-                Log::error($ex->getMessage());
+                Log::error('Rollback: ' . $ex->getMessage());
             }
             $this->rollbackUpdate($data, $item);
             DB::rollback();
