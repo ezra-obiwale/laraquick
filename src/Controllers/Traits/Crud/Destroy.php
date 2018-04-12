@@ -148,10 +148,10 @@ trait Destroy
 
     /**
      * Called when an error occurs in a delete operation
-     *
+     * @param array $ids The id of the models to be deleted
      * @return void
      */
-    protected function rollbackDestroyMany()
+    protected function rollbackDestroyMany(array $ids)
     {
     }
     /**
@@ -177,7 +177,12 @@ trait Destroy
             : $model::whereIn('id', $data['ids'])->delete();
 
         if (!$result) {
-            $this->rollbackDestroyMany();
+            try {
+                $this->rollbackDestroyMany($data['ids']);
+            }
+            catch (\Exception $ex) {
+                Log::error('Rollback: ' . $ex->getMessage());
+            }
             DB::rollback();
             return $this->destroyFailedError();
         }
@@ -212,19 +217,20 @@ trait Destroy
     /**
      * Called when the model has been found but before force deleting
      *
-     * @param mixed $data
+     * @param Model $model
      * @return void
      */
-    protected function beforeForceDestroy(Model &$data)
+    protected function beforeForceDestroy(Model $model)
     {
     }
 
     /**
      * Called when an error occurs in a force delete operation
      *
+     * @param Model $model
      * @return void
      */
-    protected function rollbackForceDestroy()
+    protected function rollbackForceDestroy(Model $model)
     {
     }
 
@@ -251,7 +257,12 @@ trait Destroy
         $result = $item->forceDelete();
 
         if (!$result) {
-            $this->rollbackForceDestroy();
+            try {
+                $this->rollbackForceDestroy($item);
+            }
+            catch (\Exception $ex) {
+                Log::error('Rollback: ' . $ex->getMessage());
+            }
             DB::rollback();
             return $this->destroyFailedError();
         }
@@ -266,21 +277,21 @@ trait Destroy
     /**
      * Called on success but before sending the response
      *
-     * @param mixed $data
+     * @param mixed $model
      * @return mixed The response to send or null
      */
-    protected function beforeForceDestroyResponse(Model &$data)
+    protected function beforeForceDestroyResponse(Model $model)
     {
     }
     
     /**
      * Called for the response to method @see forceDestroy()
      *
-     * @param Model $data
+     * @param Model $model
      * @return Response|array
      */
-    protected function forceDestroyResponse(Model $data) {
-        return $this->destroyResponse($data);
+    protected function forceDestroyResponse(Model $model) {
+        return $this->destroyResponse($model);
     }
     
     // ---------------- RESTORE DESTROYED -------------------------
@@ -291,16 +302,17 @@ trait Destroy
      * @param Model $data
      * @return void
      */
-    protected function beforeRestoreDestroyed(Model &$data)
+    protected function beforeRestoreDestroyed(Model $data)
     {
     }
 
     /**
      * Called when an error occurs in a restore destroyed operation
      *
+     * @param Model $model
      * @return void
      */
-    protected function rollbackRestoreDestroyed()
+    protected function rollbackRestoreDestroyed(Model $model)
     {
     }
 
@@ -322,7 +334,12 @@ trait Destroy
         $result = $item->restore();
 
         if (!$result) {
-            $this->rollbackRestoreDestroyed();
+            try {
+                $this->rollbackRestoreDestroyed($item);
+            }
+            catch (\Exception $ex) {
+                Log::error('Rollback: ' . $ex->getMessage());
+            }
             DB::rollback();
             return $this->restoreFailedError();
         }
@@ -337,10 +354,10 @@ trait Destroy
     /**
      * Called on success but before sending the response
      *
-     * @param Model $data
+     * @param Model $model
      * @return mixed The response to send or null
      */
-    protected function beforeRestoreDestroyedResponse(Model &$data)
+    protected function beforeRestoreDestroyedResponse(Model $model)
     {
     }
 
