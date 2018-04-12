@@ -1,6 +1,10 @@
+## 3.5.6
+
+- Catch and log exceptions thrown in methods `rollbackStore()` and `rollbackUpdate()`.
+
 ## 3.5.5
 
-- Updated methods `rollbackStore()` ad `rollbackUpdate()`.
+- Updated methods `rollbackStore()` and `rollbackUpdate()`.
 
 ## 3.4.1
 

@@ -93,7 +93,12 @@ trait Store
             }
         } catch (\Exception $ex) {
             Log::error('Store: ' . $ex->getMessage(), [$data]);
-            $this->rollbackStore($data);
+            try {
+                $this->rollbackStore($data);
+            }
+            catch (\Exception $ex) {
+                Log::error($ex->getMessage());
+            }
             DB::rollback();
             return $this->storeFailedError();
         }

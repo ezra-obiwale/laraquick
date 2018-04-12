@@ -93,6 +93,12 @@ trait Update
         }
         catch (\Exception $ex) {
             Log::error('Update: ' . $ex->getMessage(), [$data]);
+            try {
+                $this->rollbackUpdate($data, $item);
+            }
+            catch (\Exception $ex) {
+                Log::error($ex->getMessage());
+            }
             $this->rollbackUpdate($data, $item);
             DB::rollback();
             return $this->updateFailedError();
