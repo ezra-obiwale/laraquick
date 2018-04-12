@@ -1,3 +1,9 @@
+## 3.5.7
+
+- Updated parameters for method `rollbackStore()`
+- Updated method `rollbackDestroy()`
+- Catch and log exceptions thrown in `rollbackDestroy()`.
+
 ## 3.5.6
 
 - Catch and log exceptions thrown in methods `rollbackStore()` and `rollbackUpdate()`.

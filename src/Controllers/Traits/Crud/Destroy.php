@@ -62,9 +62,10 @@ trait Destroy
     /**
      * Called when an error occurs in a delete operation
      *
+     * @param Model $model The model to be deleted
      * @return void
      */
-    protected function rollbackDestroy()
+    protected function rollbackDestroy(Model $model)
     {
     }
 
@@ -101,7 +102,12 @@ trait Destroy
         }
         catch (\Exception $ex) {
             Log::error('Delete: ' . $ex->getMessage(), [$data]);
-            $this->rollbackDestroy();
+            try {
+                $this->rollbackDestroy($item);
+            }
+            catch (\Exception $ex) {
+                Log::error('Rollback: ' . $ex->getMessage());
+            }
             DB::rollback();
             return $this->destroyFailedError();
         }
