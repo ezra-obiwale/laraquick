@@ -49,9 +49,10 @@ trait Store
     /**
      * Called when an error occurs in a store operation
      *
+     * @param mixed $data
      * @return void
      */
-    protected function rollbackStore()
+    protected function rollbackStore($data)
     {
     }
 
@@ -92,7 +93,7 @@ trait Store
             }
         } catch (\Exception $ex) {
             Log::error('Store: ' . $ex->getMessage(), [$data]);
-            $this->rollbackStore();
+            $this->rollbackStore($data);
             DB::rollback();
             return $this->storeFailedError();
         }

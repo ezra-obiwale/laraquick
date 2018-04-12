@@ -1,3 +1,7 @@
+## 3.5.5
+
+- Updated methods `rollbackStore()` ad `rollbackUpdate()`.
+
 ## 3.4.1
 
 - Fixed typo
