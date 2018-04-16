@@ -9,6 +9,7 @@ use Log;
 /**
  * @method mixed DELETE($url, $_ = null)
  * @method mixed GET($url, $_ = null)
+ * @method mixed HEAD($url, $_ = null)
  * @method mixed PATCH($url, $_ = null)
  * @method mixed POST($url, $_ = null)
  * @method mixed PUT($url, $_ = null)
@@ -27,7 +28,13 @@ class Http
 
     private static function processResponse()
     {
-        return json_decode(strval(self::$response->getBody()), true);
+        $body = self::$response->getBody();
+        try {
+            return json_decode(strval($body), true);
+        }
+        catch (\Exception $ex) {
+            return $body;
+        }
     }
 
     private static function req($method, array $args)

@@ -101,8 +101,11 @@ trait Attachable
     public function attached($id, $relation) {
         $model = $this->attachModel();
         $model = is_object($model) 
-            ? $model->findOrFail($id)
-            : $model::findOrFail($id);
+            ? $model->find($id)
+            : $model::find($id);
+        if (!$model) {
+            return $this->notFoundError();
+        }
         $this->treatRelation($model, $relation);
         $list = $model->$relation()->simplePaginate();
         return $this->paginatedList($list->toArray());
@@ -127,7 +130,9 @@ trait Attachable
         $model = is_object($model)
             ? $model->find($id)
             : $model::find($id);
-        if (!$model) return $this->notFoundError();
+        if (!$model) {
+            return $this->notFoundError();
+        }
         try {
             $items = request()->input($paramKey);
             $this->treatRelation($model, $relation);
@@ -161,7 +166,9 @@ trait Attachable
         $model = is_object($model)
             ? $model->find($id)
             : $model::find($id);
-        if (!$model) return $this->notFoundError();
+        if (!$model) {
+            return $this->notFoundError();
+        }
         try {
             $items = request()->input($paramKey);
             $this->treatRelation($model, $relation);
@@ -195,7 +202,9 @@ trait Attachable
         $model = is_object($model)
             ? $model->find($id)
             : $model::find($id);
-        if (!$model) return $this->notFoundError();
+        if (!$model) {
+            return $this->notFoundError();
+        }
         try {
             $items = request()->input($paramKey);
             $this->treatRelation($model, $relation);
