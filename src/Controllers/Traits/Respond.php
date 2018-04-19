@@ -21,7 +21,7 @@ trait Respond
 			"status" => "error",
             "message" => $message
         ];
-        if ($errors) $resp["errors"] = $errors;
+        if ($errors !== null) $resp["errors"] = $errors;
         return response()->json($resp, $code);
     }
 
@@ -103,7 +103,7 @@ trait Respond
      */
     protected function notFoundError($message = null)
     {
-        return $this->error($message ?: 'Resource not found', null, 404);
+        return $this->error($message !== null ?: 'Resource not found', null, 404);
     }
 	
     /**

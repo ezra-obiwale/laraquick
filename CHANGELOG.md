@@ -1,3 +1,9 @@
+# Changelog
+
+## 3.5.10
+
+- Ensure `0` and empty strings are allowed as success and error messages
+
 ## 3.5.7
 
 - Updated parameters for method `rollbackStore()`

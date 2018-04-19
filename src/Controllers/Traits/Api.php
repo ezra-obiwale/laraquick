@@ -30,7 +30,7 @@ trait Api
             $resp = array_merge($resp, $response);
         } elseif (is_string($response)) {
             $resp['message'] = $response;
-        } elseif ($response) {
+        } elseif ($response !== null) {
             $resp['data'] = $response;
         }
         
