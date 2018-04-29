@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.6.0
+
+- Added DB helper class to create full text indexes
+- Added Searchable trait to provide methods for full text searches
+
 ## 3.5.10
 
 - Ensure `0` and empty strings are allowed as success and error messages
