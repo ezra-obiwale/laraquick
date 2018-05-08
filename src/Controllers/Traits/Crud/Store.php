@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 use DB;
 use Log;
+use Laraquick\Models\Dud;
 
 /**
  * Methods for storing a resource
@@ -95,7 +96,7 @@ trait Store
         } catch (\Exception $ex) {
             Log::error('Store: ' . $ex->getMessage(), $data);
             try {
-                $this->rollbackStore($data, $item);
+                $this->rollbackStore($data, $item || new Dud);
             }
             catch (\Exception $ex) {
                 Log::error('Rollback: ' . $ex->getMessage());
