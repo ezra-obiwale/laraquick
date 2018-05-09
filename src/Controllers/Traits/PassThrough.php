@@ -110,18 +110,24 @@ trait PassThrough
 
         $beforeMethod = 'before' . ucfirst($action) . 'Response';
         $data = $resp;
-        if (!Http::hasErrors() && $action !== 'index') {
-            if (array_key_exists('data', $resp)) {
-                $resp['data'] = (new Dud)->forceFill($resp['data']);
-                $data &= $resp['data'];
+
+        if ($action !== 'index') {
+            if (!Http::hasErrors()) {
+                if (array_key_exists('data', $resp)) {
+                    $resp['data'] = (new Dud)->forceFill($resp['data']);
+                    $data &= $resp['data'];
+                }
+                else {
+                    $resp = (new Dud)->forceFill($resp);
+                    $data = $resp;
+                }
             }
             else {
-                $resp = (new Dud)->forceFill($resp);
-                $data = $resp;
+                $data = null;
             }
         }
 
-        if ($response = $this->$beforeMethod($data)) return $response;
+        if ($data && $response = $this->$beforeMethod($data)) return $response;
         return response()->json($resp, Http::getStatusCode());
     }
 

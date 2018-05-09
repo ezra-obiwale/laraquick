@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.6.2
+
+- Fixed issue with `before{method}Response` in PassThrough's respond method
+
 ## 3.6.0
 
 - Added DB helper class to create full text indexes
