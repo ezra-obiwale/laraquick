@@ -112,7 +112,7 @@ trait PassThrough
         $param = $action === 'index' ? $resp : (new Dud)->forceFill($resp ?: []);
 
         if ($response = $this->$beforeMethod($param)) return $response;
-        return response()->json($resp, Http::getStatusCode());
+        return response()->json($param, Http::getStatusCode());
     }
 
     private function request($action, $id = null, $data = null)
