@@ -96,7 +96,7 @@ trait Store
         } catch (\Exception $ex) {
             Log::error('Store: ' . $ex->getMessage(), $data);
             try {
-                $this->rollbackStore($data, @$item || new Dud);
+                $this->rollbackStore($data, @$item ?: new Dud);
             }
             catch (\Exception $ex) {
                 Log::error('Rollback: ' . $ex->getMessage());
