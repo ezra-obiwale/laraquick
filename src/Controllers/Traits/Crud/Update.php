@@ -81,7 +81,7 @@ trait Update
             DB::beginTransaction();
             if ($resp = $this->beforeUpdate($data, $item)) return $resp;
 
-            $result = $item->update($data);
+            $result = $item->update(array_only($data, $item->getFillable()));
 
             if (!$result) {
                 throw new \Exception('Update method returned falsable', null, 500);
