@@ -40,7 +40,10 @@ trait Helper
     
     public function toArray()
     {
-        $fillable = $this->fillable;
+        $withArray = property_exists($this, 'withArray') 
+            ? $this->withArray : [];
+        $fillable = array_merge($this->fillable, $withArray);
+
         array_unshift($fillable, 'id');
         $array = collect(parent::toArray())
             // Show only fillables
