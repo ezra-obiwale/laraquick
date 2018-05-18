@@ -42,15 +42,16 @@ trait Helper
     {
         $withArray = property_exists($this, 'withArray') 
             ? $this->withArray : [];
-        $fillable = array_merge($this->fillable, $withArray);
+        $fillable = $this->fillable;
 
         array_unshift($fillable, 'id');
         $array = collect(parent::toArray())
             // Show only fillables
             ->only($fillable)
-            // Hide hidden ones
-            ->except($this->hidden)
             ->all();
+        foreach ($withArray as $property) {
+            $array[$property] = $this->$property;
+        }
         // merge with relations and return
         return array_merge($array, $this->relations);
     }
