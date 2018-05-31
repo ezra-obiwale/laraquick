@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.8.0
+
+Added Notfications DBChannel
+
 ## 3.6.2
 
 - Fixed issue with `before{method}Response` in PassThrough's respond method
