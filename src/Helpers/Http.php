@@ -21,13 +21,13 @@ class Http
 
     public static function client()
     {
-        if (!self::$client) self::$client = new Client;
-        return self::$client;
+        if (!static::$client) static::$client = new Client;
+        return static::$client;
     }
 
     private static function processResponse()
     {
-        return json_decode(strval(self::$response->getBody()), true);
+        return json_decode(strval(static::$response->getBody()), true);
     }
 
     private static function req($method, array $args)
@@ -42,37 +42,37 @@ class Http
         array_shift($args);
         $args[1]['http_errors'] = false;
 
-        self::$response = call_user_func_array([self::client(), $method], $args);
+        static::$response = call_user_func_array([static::client(), $method], $args);
 
-        return self::processResponse();
+        return static::processResponse();
     }
     
     public static function requestAsync($method, $url, $_ = null) {
         $args = func_get_args();
         array_shift($args);
         $args[1]['http_errors'] = false;
-        return call_user_func_array([self::client(), $method . 'Async'], $args);
+        return call_user_func_array([static::client(), $method . 'Async'], $args);
     }
 
     public static function hasErrors() {
-        return self::getStatusCode() >= 400;
+        return static::getStatusCode() >= 400;
     }
 
     public static function getStatusCode() {
-        return self::$response ? self::$response->getStatusCode() : 0;
+        return static::$response ? static::$response->getStatusCode() : 0;
     }
 
     public static function rawResponse() {
-        return self::$response;
+        return static::$response;
     }
 
     public static function response() {
-        return self::processResponse();
+        return static::processResponse();
     }
 
     public static function __callStatic($method, $args)
     {
-        return self::req($method, $args);
+        return static::req($method, $args);
     }
 
 }
