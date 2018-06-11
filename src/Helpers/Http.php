@@ -4,12 +4,10 @@ namespace Laraquick\Helpers;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Exception;
-use Log;
 
 /**
  * @method mixed DELETE($url, $_ = null)
  * @method mixed GET($url, $_ = null)
- * @method mixed HEAD($url, $_ = null)
  * @method mixed PATCH($url, $_ = null)
  * @method mixed POST($url, $_ = null)
  * @method mixed PUT($url, $_ = null)
@@ -22,19 +20,13 @@ class Http
 
     public static function client()
     {
-        if (!static::$client) static::$client = new Client;
-        return static::$client;
+        if (!self::$client) self::$client = new Client;
+        return self::$client;
     }
 
     private static function processResponse()
     {
-        $body = static::$response->getBody();
-        try {
-            return json_decode(strval($body), true);
-        }
-        catch (\Exception $ex) {
-            return $body;
-        }
+        return json_decode(strval(self::$response->getBody()), true);
     }
 
     private static function req($method, array $args)
@@ -49,7 +41,7 @@ class Http
         array_shift($args);
         $args[1]['http_errors'] = false;
 
-        static::$response = call_user_func_array([static::client(), $method], $args);
+        self::$response = call_user_func_array([static::client(), $method], $args);
 
         return static::processResponse();
     }
@@ -66,15 +58,20 @@ class Http
     }
 
     public static function getStatusCode() {
-        return static::$response ? static::$response->getStatusCode() : 0;
+        return self::$response ? self::$response->getStatusCode() : 0;
     }
 
     public static function rawResponse() {
-        return static::$response;
+        return self::$response;
     }
 
     public static function response() {
         return static::processResponse();
+    }
+
+    public static function respond()
+    {
+        return response()->json(static::response(), static::getStatusCode());
     }
 
     public static function __callStatic($method, $args)
