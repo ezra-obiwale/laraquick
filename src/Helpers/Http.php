@@ -25,9 +25,9 @@ class Http
         return self::$client;
     }
 
-    public static function processJsonResponse(ResponseInterface $response)
+    public static function processJsonResponse(ResponseInterface $response, $toArray = true)
     {
-        return json_decode(strval($response->getBody()), true);
+        return json_decode(strval($response->getBody()), $toArray);
     }
 
     private static function req($method, array $args)
