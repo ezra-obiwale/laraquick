@@ -2,6 +2,7 @@
 namespace Laraquick\Helpers;
 
 use GuzzleHttp\Client;
+use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Exception\RequestException;
 use Exception;
 
@@ -24,9 +25,9 @@ class Http
         return self::$client;
     }
 
-    private static function processResponse()
+    public static function processJsonResponse(ResponseInterface $response)
     {
-        return json_decode(strval(self::$response->getBody()), true);
+        return json_decode(strval($response->getBody()), true);
     }
 
     private static function req($method, array $args)
@@ -43,7 +44,7 @@ class Http
 
         self::$response = call_user_func_array([static::client(), $method], $args);
 
-        return static::processResponse();
+        return static::processJsonResponse(self::$response);
     }
     
     public static function requestAsync($method, $url, $_ = null) {
@@ -66,7 +67,7 @@ class Http
     }
 
     public static function response() {
-        return static::processResponse();
+        return static::processJsonResponse(self::$response);
     }
 
     public static function respond()
