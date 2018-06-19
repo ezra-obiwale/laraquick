@@ -18,7 +18,7 @@ class Upload {
      */
     public static function localUpload(UploadedFile $file, $path = '')
     {
-        $name = self::createFilename();
+        $name = self::createFilename($file);
         return url(Storage::url($file->storeAs($path, $name)));
     }
 
@@ -30,7 +30,7 @@ class Upload {
      * @return bool|string
      */
     public static function awsUpload(UploadedFile $file, $path = '') {
-        $name = self::createFilename();
+        $name = self::createFilename($file);
         if (!self::s3()->put(
             $path . '/' . $name, 
             fopen($file->getRealPath(), 'r+'), 'public')
