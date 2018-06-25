@@ -92,7 +92,7 @@ trait Update
             }
         }
         catch (\Exception $ex) {
-            Log::error('Update: ' . $ex->getMessage(), [$data]);
+            Log::error('Update: ' . $ex->getMessage(), $data);
             try {
                 $this->rollbackUpdate($data, $item);
             }

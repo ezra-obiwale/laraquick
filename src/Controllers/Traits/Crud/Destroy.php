@@ -101,7 +101,7 @@ trait Destroy
             }
         }
         catch (\Exception $ex) {
-            Log::error('Delete: ' . $ex->getMessage(), [$data]);
+            Log::error('Delete: ' . $ex->getMessage());
             try {
                 $this->rollbackDestroy($item);
             }
