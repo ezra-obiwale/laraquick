@@ -138,7 +138,8 @@ trait Attachable
             $this->treatRelation($model, $relation);
             $model->$relation()->syncWithoutDetaching($this->prepareAttachItems($items, $model, $relation));
             return response()->json([
-                'status' => 'ok'
+                'status' => 'ok',
+                'data' => $model->$relation()->whereIn('id', $items)->get()
             ]);
         }
         catch (\Exception $e) {
@@ -174,7 +175,8 @@ trait Attachable
             $this->treatRelation($model, $relation);
             $model->$relation()->detach($this->prepareDetachItems($items, $model, $relation));
             return response()->json([
-                'status' => 'ok'
+                'status' => 'ok',
+                'data' => $model->$relation()->whereIn('id', $items)->get()
             ]);
         }
         catch (\Exception $e) {
@@ -214,7 +216,8 @@ trait Attachable
             unset($resp['attached']);
             unset($resp['detached']);
             return response()->json([
-                'status' => 'ok'
+                'status' => 'ok',
+                'data' => $model->$relation
             ]);
         }
         catch (\Exception $e) {
