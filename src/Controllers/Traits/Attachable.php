@@ -101,7 +101,7 @@ trait Attachable
             $model->$relation()->syncWithoutDetaching($this->prepareAttachItems($items, $model, $relation));
             return response()->json([
                 'status' => 'ok',
-                'data' => $model->$relation()->whereIn('id', $items)->get()
+                'data' => $model->$relation()->find($items)
             ]);
         }
         catch (\Exception $e) {
@@ -133,10 +133,11 @@ trait Attachable
         try {
             $items = request()->input($paramKey);
             $this->treatRelation($model, $relation);
+            $item = $model->$relation()->find($items);
             $model->$relation()->detach($this->prepareDetachItems($items, $model, $relation));
             return response()->json([
                 'status' => 'ok',
-                'data' => $model->$relation()->whereIn('id', $items)->get()
+                'data' => $item
             ]);
         }
         catch (\Exception $e) {
