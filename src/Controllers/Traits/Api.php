@@ -18,9 +18,10 @@ trait Api
      *
      * @param mixed $response
      * @param integer $code
+     * @param array $meta
      * @return Response
      */
-    protected function success($response = null, $code = 200)
+    protected function success($response = null, $code = 200, array $meta = [])
     {
         $resp = [
             'status' => is_array($response) && array_key_exists('status', $response)
@@ -32,6 +33,10 @@ trait Api
             $resp['message'] = $response;
         } elseif ($response !== null) {
             $resp['data'] = $response;
+        }
+
+        if (count($meta)) {
+            $resp['meta'] = $meta;
         }
         
         return response()->json($resp, $code);

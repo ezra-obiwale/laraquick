@@ -39,9 +39,8 @@ trait Respond
         if (request()->query('length') != 'all' && count($resp['data'])) {
             unset($items['data']);
             $meta['pagination'] = $items;
-            $resp['meta'] = $meta;
         }
-		return $this->success($resp, $code);
+		return $this->success($resp, $code, $meta);
     }
 
     /**
