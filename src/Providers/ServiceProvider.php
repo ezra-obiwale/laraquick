@@ -16,7 +16,7 @@ class ServiceProvider extends BaseServiceProvider
      */
     public function register()
     {
-        $this->mergeConfigFrom($this->path('config/laraquick'), 'laraquick');
+        $this->mergeConfigFrom($this->configPath(), 'laraquick');
     }
 
     /**
@@ -27,7 +27,7 @@ class ServiceProvider extends BaseServiceProvider
     public function boot()
     {
         $this->publishes([
-            $this->path('config/laraquick') => config_path('laraquick.php'),
+            $this->configPath() => config_path('laraquick.php'),
         ]);
 
         if ($this->app->runningInConsole()) {
@@ -38,9 +38,9 @@ class ServiceProvider extends BaseServiceProvider
 
     }
 
-    protected function path($file)
+    protected function path()
     {
-        return __DIR__ . "/{$file}.php";
+        return dirname(__DIR__) . "/config/laraquick.php";
     }
 
 }
