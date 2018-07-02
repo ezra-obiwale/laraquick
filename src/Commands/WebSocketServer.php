@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Console\Commands;
+namespace Laraquick\Commands;
 
 use Illuminate\Console\Command;
 use Ratchet\Server\IoServer;
 use Ratchet\Http\HttpServer;
 use Ratchet\WebSocket\WsServer;
-use App\Http\Controllers\V1\WebSocketController;
 
 class WebSocketServer extends Command
 {
@@ -41,10 +40,14 @@ class WebSocketServer extends Command
      */
     public function handle()
     {
+        $socketControllerClass = config('laraquick.websocket.controller');
+        if (!class_exists($socketControllerClass)) {
+            return $this->error('WebSocket controller not found');
+        }
         $server = IoServer::factory(
             new HttpServer(
                 new WsServer(
-                    new WebSocketController()
+                    new $socketControllerClass()
                 )
             ),
             intval(config('laraquick.websocket.port')),
