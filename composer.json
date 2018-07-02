@@ -24,6 +24,13 @@
         "laravel/framework": "5.5.*",
         "guzzlehttp/guzzle": "~6.0"
     },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Laraquick\\Providers\\ServiceProvider"
+            ]
+        }
+    },
     "autoload": {
         "psr-4": {
             "Laraquick\\": "src/"
