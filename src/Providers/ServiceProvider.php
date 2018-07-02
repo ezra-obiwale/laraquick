@@ -38,7 +38,7 @@ class ServiceProvider extends BaseServiceProvider
 
     }
 
-    protected function path()
+    protected function configPath()
     {
         return dirname(__DIR__) . "/config/laraquick.php";
     }
