@@ -70,7 +70,7 @@ trait for its `Web` counterpart, and you're good.
 
 ## Documentation
 
-[Get a full walk-through](http://laraquick.ezraobiwale.com)
+[Get a full walk-through](http://laraquick.readme.io)
 
 ## Contribution
 
