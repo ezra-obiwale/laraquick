@@ -1,5 +1,5 @@
 <?php
-namespace Laraquick\Controllers\Traits;
+namespace Laraquick\Controllers\Traits\Crud;
 
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
@@ -15,7 +15,7 @@ use DB;
 trait Crud
 {
 
-    use Crud\Index, Crud\Store, Crud\Show, Crud\Update, Crud\Destroy, Crud\Validation, Respond;
+    use Index, Store, Show, Update, Destroy, Validation, Respond;
 
     /**
      * Should return a static instance of the target model class or

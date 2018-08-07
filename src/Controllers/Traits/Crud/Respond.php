@@ -1,5 +1,5 @@
 <?php
-namespace Laraquick\Controllers\Traits;
+namespace Laraquick\Controllers\Traits\Crud;
 
 use Illuminate\Http\Response;
 use Illuminate\Database\Eloquent\Collection;

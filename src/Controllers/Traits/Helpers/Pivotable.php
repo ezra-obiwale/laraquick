@@ -1,6 +1,6 @@
 <?php
 
-namespace Laraquick\Controllers\Traits;
+namespace Laraquick\Controllers\Traits\Helpers;
 
 /**
  * Simplifies add, removing and syncing many-to-many relations
