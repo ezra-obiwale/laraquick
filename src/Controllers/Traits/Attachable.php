@@ -101,7 +101,7 @@ trait Attachable
             $model->$relation()->syncWithoutDetaching($this->prepareAttachItems($items, $model, $relation));
             return response()->json([
                 'status' => 'ok',
-                'data' => $model->$relation()->find($items)
+                'data' => $model->$relation
             ]);
         }
         catch (\Exception $e) {
