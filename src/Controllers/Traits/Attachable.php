@@ -139,7 +139,7 @@ trait Attachable
             $model->$relation()->syncWithoutDetaching($this->prepareAttachItems($items, $model, $relation));
             return response()->json([
                 'status' => 'ok',
-                'data' => $model->$relation()->find($items)
+                'data' => $model->load($relation)->$relation
             ]);
         }
         catch (\Exception $e) {
@@ -218,7 +218,7 @@ trait Attachable
             unset($resp['detached']);
             return response()->json([
                 'status' => 'ok',
-                'data' => $model->$relation
+                'data' => $model->load($relation)->$relation
             ]);
         }
         catch (\Exception $e) {
