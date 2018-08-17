@@ -44,15 +44,18 @@ class WebSocketServer extends Command
         if (!class_exists($socketControllerClass)) {
             return $this->error('WebSocket controller not found');
         }
+        $address = config('laraquick.websocket.allowed_ip_address');
+        $port = config('laraquick.websocket.port');
         $server = IoServer::factory(
             new HttpServer(
                 new WsServer(
                     new $socketControllerClass()
                 )
             ),
-            intval(config('laraquick.websocket.port')),
-            config('laraquick.websocket.allowed_ip_address')
+            intval($port),
+            $address
        );
+       $this->info("Websocket server started on port $port");
        $server->run();
     }
 }

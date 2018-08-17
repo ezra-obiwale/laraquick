@@ -3,6 +3,7 @@
 namespace Laraquick\Helpers;
 
 use Illuminate\Support\Facades\DB as iDB;
+use Exception;
 
 class DB {
 
@@ -46,5 +47,17 @@ class DB {
         iDB::statement("ALTER TABLE {$this->tableName} DROP INDEX {$key}");
 
         return $this;
+    }
+
+    public static function transaction(callable $func)
+    {
+        iDB::beginTransaction();
+        try {
+            $func();
+        } catch (Exception $ex) {
+            iDB::rollback();
+            throw new Exception($ex->getMessage(), $ex->getCode(), $ex);
+        }
+        iDB::commit();
     }
 }
