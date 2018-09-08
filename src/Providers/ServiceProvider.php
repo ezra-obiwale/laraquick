@@ -29,7 +29,7 @@ class ServiceProvider extends BaseServiceProvider
     {
         $this->publishes([
             $this->configPath() => config_path('laraquick.php'),
-        ]);
+        ], 'config');
 
         if ($this->app->runningInConsole()) {
             $this->commands([

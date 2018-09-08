@@ -33,27 +33,21 @@ trait WebSocket {
             return;
         }
         HWebSocket::setCurrentClient($from);
-        static::onEvent($msg['event'], @$msg['data']);
-        HWebSocket::resolve($msg['event'], @$msg['data']);
+        $event = trim($msg['event']);
+        static::onEvent($event, @$msg['data']);
+        $method = $this->resolveEvent($event);
+        if (method_exists($this, $method)) {
+            $this->$method(@$msg['data']);
+        }
+    }
+
+    protected function resolveEvent($event) {
+        return 'on' . ucfirst($event);
     }
 
     final protected function emit($event, $data = null)
     {
         HWebSocket::emit($event, $data);
-    }
-
-    final protected function on($event, callable $callback) {
-        HWebSocket::on($event, $callback);
-    }
-
-    final protected function off($event = null, $callback = null)
-    {
-        HWebSocket::off($event, $callback);
-    }
-
-    protected function onEvent($event, $data = null)
-    {
-        
     }
 
 }

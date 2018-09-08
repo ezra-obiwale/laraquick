@@ -2,6 +2,7 @@
 namespace Laraquick\Controllers\Traits\Crud;
 
 use Illuminate\Http\Response;
+use Spatie\QueryBuilder\QueryBuilder;
 
 /**
  * Methods for listing resources
@@ -9,48 +10,27 @@ use Illuminate\Http\Response;
  */
 trait Index
 {
+
+    protected $allowed = [
+        'includes' => [],
+        'filters' => [],
+        'sorts' => [],
+        'appends' => []
+    ];
 	
     /**
      * Create a model not set error response
      *
      * @return Response
      */
-	abstract protected function modelNotSetError();
+    abstract protected function modelNotSetError();
+    
     /**
      * The model to use in the index method.
      *
      * @return mixed
      */
     abstract protected function indexModel();
-    
-    /**
-     * The model to use in the index method when @see searchQueryParam() exists in the `GET` query.
-     * 
-     * It should return the model after the query conditions have been implemented.
-     *
-     * @return mixed
-     */
-    abstract protected function searchModel($query);
-
-    /**
-     * The `GET` parameter that would hold the search query
-     *
-     * @return string
-     */
-    protected function searchQueryParam()
-    {
-        return 'query';
-    }
-
-    /**
-     * The `GET` parameter that would hold the search query
-     *
-     * @return string
-     */
-    protected function sortParam()
-    {
-        return 'sort';
-    }
 
     /**
      * Sets the default pagination length
@@ -61,32 +41,93 @@ trait Index
     {
         return 15;
     }
-    
+
     /**
-     * Applies sort to the given model based on the given string
-     *  
-     * @param string $string Format is column:direction,column:direction
-     * @param string $model
+     * Set allowed types
+     *
+     * @param string $type includes | filters | sorts | appends
+     * @param string|array $value
+     * @return self
+     */
+    protected function allowed($type, $value)
+    {
+        $this->allowed[$type] = is_array($value) ? join(',', $value) : $value;
+        return $this;
+    }
+
+    /**
+     * Set allowed includes
+     *
+     * @return array|string
+     */
+    protected function allowedIncludes()
+    {
+        return [];
+    }
+
+    /**
+     * Set allowed filters
+     *
+     * @return array|string
+     */
+    protected function allowedFilters()
+    {
+        return [];
+    }
+
+    /**
+     * Set allowed sorts
+     *
+     * @return array|string
+     */
+    protected function allowedSorts()
+    {
+        return [];
+    }
+
+    /**
+     * Set alowed appends
+     *
+     * @return array|string
+     */
+    protected function allowedAppends()
+    {
+        return [];
+    }
+
+    /**
+     * Set default sort
+     *
      * @return string
      */
-    private function sort($string, $model)
+    protected function defaultSort()
     {
-        $isObject = is_object($model);
-        foreach (explode(',', $string) as $sorter) {
-            $sorter = trim($sorter);
-            if (!$sorter) continue;
+        
+    }
 
-            $parts = explode(':', $sorter);
-            $col = trim($parts[0]);
-            $dir = count($parts) > 1
-                ? trim($parts[1])
-                : 'asc';
+    private function isValid($param)
+    {
+        return $param && ((is_array($param) && count($param)) || is_string($param));
+    }
 
-            $model = $isObject
-                ? $model->orderBy($col, $dir)
-                : $model::orderBy($col, $dir);
+    private function validArray($param, $allowedKey = null)
+    {
+        if ($this->isValid($param)) {
+            // convert to string
+            if (is_array($param)) {
+                $param = join(',', $param);
+            }
+            // join with allowed array
+            if ($allowedKey) {
+                $param .= ',' . $this->allowed[$allowedKey];
+            }
+            // remove all spaces
+            $param = str_replace(' ', '', $param);
+            // convert to array
+            $param = explode(',', $param);
+            // return only unique values
+            return array_unique($param);
         }
-        return $model;
     }
 
     /**
@@ -95,35 +136,35 @@ trait Index
      */
     public function index()
     {
-        if ($query = request($this->searchQueryParam())) {
-            $model = $this->searchModel($query);
-			if (!$model) {
-				logger()->error('Search model undefined');
-			}
-        }
-        else {
-            $model = $this->indexModel();
-			if (!$model) {
-				logger()->error('Index model undefined');
-			}
-        }
+        $model = $this->indexModel();
 		if (!$model) {
+            logger()->error('Index model undefined');
 			return $this->modelNotSetError();
-		}
+        }
+        
+        $builder = QueryBuilder::for($model);
 
-        if ($sorter = request($this->sortParam())) {
-            $model = $this->sort($sorter, $model);
+        if ($includes = $this->validArray($this->allowedIncludes())) {
+            $builder->allowedIncludes($includes);
+        }
+        if ($filter = $this->validArray($this->allowedFilters())) {
+            $builder->allowedFilters($filter);
+        }
+        if ($defaultSort = $this->validArray($this->defaultSort())) {
+            $builder->defaultSort($defaultSort);
+        }
+
+        if ($sort = $this->validArray($this->allowedSorts())) {
+            $builder->allowedSorts($sort);
         }
 
         $length = request('length', $this->defaultPaginationLength());
-        if ($length == 'all')
-            $data = is_object($model)
-            ? $model->get()
-            : $model::all();
-        else
-            $data = is_object($model)
-            ? $model->simplePaginate($length)
-            : $model::simplePaginate($length);
+        if ($length == 'all') {
+            $data = $builder->get();
+        }
+        else {
+            $data = $builder->simplePaginate($length);
+        }
         if ($resp = $this->beforeIndexResponse($data)) return $resp;
         return $this->indexResponse($data);
     }
@@ -154,37 +195,37 @@ trait Index
      */
     public function trashedIndex()
     {
-        if ($query = request($this->searchQueryParam())) {
-            $model = $this->searchModel($query);
-			if (!$model) {
-				logger()->error('Search model undefined');
-			}
-        }
-        else {
-            $model = $this->indexModel();
-			if (!$model) {
-				logger()->error('Index model undefined');
-			}
-        }
+        $model = $this->indexModel();
 		if (!$model) {
+            logger()->error('Index model undefined');
 			return $this->modelNotSetError();
-		}
+        }
+        
+        $builder = QueryBuilder::for($model);
 
-        if ($sorter = request($this->sortParam())) {
-            $model = $this->sort($sorter, $model);
+        if ($includes = $this->validArray($this->allowedIncludes())) {
+            $builder->allowedIncludes($includes);
+        }
+        if ($filter = $this->validArray($this->allowedFilters())) {
+            $builder->allowedFilters($filter);
+        }
+        if ($defaultSort = $this->validArray($this->defaultSort())) {
+            $builder->defaultSort($defaultSort);
+        }
+
+        if ($sort = $this->validArray($this->allowedSorts())) {
+            $builder->allowedSorts($sort);
         }
 
         $length = request('length', $this->defaultPaginationLength());
-        if ($length == 'all')
-            $data = is_object($model)
-            ? $model->onlyTrashed()->all()
-            : $model::onlyTrashed()->all();
-        else
-            $data = is_object($model)
-            ? $model->simplePaginate($length)
-            : $model::simplePaginate($length);
-        if ($resp = $this->beforeIndexResponse($data)) return $resp;
-        return $this->indexResponse($data);
+        if ($length == 'all') {
+            $data = $builder->onlyTrashed()->get();
+        }
+        else {
+            $data = $builder->onlyTrashed()->simplePaginate($length);
+        }
+        if ($resp = $this->beforeTrashedIndexResponse($data)) return $resp;
+        return $this->trashedIndexResponse($data);
     }
 
     /**
