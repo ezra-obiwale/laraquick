@@ -37,9 +37,9 @@ trait WebSocket {
         HWebSocket::resolve($msg['event'], @$msg['data']);
     }
 
-    final protected function emit($event, $data = null)
+    final protected function emit($event, $data = null, $toSelf = false)
     {
-        HWebSocket::emit($event, $data);
+        HWebSocket::emit($event, $data, $toSelf);
     }
 
     final protected function on($event, callable $callback) {
