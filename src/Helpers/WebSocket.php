@@ -34,10 +34,10 @@ class WebSocket {
         self::$currentClient = $client;
     }
 
-    public static function emit($event, $data = null)
+    public static function emit($event, $data = null, $toSelf = false)
     {
         foreach (self::$clients as $client) {
-            if ($client == self::$currentClient) {
+            if (!$toSelf && $client == self::$currentClient) {
                 continue;
             }
 

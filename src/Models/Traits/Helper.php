@@ -37,6 +37,16 @@ trait Helper
         }
         return $query->select(array_diff(array_merge($defaultColumns, $this->fillable), (array) $value));
     }
+
+    /**
+     * Removes timestamps from query
+     *
+     * @return void
+     */
+    public function scopeWithoutTimestamps() {
+        $this->timestamps = false;
+        return $this;
+    }
     
     public function toArray()
     {

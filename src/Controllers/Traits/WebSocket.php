@@ -11,17 +11,17 @@ trait WebSocket {
 
     final public function onOpen(ConnectionInterface $conn)
     {
-        HWebSocket::addClient($conn);
+        return HWebSocket::addClient($conn);
     }
 
     final public function onClose(ConnectionInterface $conn)
     {
-        HWebSocket::removeClient($conn);
+        return HWebSocket::removeClient($conn);
     }
 
     final public function onError(ConnectionInterface $conn, Exception $e)
     {
-        $conn->close();
+        return $conn->close();
     }
 
     final public function onMessage(ConnectionInterface $from, $msg)
@@ -37,7 +37,7 @@ trait WebSocket {
         static::onEvent($event, @$msg['data']);
         $method = $this->resolveEvent($event);
         if (method_exists($this, $method)) {
-            $this->$method(@$msg['data']);
+            return $this->$method(@$msg['data']);
         }
     }
 
@@ -45,9 +45,9 @@ trait WebSocket {
         return 'on' . ucfirst($event);
     }
 
-    final protected function emit($event, $data = null)
+    final protected function emit($event, $data = null, $toSelf = false)
     {
-        HWebSocket::emit($event, $data);
+        return HWebSocket::emit($event, $data, $toSelf);
     }
 
 }
