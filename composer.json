@@ -22,6 +22,7 @@
     "require": {
         "php": ">=7.0",
         "laravel/framework": "5.*",
+        "maatwebsite/excel": "~3.0",
         "guzzlehttp/guzzle": "~6.0",
         "spatie/laravel-query-builder": "^1.10"
     },
