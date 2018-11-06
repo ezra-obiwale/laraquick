@@ -1,13 +1,13 @@
 <?php
 
-namespace Laraquick\Commands;
+namespace Laraquick\Commands\WebSocketServer;
 
 use Illuminate\Console\Command;
 use Ratchet\Server\IoServer;
 use Ratchet\Http\HttpServer;
 use Ratchet\WebSocket\WsServer;
 
-class WebSocketServer extends Command
+class Start extends Command
 {
     /**
      * The name and signature of the console command.

@@ -4,7 +4,8 @@ namespace Laraquick\Providers;
 
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
-use Laraquick\Commands\WebSocketServer;
+use Laraquick\Commands\WebSocketServer\Start;
+use Laraquick\Commands\WebSocketServer\Restart;
 use Laraquick\Commands\Database;
 
 class ServiceProvider extends BaseServiceProvider
@@ -34,7 +35,8 @@ class ServiceProvider extends BaseServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 Database::class,
-                WebSocketServer::class,
+                Start::class,
+                Restart::class,
             ]);
         }
 
