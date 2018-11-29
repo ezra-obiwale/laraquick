@@ -9,6 +9,12 @@ use SplObjectStorage;
 
 trait WebSocket {
 
+    public function __constructor() {
+        parent::__constructor();
+
+        HWebSocket::canReceiveEvent(static::shouldReceiveEvent);
+    }
+
     final public function onOpen(ConnectionInterface $conn)
     {
         return HWebSocket::addClient($conn);
@@ -46,8 +52,17 @@ trait WebSocket {
         HWebSocket::on($event, $callback);
     }
 
+    protected function shouldReceiveEvent($client, $event, $data)
+    {
+        return true;
+    }
+
     protected function resolveEvent($event) {
         return 'on' . ucfirst($event);
+    }
+
+    protected function onEvent($event, $data = null) {
+        
     }
 
 }
