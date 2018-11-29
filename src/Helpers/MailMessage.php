@@ -30,6 +30,12 @@ class MailMessage extends iMailMessage {
         return $this;
     }
 
+    public function table(array $table) : self
+    {
+        $this->table = $table;
+        return $this;
+    }
+
     /**
      * @inheritDoc
      */
