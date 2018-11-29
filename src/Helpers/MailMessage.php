@@ -8,6 +8,12 @@ class MailMessage extends iMailMessage {
 
     protected $table = [];
 
+    public function setTableTitle(string $title) : self
+    {
+        $this->table['title'] = $title;
+        return $this;
+    }
+
     public function setTableHeaders(array $headers) : self
     {
         $this->table['headers'] = $headers;
