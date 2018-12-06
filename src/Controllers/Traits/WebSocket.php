@@ -34,7 +34,7 @@ trait WebSocket {
         }
         HWebSocket::setCurrentClient($from);
         static::onEvent($msg['event'], @$msg['data'], $from);
-        HWebSocket::resolve($msg['event'], @$msg['data']);
+        HWebSocket::resolve($msg['event'], @$msg['data'], $from);
     }
 
     final protected function emit($event, $data = null, $toSelf = false)
