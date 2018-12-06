@@ -68,13 +68,13 @@ class WebSocket {
         }
     }
 
-    public static function resolve($event, $data = null)
+    public static function resolve($event, $data, $from)
     {
         if (!array_key_exists($event, self::$callbacks)) {
             return;
         }
         foreach (self::$callbacks[$event] as $callback) {
-            $callback($data);
+            $callback($data, $from);
         }
     }
 }
