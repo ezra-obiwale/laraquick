@@ -39,7 +39,7 @@ trait WebSocket {
             return;
         }
         HWebSocket::setCurrentClient($from);
-        static::onEvent($msg['event'], @$msg['data']);
+        static::onEvent($msg['event'], @$msg['data'], $from);
         HWebSocket::resolve($msg['event'], @$msg['data']);
     }
 
@@ -57,11 +57,8 @@ trait WebSocket {
         return true;
     }
 
-    protected function resolveEvent($event) {
-        return 'on' . ucfirst($event);
-    }
-
-    protected function onEvent($event, $data = null) {
+    protected function onEvent($event, $data, $client)
+    {
         
     }
 
