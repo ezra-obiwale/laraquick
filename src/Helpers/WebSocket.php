@@ -5,13 +5,14 @@ namespace Laraquick\Helpers;
 use SplObjectStorage;
 use Ratchet\ConnectionInterface;
 
-class WebSocket {
-    
+class WebSocket
+{
     private static $callbacks = [];
     private static $clients;
     private static $currentClient;
 
-    private static function init () {
+    private static function init()
+    {
         if (!self::$clients) {
             self::$clients = new SplObjectStorage;
         }
@@ -40,12 +41,16 @@ class WebSocket {
             if (!$toSelf && $client == self::$currentClient) {
                 continue;
             }
-
-            $client->send(json_encode([
-                'event' => trim($event),
-                'data' => $data
-            ]));
+            self::emitTo($client, $event, $data);
         }
+    }
+
+    public static function emitTo (ConnectionInterface $client, $event, $data = null)
+    {
+        $client->send(json_encode([
+            'event' => trim($event),
+            'data' => $data
+        ]));
     }
 
     public static function on($event, callable $callback)
@@ -57,7 +62,7 @@ class WebSocket {
     {
         if (!$event) {
             self::$callbacks = [];
-        } else if (!$callback) {
+        } elseif (!$callback) {
             self::$callbacks[$event] = [];
         } else {
             foreach (self::$callbacks as $key => $cb) {
@@ -68,7 +73,7 @@ class WebSocket {
         }
     }
 
-    public static function resolve($event, $data, $from)
+    public static function resolve($event, $data, ConnectionInterface $from)
     {
         if (!array_key_exists($event, self::$callbacks)) {
             return;
