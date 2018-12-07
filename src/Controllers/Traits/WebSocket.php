@@ -102,6 +102,11 @@ trait WebSocket {
         HWebSocket::on($event, $callback);
     }
 
+    final protected function off($event = null, callable $callback = null)
+    {
+        HWebSocket::off($event, $callback);
+    }
+
     protected function shouldReceiveEvent($client, $event, $data)
     {
         return true;

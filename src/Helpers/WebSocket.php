@@ -65,6 +65,26 @@ class WebSocket
         ]));
     }
 
+    public static function on($event, callable $callback)
+    {
+        self::$callbacks[$event][] = $callback;
+    }
+
+    public static function off($event = null, callable $callback = null)
+    {
+        if (!$event) {
+            self::$callbacks = [];
+        } elseif (!$callback) {
+            self::$callbacks[$event] = [];
+        } else {
+            foreach (self::$callbacks as $key => $cb) {
+                if ($callback == $cb) {
+                    unset(self::$callbacks[$key]);
+                }
+            }
+        }
+    }
+
     public static function resolve($event, $data, ConnectionInterface $from)
     {
         if (!array_key_exists($event, self::$callbacks)) {
