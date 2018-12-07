@@ -17,17 +17,20 @@ trait WebSocket {
 
     final public function onOpen(ConnectionInterface $conn)
     {
-        return HWebSocket::addClient($conn);
+        $this->connected($conn);
+        HWebSocket::addClient($conn);
     }
 
     final public function onClose(ConnectionInterface $conn)
     {
-        return HWebSocket::removeClient($conn);
+        HWebSocket::removeClient($conn);
+        $this->disconnected($conn);
     }
 
     final public function onError(ConnectionInterface $conn, Exception $e)
     {
-        return $conn->close();
+        $this->catchErrors($e, $conn);
+        $conn->close();
     }
 
     final public function onMessage(ConnectionInterface $from, $msg)
@@ -61,5 +64,9 @@ trait WebSocket {
     {
         
     }
+
+    protected function connected($client) {}
+    protected function disconnected($client) {}
+    protected function catchErrors($exception, $client) {}
 
 }
