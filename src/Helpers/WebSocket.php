@@ -10,12 +10,23 @@ class WebSocket
     private static $callbacks = [];
     private static $clients;
     private static $currentClient;
+    private static $shouldReceiveEvent;
 
     private static function init()
     {
         if (!self::$clients) {
             self::$clients = new SplObjectStorage;
         }
+        if (!self::$shouldReceiveEvent) {
+            self::$shouldReceiveEvent = function () {
+                return true;
+            };
+        }
+    }
+
+    public static function canReceiveEvent(callable $should)
+    {
+        self::$shouldReceiveEvent = $should;
     }
 
     public static function addClient(ConnectionInterface $client)
@@ -38,7 +49,8 @@ class WebSocket
     public static function emit($event, $data = null, $toSelf = false)
     {
         foreach (self::$clients as $client) {
-            if (!$toSelf && $client == self::$currentClient) {
+            if ((!$toSelf && $client == self::$currentClient) ||
+                !call_user_func(self::$shouldReceiveEvent, $client, $event, $data)) {
                 continue;
             }
             self::emitTo($client, $event, $data);
