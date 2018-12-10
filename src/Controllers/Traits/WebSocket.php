@@ -30,6 +30,7 @@ trait WebSocket {
      */
     final public function onOpen(ConnectionInterface $conn)
     {
+        $conn->subscriptions = ['on' => [], 'off' => []];
         $this->connected($conn);
         HWebSocket::addClient($conn);
     }
