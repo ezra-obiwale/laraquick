@@ -9,8 +9,8 @@ use SplObjectStorage;
 
 trait WebSocket {
 
-    public function __constructor() {
-        parent::__constructor();
+    public function __construct() {
+        parent::__construct();
 
         HWebSocket::canReceiveEvent(static::shouldReceiveEvent);
     }
