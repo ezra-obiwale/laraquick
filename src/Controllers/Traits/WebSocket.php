@@ -156,8 +156,19 @@ trait WebSocket {
      */
     private function isSubscribedTo($event, ConnectionInterface $client)
     {
-        return in_array($event, $client->subscriptions['on']) 
-            && !in_array($event, $client->subscriptions['off']);
+        return in_array($event, $client->subscriptions['on']);
+    }
+
+    /**
+     * Checks if a client did not subscribe to an event
+     *
+     * @param string $event
+     * @param ConnectionInterface $client
+     * @return boolean
+     */
+    private function isNotSubscribedTo($event, ConnectionInterface $client)
+    {
+        return in_array($event, $client->subscriptions['off']);
     }
 
     /**
