@@ -10,9 +10,16 @@ use SplObjectStorage;
 trait WebSocket {
 
     public function __construct() {
-        parent::__construct();
+        $this->init();
+    }
 
-        HWebSocket::canReceiveEvent(static::shouldReceiveEvent);
+    /**
+     * Initialize websocket controller
+     *
+     * @return void
+     */
+    final public function init() {
+        HWebSocket::canReceiveEvent([$this, 'shouldReceiveEvent']);
     }
 
     /**
@@ -105,11 +112,6 @@ trait WebSocket {
     final protected function off($event = null, callable $callback = null)
     {
         HWebSocket::off($event, $callback);
-    }
-
-    protected function shouldReceiveEvent($client, $event, $data)
-    {
-        return true;
     }
 
     /**
@@ -205,6 +207,11 @@ trait WebSocket {
         return mt_rand($lower, $upper);
     }
 
+
+    public function shouldReceiveEvent($client, $event, $data)
+    {
+        return true;
+    }
     protected function onEvent($event, $data, $client) {}
     protected function connected($client) {}
     protected function disconnected($client) {}
