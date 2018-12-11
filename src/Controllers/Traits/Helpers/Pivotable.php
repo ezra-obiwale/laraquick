@@ -4,10 +4,10 @@ namespace Laraquick\Controllers\Traits\Helpers;
 
 /**
  * Simplifies add, removing and syncing many-to-many relations
- * 
+ *
  */
-trait Pivotable {
-
+trait Pivotable
+{
     use Attachable;
 
     /**
@@ -16,7 +16,8 @@ trait Pivotable {
      *
      * @return string
      */
-    protected function relation() {
+    protected function relation()
+    {
         return 'items';
     }
 
@@ -40,7 +41,7 @@ trait Pivotable {
     public function items($id)
     {
         return $this->attached($id, $this->relation());
-    }    
+    }
 
     /**
      * Attaches a list of items to the object at the given id

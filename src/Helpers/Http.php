@@ -15,13 +15,14 @@ use Exception;
  */
 class Http
 {
-
     private static $client;
     private static $response;
 
     public static function client()
     {
-        if (!self::$client) self::$client = new Client;
+        if (!self::$client) {
+            self::$client = new Client;
+        }
         return self::$client;
     }
 
@@ -47,26 +48,31 @@ class Http
         return static::processJsonResponse(self::$response);
     }
     
-    public static function requestAsync($method, $url, $_ = null) {
+    public static function requestAsync($method, $url, $_ = null)
+    {
         $args = func_get_args();
         array_shift($args);
         $args[1]['http_errors'] = false;
         return call_user_func_array([static::client(), $method . 'Async'], $args);
     }
 
-    public static function hasErrors() {
+    public static function hasErrors()
+    {
         return static::getStatusCode() >= 400;
     }
 
-    public static function getStatusCode() {
+    public static function getStatusCode()
+    {
         return self::$response ? self::$response->getStatusCode() : 0;
     }
 
-    public static function rawResponse() {
+    public static function rawResponse()
+    {
         return self::$response;
     }
 
-    public static function response() {
+    public static function response()
+    {
         return static::processJsonResponse(self::$response);
     }
 
@@ -79,5 +85,4 @@ class Http
     {
         return static::req($method, $args);
     }
-
 }

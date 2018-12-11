@@ -54,15 +54,22 @@ class Database extends Command
         $data = $this->option('data');
         $fields = $this->option('fields');
         $action = 'get';
-        if ($this->option('create')) $action = 'insert';
-        if ($this->option('update')) $action = 'update';
-        if ($this->option('delete')) $action = 'delete';
+        if ($this->option('create')) {
+            $action = 'insert';
+        }
+        if ($this->option('update')) {
+            $action = 'update';
+        }
+        if ($this->option('delete')) {
+            $action = 'delete';
+        }
 
         $table = DB::table($tableName);
 
         $where = $this->prepWhere($where);
-        if (count($where))
+        if (count($where)) {
             $table->where($where);
+        }
         
         if ($whereNull) {
             foreach (explode(',', $whereNull) as $col) {
@@ -76,35 +83,41 @@ class Database extends Command
                     $this->info('Canceled');
                     return;
                 }
+                // no break
             case 'get':
                 $result = $table->$action($fields ? explode(',', $fields) : null);
                 break;
             case 'insert':
             case 'update':
                 $data = $this->prepData($data);
-                if (!count($data)) return $this->error('Empty data found. Please use option --data');
+                if (!count($data)) {
+                    return $this->error('Empty data found. Please use option --data');
+                }
                 $result = $table->$action($data);
                 break;
         }
 
-        if (is_object($result))
-            $result = $result->map(function($item){
+        if (is_object($result)) {
+            $result = $result->map(function ($item) {
                 return is_object($item) ? (array) $item : $item;
             })->toArray();
+        }
 
-        if (is_array($result)){
-            if (!count($result)) return $this->info('Result: empty');
+        if (is_array($result)) {
+            if (!count($result)) {
+                return $this->info('Result: empty');
+            }
             $this->info('Result:');
             $h = $action == 'get' ? $result[0] : $result;
             $headers = array_keys((array) $h);
             $this->table($headers, $result);
-        }
-        else {
+        } else {
             $this->info('Result: ' . $result);
         }
     }
 
-    private function prepWhere($where) {
+    private function prepWhere($where)
+    {
         $where = $where ? explode(',', $where) : [];
         foreach ($where as &$d) {
             $d = explode(':', $d);
@@ -112,7 +125,8 @@ class Database extends Command
         return $where;
     }
 
-    private function prepData($data) {
+    private function prepData($data)
+    {
         $newData = [];
         $data = $data ? explode(',', $data) : [];
         foreach ($data as $d) {

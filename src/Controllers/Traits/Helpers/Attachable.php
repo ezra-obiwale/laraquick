@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Shortcuts for many-to-many attachments
- * 
+ *
  * @see https://laravel.com/docs/5.5/eloquent-relationships#updating-many-to-many-relationships
  */
 trait Attachable
@@ -19,7 +19,8 @@ trait Attachable
      *
      * @return mixed
      */
-    protected function attachModel() {
+    protected function attachModel()
+    {
         return $this->model();
     }
 
@@ -28,7 +29,8 @@ trait Attachable
      *
      * @return mixed
      */
-    protected function detachModel() {
+    protected function detachModel()
+    {
         return $this->model();
     }
 
@@ -37,7 +39,8 @@ trait Attachable
      *
      * @return mixed
      */
-    protected function syncModel() {
+    protected function syncModel()
+    {
         return $this->model();
     }
 
@@ -48,7 +51,8 @@ trait Attachable
      * @param string $relation
      * @return void
      */
-    private function treatRelation(Model $model, &$relation) {
+    private function treatRelation(Model $model, &$relation)
+    {
         if (!method_exists($model, $relation)) {
             // change relation to camel case
             $relation = camel_case(str_replace('-', '_', $relation));
@@ -63,7 +67,8 @@ trait Attachable
      * @param string $relation
      * @return void
      */
-    protected function prepareAttachItems($items, Model $model, $relation) {
+    protected function prepareAttachItems($items, Model $model, $relation)
+    {
         return $items;
     }
 
@@ -75,7 +80,8 @@ trait Attachable
      * @param string $relation
      * @return void
      */
-    protected function prepareDetachItems($items, Model $model, $relation) {
+    protected function prepareDetachItems($items, Model $model, $relation)
+    {
         return $items;
     }
 
@@ -87,7 +93,8 @@ trait Attachable
      * @param string $relation
      * @return void
      */
-    protected function prepareSyncItems($items, Model $model, $relation) {
+    protected function prepareSyncItems($items, Model $model, $relation)
+    {
         return $items;
     }
 
@@ -98,9 +105,10 @@ trait Attachable
      * @param string $relation
      * @return Response
      */
-    public function attached($id, $relation) {
+    public function attached($id, $relation)
+    {
         $model = $this->attachModel();
-        $model = is_object($model) 
+        $model = is_object($model)
             ? $model->find($id)
             : $model::find($id);
         if (!$model) {
@@ -124,8 +132,9 @@ trait Attachable
         $paramKey = $paramKey ?: $relation;
         if (!$this->validate(request(), [
             $paramKey => 'required|array'
-        ]))
+        ])) {
             return $this->error($this->validationErrorMessage(), $this->validator->errors());
+        }
         $model = $this->attachModel();
         $model = is_object($model)
             ? $model->find($id)
@@ -141,8 +150,7 @@ trait Attachable
                 'status' => 'ok',
                 'data' => $model->load($relation)->$relation
             ]);
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             Log::error($e->getMessage());
             return $this->error('Something went wrong. Are you sure the ' . str_replace('_', ' ', $paramKey) . ' exists?');
         }
@@ -161,8 +169,9 @@ trait Attachable
         $paramKey = $paramKey ?: $relation;
         if (!$this->validate(request(), [
             $paramKey => 'required|array'
-        ]))
+        ])) {
             return $this->error($this->validationErrorMessage(), $this->validator->errors());
+        }
         $model = $this->detachModel();
         $model = is_object($model)
             ? $model->find($id)
@@ -179,8 +188,7 @@ trait Attachable
                 'status' => 'ok',
                 'data' => $_items
             ]);
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             Log::error($e->getMessage());
             return $this->error('Something went wrong. Are you sure the ' . str_replace('_', ' ', $paramKey) . ' exists?');
         }
@@ -199,8 +207,9 @@ trait Attachable
         $paramKey = $paramKey ?: $relation;
         if (!$this->validate(request(), [
             $paramKey => 'required|array'
-        ]))
+        ])) {
             return $this->error($this->validationErrorMessage(), $this->validator->errors());
+        }
         $model = $this->syncModel();
         $model = is_object($model)
             ? $model->find($id)
@@ -220,11 +229,9 @@ trait Attachable
                 'status' => 'ok',
                 'data' => $model->load($relation)->$relation
             ]);
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             Log::error($e->getMessage());
             return $this->error('Something went wrong. Are you sure the ' . str_replace('_', ' ', $paramKey) . ' exists?');
         }
     }
-
 }

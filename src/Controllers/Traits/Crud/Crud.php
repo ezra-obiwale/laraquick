@@ -14,7 +14,6 @@ use DB;
  */
 trait Crud
 {
-
     use Index, Store, Show, Update, Destroy, Validation, Respond;
 
     /**
@@ -37,7 +36,7 @@ trait Crud
 
     /**
      * The model to use in the index method when @see searchQueryParam() exists in the `GET` query.
-     * 
+     *
      * It should return the model after the query conditions have been implemented.
      * Defaults to @see indexModel()
      *
@@ -88,5 +87,4 @@ trait Crud
     {
         return $this->model();
     }
-
 }

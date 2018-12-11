@@ -17,13 +17,13 @@ trait Show
      * @return Response
      */
     abstract protected function notFoundError($message = null);
-	
+    
     /**
      * Create a model not set error response
      *
      * @return Response
      */
-	abstract protected function modelNotSetError();
+    abstract protected function modelNotSetError();
 
     /**
      * The model to use in the show method.
@@ -40,17 +40,21 @@ trait Show
     public function show($id)
     {
         $model = $this->showModel();
-		if (!$model) {
-			logger()->error('Show model undefined');
-			return $this->modelNotSetError();
-		}
+        if (!$model) {
+            logger()->error('Show model undefined');
+            return $this->modelNotSetError();
+        }
         $item = is_object($model)
             ? $model->find($id)
             : $model::find($id);
 
-        if (!$item) return $this->notFoundError();
+        if (!$item) {
+            return $this->notFoundError();
+        }
 
-        if ($resp = $this->beforeShowResponse($item)) return $resp;
+        if ($resp = $this->beforeShowResponse($item)) {
+            return $resp;
+        }
         return $this->showResponse($item);
     }
 
@@ -71,6 +75,4 @@ trait Show
      * @return Response|array
      */
     abstract protected function showResponse(Model &$data);
-    
-    
 }

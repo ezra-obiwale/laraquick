@@ -4,8 +4,8 @@ namespace Laraquick\Helpers;
 
 use Illuminate\Notifications\Messages\MailMessage as iMailMessage;
 
-class MailMessage extends iMailMessage {
-
+class MailMessage extends iMailMessage
+{
     protected $table = [];
 
     public function setTableTitle(string $title) : self
@@ -62,6 +62,4 @@ class MailMessage extends iMailMessage {
     {
         return get_object_vars($this);
     }
-
 }
-

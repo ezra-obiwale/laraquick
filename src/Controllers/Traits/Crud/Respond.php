@@ -18,29 +18,32 @@ trait Respond
     protected function error($message, $errors = null, $code = 400)
     {
         $resp = [
-			"status" => "error",
+            "status" => "error",
             "message" => $message
         ];
-        if ($errors !== null) $resp["errors"] = $errors;
+        if ($errors !== null) {
+            $resp["errors"] = $errors;
+        }
         return response()->json($resp, $code);
     }
 
     /**
-     * Called when return a list of paginated items. 
-     * 
+     * Called when return a list of paginated items.
+     *
      * The data is extracted while the others are placed in meta.
      *
      * @param array $items
      * @param integer $code
      * @return void
      */
-    protected function paginatedList(array $items, $code = 200, array $meta = []) {
+    protected function paginatedList(array $items, $code = 200, array $meta = [])
+    {
         $resp['data'] = array_key_exists('data', $items) ? $items['data'] : $items;
         if (request()->query('length') != 'all' && count($resp['data'])) {
             unset($items['data']);
             $meta['pagination'] = $items;
         }
-		return $this->success($resp, $code, $meta);
+        return $this->success($resp, $code, $meta);
     }
 
     /**
@@ -104,14 +107,14 @@ trait Respond
     {
         return $this->error($message !== null ?: 'Resource not found', null, 404);
     }
-	
+    
     /**
      * Create a model not set error response
      *
      * @return Response
      */
-	protected function modelNotSetError()
-	{
-		return $this->error('Model not set for action', null, 500);
-	}
+    protected function modelNotSetError()
+    {
+        return $this->error('Model not set for action', null, 500);
+    }
 }

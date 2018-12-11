@@ -350,7 +350,7 @@ trait Destroy
                 }
                 return $this->restoreDestroyedResponse($item);
             },
-            function ($ex) use($item) {
+            function ($ex) use ($item) {
                 try {
                     $this->rollbackRestoreDestroyed($item);
                 } catch (Exception $ex) {

@@ -4,7 +4,8 @@ namespace Laraquick\Controllers\Traits\Helpers;
 
 use Log;
 
-trait Referer {
+trait Referer
+{
 
     /**
      * Verify that the referer's origin matches the origin of the given url(s)
@@ -15,7 +16,9 @@ trait Referer {
      */
     protected function verifyReferer($url, $allowSubdomains = false)
     {
-        if (!is_array($url)) $url = [$url];
+        if (!is_array($url)) {
+            $url = [$url];
+        }
         $referer = request()->headers->get('referer');
         $refOrigin = $this->originFromUrl($referer);
         foreach ($url as $urll) {
@@ -26,13 +29,13 @@ trait Referer {
         throw new \Exception($referer . ' is not a valid domain.');
     }
 
-    protected function urlsMatch($url1, $url2, $ignoreSubdomains = false) {
+    protected function urlsMatch($url1, $url2, $ignoreSubdomains = false)
+    {
         $refOrigin = $this->originFromUrl($url1);
         $urlOrigin = $this->originFromUrl($url2);
         if ($refOrigin == $urlOrigin) {
             return true;
-        }
-        else if ($ignoreSubdomains) {
+        } elseif ($ignoreSubdomains) {
             $refParts = explode('.', $refOrigin);
             array_shift($refParts);
             $urlParts = explode('.', $urlOrigin);
@@ -54,11 +57,13 @@ trait Referer {
     protected function originFromUrl($url)
     {
         // remove protocol
-        if ($u = stristr($url, '://'))
+        if ($u = stristr($url, '://')) {
             $url = substr($u, 3);
+        }
         // remove everything from slash (/)
-        if (-1 !== $pos = strpos($url, '/'))
+        if (-1 !== $pos = strpos($url, '/')) {
             $url = substr($url, 0, $pos);
+        }
 
         return $url;
     }

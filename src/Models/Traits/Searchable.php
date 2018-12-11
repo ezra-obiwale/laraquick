@@ -4,9 +4,10 @@ namespace Laraquick\Models\Traits;
 
 use Illuminate\Database\Eloquent\Builder;
 
-trait Searchable {
+trait Searchable
+{
     /**
-     * The match string for the full text operation 
+     * The match string for the full text operation
      *
      * @var string
      */
@@ -32,7 +33,7 @@ trait Searchable {
         }
 
         $words = explode(' ', $text);
-        foreach($words as &$word) {
+        foreach ($words as &$word) {
             // apply required operator (+) to big words
             if (strlen($word) >= 3) {
                 $word = '+' . $word . '*';
@@ -47,7 +48,8 @@ trait Searchable {
      *
      * @return string
      */
-    protected function relevanceScoreName() {
+    protected function relevanceScoreName()
+    {
         return 'relevance_score';
     }
 
@@ -56,7 +58,8 @@ trait Searchable {
      *
      * @return array
      */
-    protected function searchableColumns() {
+    protected function searchableColumns()
+    {
         return $this->searchable ?: [];
     }
 
@@ -70,7 +73,7 @@ trait Searchable {
     public function scopeSearch(Builder $query, $text)
     {
         if ($text) {
-            $columns = '`' . $this->getTable() . '`.`' 
+            $columns = '`' . $this->getTable() . '`.`'
                 . implode("`, `{$this->getTable()}`.`", $this->searchableColumns())
                 . '`';
             $this->fullTextMatchString = "MATCH ({$columns}) AGAINST (? IN BOOLEAN MODE)";
@@ -88,8 +91,7 @@ trait Searchable {
     {
         if (!$this->fullTextMatchString) {
             $this->orderParams = [$direction, $relevanceScoreName];
-        }
-        else {
+        } else {
             $relevanceScoreName = $relevanceScoreName ?: $this->relevanceScoreName();
             $query->selectRaw($this->fullTextMatchString . " AS {$relevanceScoreName}")
                 ->orderBy($relevanceScoreName, $direction);

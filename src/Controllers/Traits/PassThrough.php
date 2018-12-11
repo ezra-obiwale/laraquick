@@ -19,7 +19,8 @@ trait PassThrough
     protected $responseStatusCode;
 
     public function model()
-    {}
+    {
+    }
 
     /**
      * The headers to pass into requests
@@ -93,8 +94,9 @@ trait PassThrough
     private function to()
     {
         $to = self::toUrl();
-        if ($to[strlen($to) - 1] !== '/')
+        if ($to[strlen($to) - 1] !== '/') {
             $to .= '/';
+        }
         return $to;
     }
 
@@ -116,18 +118,18 @@ trait PassThrough
                 if (array_key_exists('data', $resp)) {
                     $resp['data'] = (new Dud)->forceFill($resp['data']);
                     $data &= $resp['data'];
-                }
-                else {
+                } else {
                     $resp = (new Dud)->forceFill($resp);
                     $data = $resp;
                 }
-            }
-            else {
+            } else {
                 $data = null;
             }
         }
 
-        if ($data && $response = $this->$beforeMethod($data)) return $response;
+        if ($data && $response = $this->$beforeMethod($data)) {
+            return $response;
+        }
         return response()->json($resp, Http::getStatusCode());
     }
 
@@ -138,7 +140,9 @@ trait PassThrough
             'query' => request()->query(),
             'headers' => $this->$headerMethod()
         ];
-        if ($data) $options['json'] = $data;
+        if ($data) {
+            $options['json'] = $data;
+        }
         $method = $this->methodMap($action);
         $resp = $this->httpRequest($method, self::to() . $id, $options);
         return $this->respond($action, $resp);
@@ -182,7 +186,8 @@ trait PassThrough
      *
      * @return boolean
      */
-    protected function hasErrors() {
+    protected function hasErrors()
+    {
         return Http::hasErrors();
     }
 
@@ -203,10 +208,13 @@ trait PassThrough
     public function store(Request $request)
     {
         $data = $request->all();
-        if ($resp = $this->validateRequest())
+        if ($resp = $this->validateRequest()) {
             return $resp;
+        }
 
-        if ($resp = $this->beforeStore($data)) return $resp;
+        if ($resp = $this->beforeStore($data)) {
+            return $resp;
+        }
 
         return $this->request('store', null, $data);
     }
@@ -230,10 +238,13 @@ trait PassThrough
     public function update(Request $request, $id)
     {
         $data = $request->all();
-        if ($resp = $this->validateRequest($this->validationRules($data, $id), $this->validationMessages($data, $id)))
+        if ($resp = $this->validateRequest($this->validationRules($data, $id), $this->validationMessages($data, $id))) {
             return $resp;
+        }
 
-        if ($resp = $this->beforeUpdate($data, (new Dud)->forceFill($data))) return $resp;
+        if ($resp = $this->beforeUpdate($data, (new Dud)->forceFill($data))) {
+            return $resp;
+        }
 
         return $this->request('update', $id, $data);
     }
@@ -264,7 +275,9 @@ trait PassThrough
             'destroy' => 'DELETE'
         ];
 
-        if ($action) return $map[$action];
+        if ($action) {
+            return $map[$action];
+        }
         return $map;
     }
 }

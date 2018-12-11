@@ -20,5 +20,4 @@ class ToModel implements MToModel
             return call_user_func($this->each, $row);
         }
     }
-
 }

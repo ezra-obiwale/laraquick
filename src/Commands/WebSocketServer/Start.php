@@ -55,7 +55,7 @@ class Start extends Command
             intval($port),
             $address
        );
-       $this->info("Websocket server running on port $port");
-       $server->run();
+        $this->info("Websocket server running on port $port");
+        $server->run();
     }
 }

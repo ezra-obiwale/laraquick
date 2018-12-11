@@ -41,12 +41,10 @@ class ServiceProvider extends BaseServiceProvider
                 Restart::class,
             ]);
         }
-
     }
 
     protected function configPath()
     {
         return dirname(__DIR__) . "/config/laraquick.php";
     }
-
 }

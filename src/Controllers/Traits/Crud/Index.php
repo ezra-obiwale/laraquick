@@ -10,14 +10,13 @@ use Spatie\QueryBuilder\QueryBuilder;
  */
 trait Index
 {
-
     protected $allowed = [
         'includes' => [],
         'filters' => [],
         'sorts' => [],
         'appends' => []
     ];
-	
+    
     /**
      * Create a model not set error response
      *
@@ -102,7 +101,6 @@ trait Index
      */
     protected function defaultSort()
     {
-        
     }
 
     private function isValid($param)
@@ -137,9 +135,9 @@ trait Index
     public function index()
     {
         $model = $this->indexModel();
-		if (!$model) {
+        if (!$model) {
             logger()->error('Index model undefined');
-			return $this->modelNotSetError();
+            return $this->modelNotSetError();
         }
         
         $builder = QueryBuilder::for($model);
@@ -161,11 +159,12 @@ trait Index
         $length = request('length', $this->defaultPaginationLength());
         if ($length == 'all') {
             $data = $builder->get();
-        }
-        else {
+        } else {
             $data = $builder->simplePaginate($length);
         }
-        if ($resp = $this->beforeIndexResponse($data)) return $resp;
+        if ($resp = $this->beforeIndexResponse($data)) {
+            return $resp;
+        }
         return $this->indexResponse($data);
     }
     
@@ -196,9 +195,9 @@ trait Index
     public function trashedIndex()
     {
         $model = $this->indexModel();
-		if (!$model) {
+        if (!$model) {
             logger()->error('Index model undefined');
-			return $this->modelNotSetError();
+            return $this->modelNotSetError();
         }
         
         $builder = QueryBuilder::for($model);
@@ -220,11 +219,12 @@ trait Index
         $length = request('length', $this->defaultPaginationLength());
         if ($length == 'all') {
             $data = $builder->onlyTrashed()->get();
-        }
-        else {
+        } else {
             $data = $builder->onlyTrashed()->simplePaginate($length);
         }
-        if ($resp = $this->beforeTrashedIndexResponse($data)) return $resp;
+        if ($resp = $this->beforeTrashedIndexResponse($data)) {
+            return $resp;
+        }
         return $this->trashedIndexResponse($data);
     }
 
@@ -244,9 +244,8 @@ trait Index
      * @param array $data
      * @return Response|array
      */
-     protected function trashedIndexResponse(array $data) 
-     {
-         return $this->indexResponse();
-     }
-
+    protected function trashedIndexResponse(array $data)
+    {
+        return $this->indexResponse();
+    }
 }

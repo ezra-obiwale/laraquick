@@ -30,6 +30,16 @@ trait Store
     abstract protected function storeModel();
 
     /**
+     * The model to use in the storeMany method
+     *
+     * @return mixed
+     */
+    protected function storeManyModel()
+    {
+        return $this->storeModel();
+    }
+
+    /**
      * Called when store action fails
      *
      * @return Response
@@ -58,7 +68,7 @@ trait Store
     }
 
     /**
-     * Store a newly stored resource in storage.
+     * Save a new resource in storage.
      * @param  Request $request
      * @return Response
      */
@@ -94,12 +104,11 @@ trait Store
                 }
                 return $this->storeResponse($item);
             },
-            function ($ex) use($data, $item) {
+            function ($ex) use ($data, $item) {
                 logger()->error('Store: ' . $ex->getMessage(), $data);
                 try {
                     $this->rollbackStore($data, @$item ?: new Dud);
-                }
-                catch (Exception $ex) {
+                } catch (Exception $ex) {
                     logger()->error('Rollback: ' . $ex->getMessage());
                 }
             }
@@ -123,4 +132,96 @@ trait Store
      * @return Response|array
      */
     abstract protected function storeResponse(Model $data);
+
+    /**
+     * Called after validation but before store method is called
+     *
+     * @param array $data
+     * @return mixed The response to send or null
+     */
+    protected function beforeStoreMany(array &$data)
+    {
+    }
+
+    /**
+     * Called when an error occurs in a storeMany operation
+     *
+     * @param array $data The data from the request
+     * @param array $models The created model
+     * @return void
+     */
+    protected function rollbackStoreMany(array $data, Model $models)
+    {
+    }
+
+    /**
+     * Save many new resources in storage.
+     * @param  Request $request
+     * @return Response
+     */
+    public function storeMany(Request $request)
+    {
+        $data = $request->all();
+        if ($resp = $this->validateRequest($this->manyValidationRules($data))) {
+            return $resp;
+        }
+
+
+        $model = $this->storeModel();
+        if (!$model) {
+            logger()->error('Store model undefined');
+            return $this->modelNotSetError();
+        }
+
+        $items = [];
+        return DB::transaction(
+            function () use ($data, $model, &$items) {
+                if ($resp = $this->beforeStoreMany($data)) {
+                    return $resp;
+                }
+    
+                foreach ($data['many'] as $currentData) {
+                    $item = is_object($model)
+                        ? $model->create($data)
+                        : $model::create($data);
+        
+                    if (!$item) {
+                        throw new Exception('Create method returned falsable', null, 500);
+                    }
+                    $items[] = $item;
+                }
+    
+                if ($resp = $this->beforeStoreManyResponse($items)) {
+                    return $resp;
+                }
+                return $this->storeManyResponse($items);
+            },
+            function ($ex) use ($data, $items) {
+                logger()->error('Store: ' . $ex->getMessage(), $data);
+                try {
+                    $this->rollbackStoreMany($data, $items);
+                } catch (Exception $ex) {
+                    logger()->error('Rollback: ' . $ex->getMessage());
+                }
+            }
+        );
+    }
+
+    /**
+     * Called on success but before sending the response
+     *
+     * @param array $data
+     * @return mixed The response to send or null
+     */
+    protected function beforeStoreManyResponse(array $data)
+    {
+    }
+
+    /**
+     * Called for the response to method storeMany()
+     *
+     * @param array $data
+     * @return Response|array
+     */
+    abstract protected function storeManyResponse(array $data);
 }

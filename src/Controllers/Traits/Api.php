@@ -46,6 +46,11 @@ trait Api
         return $this->paginatedList($data->toArray());
     }
 
+    protected function storeManyResponse(array $data)
+    {
+        return $this->success($data, 201);
+    }
+
     protected function storeResponse(Model $data)
     {
         return $this->success($data, 201);

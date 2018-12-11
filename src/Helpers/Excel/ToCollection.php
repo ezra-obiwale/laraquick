@@ -20,5 +20,4 @@ class ToCollection extends Import implements MToCollection
             return call_user_func($this->each, $rows);
         }
     }
-
 }

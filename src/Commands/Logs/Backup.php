@@ -66,7 +66,8 @@ class Backup extends Command
         }
     }
 
-    protected function logPath($name, $count = 0) {
+    protected function logPath($name, $count = 0)
+    {
         $logName = $name;
         if ($count) {
             $logName .= '-' . $count;

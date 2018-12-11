@@ -10,7 +10,7 @@ class EachRow extends Import implements OnEachRow
 
     /**
      * Called on each row
-     * 
+     *
      * @param Row $row
      * @return void
      */
@@ -20,5 +20,4 @@ class EachRow extends Import implements OnEachRow
             return call_user_func($this->each, $row);
         }
     }
-
 }

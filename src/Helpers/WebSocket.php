@@ -57,7 +57,7 @@ class WebSocket
         }
     }
 
-    public static function emitTo (ConnectionInterface $client, $event, $data = null)
+    public static function emitTo(ConnectionInterface $client, $event, $data = null)
     {
         $client->send(json_encode([
             'event' => trim($event),

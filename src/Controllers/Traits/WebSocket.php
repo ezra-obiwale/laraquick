@@ -7,9 +7,10 @@ use Laraquick\Helpers\WebSocket as HWebSocket;
 use Exception;
 use SplObjectStorage;
 
-trait WebSocket {
-
-    public function __construct() {
+trait WebSocket
+{
+    public function __construct()
+    {
         $this->init();
     }
 
@@ -18,7 +19,8 @@ trait WebSocket {
      *
      * @return void
      */
-    final public function init() {
+    final public function init()
+    {
         HWebSocket::canReceiveEvent([$this, 'shouldReceiveEvent']);
     }
 
@@ -106,7 +108,8 @@ trait WebSocket {
         HWebSocket::emitTo($client, $event, $data);
     }
 
-    final protected function on($event, callable $callback) {
+    final protected function on($event, callable $callback)
+    {
         HWebSocket::on($event, $callback);
     }
 
@@ -175,12 +178,12 @@ trait WebSocket {
     }
 
     /**
-     * Generate a random string, using a cryptographically secure 
+     * Generate a random string, using a cryptographically secure
      * pseudorandom number generator (random_int)
-     * 
+     *
      * For PHP 7, random_int is a PHP core function
      * For PHP 5.x, depends on https://github.com/paragonie/random_compat
-     * 
+     *
      * @param int $length      How many characters do we want?
      * @param string $keyspace A string of all possible characters
      *                         to select from
@@ -202,7 +205,8 @@ trait WebSocket {
      * @param integer $length
      * @return void
      */
-    public static function generateRandomNumber($length = 20) {
+    public static function generateRandomNumber($length = 20)
+    {
         $lower = str_repeat('1', $length);
         $upper = str_repeat('9', $length);
         return mt_rand($lower, $upper);
@@ -213,9 +217,16 @@ trait WebSocket {
     {
         return true;
     }
-    protected function onEvent($event, $data, $client) {}
-    protected function connected($client) {}
-    protected function disconnected($client) {}
-    protected function catchErrors($exception, $client) {}
-
+    protected function onEvent($event, $data, $client)
+    {
+    }
+    protected function connected($client)
+    {
+    }
+    protected function disconnected($client)
+    {
+    }
+    protected function catchErrors($exception, $client)
+    {
+    }
 }

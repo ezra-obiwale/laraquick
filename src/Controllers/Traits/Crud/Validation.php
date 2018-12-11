@@ -31,7 +31,7 @@ trait Validation
      * @param array $rules
      * @param boolean $ignoreStrict Indicates whether to ignore strict validation
      * @return void
-     * 
+     *
      * @deprecated v3.3.4
      */
     protected function checkRequestData(array $data, array $rules, $ignoreStrict = false)
@@ -80,6 +80,27 @@ trait Validation
      * @return array
      */
     abstract protected function validationRules(array $data, $id = null);
+
+    /**
+     * Should return the validation rules for when using @see storeMany()
+     *
+     * @param array $data The data being validated
+     * @param mixed $id Id of the model being updated, if such were the case
+     * @return array
+     */
+    final protected function manyValidationRules(array $data, $id = null)
+    {
+        $rules = $this->validationRules($data, $id);
+        $manyRules = [];
+        foreach ($rules as $key => $rule) {
+            if (is_int($key)) {
+                $manyRules[] = 'many.*.' . $rule;
+            } else {
+                $manyRules['many.*.' . $key] = $rule;
+            }
+        }
+        return $manyRules;
+    }
 
     /**
      * The validation messages to use with the @see validationRules()

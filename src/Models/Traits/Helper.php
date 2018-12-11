@@ -43,14 +43,15 @@ trait Helper
      *
      * @return void
      */
-    public function scopeWithoutTimestamps() {
+    public function scopeWithoutTimestamps()
+    {
         $this->timestamps = false;
         return $this;
     }
     
     public function toArray()
     {
-        $withArray = property_exists($this, 'withArray') 
+        $withArray = property_exists($this, 'withArray')
             ? $this->withArray : [];
         $fillable = $this->fillable;
 
