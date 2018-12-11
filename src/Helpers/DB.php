@@ -51,13 +51,14 @@ class DB {
 
     public static function transaction(callable $func)
     {
-        iDB::beginTransaction();
         try {
-            $func();
+            iDB::beginTransaction();
+            $result = call_user_func($func);
+            iDB::commit();
+            return $result;
         } catch (Exception $ex) {
             iDB::rollback();
-            throw new Exception($ex->getMessage(), $ex->getCode(), $ex);
+            return $ex;
         }
-        iDB::commit();
     }
 }
