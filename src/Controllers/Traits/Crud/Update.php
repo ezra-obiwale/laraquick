@@ -67,44 +67,47 @@ trait Update
     public function update(Request $request, $id)
     {
         $data = $request->all();
-        if ($resp = $this->validateRequest($this->validationRules($data, $id), $this->validationMessages($data, $id)))
+        if ($resp = $this->validateRequest($this->validationRules($data, $id), $this->validationMessages($data, $id))) {
             return $resp;
+        }
 
         $model = $this->updateModel();
 
         $item = is_object($model)
             ? $model->find($id)
             : $model::find($id);
-        if (!$item) return $this->notFoundError();
-
-        try {
-            DB::beginTransaction();
-            if ($resp = $this->beforeUpdate($data, $item)) return $resp;
-
-            $result = $item->update(array_only($data, $item->getFillable()));
-
-            if (!$result) {
-                throw new \Exception('Update method returned falsable', null, 500);
-            }
-
-            if ($resp = $this->beforeUpdateResponse($item)) {
-                return $resp;
-            }
+        if (!$item) {
+            return $this->notFoundError();
         }
-        catch (\Exception $ex) {
-            Log::error('Update: ' . $ex->getMessage(), $data);
-            try {
+
+        return DB::transaction(
+            function ($data, $item) {
+                if ($resp = $this->beforeUpdate($data, $item)) {
+                    return $resp;
+                }
+    
+                $result = $item->update(array_only($data, $item->getFillable()));
+    
+                if (!$result) {
+                    throw new \Exception('Update method returned falsable', null, 500);
+                }
+    
+                if ($resp = $this->beforeUpdateResponse($item)) {
+                    return $resp;
+                }
+                return $this->updateResponse($item);
+            },
+            function ($ex) {
+                logger()->error('Update: ' . $ex->getMessage(), $data);
+                try {
+                    $this->rollbackUpdate($data, $item);
+                } catch (\Exception $ex) {
+                    logger()->error('Rollback: ' . $ex->getMessage());
+                }
                 $this->rollbackUpdate($data, $item);
+                return $this->updateFailedError();
             }
-            catch (\Exception $ex) {
-                Log::error('Rollback: ' . $ex->getMessage());
-            }
-            $this->rollbackUpdate($data, $item);
-            DB::rollback();
-            return $this->updateFailedError();
-        }
-        DB::commit();
-        return $this->updateResponse($item);
+        );
     }
 
     /**
@@ -124,5 +127,4 @@ trait Update
      * @return Response|array
      */
     abstract protected function updateResponse(Model $data);
-    
 }

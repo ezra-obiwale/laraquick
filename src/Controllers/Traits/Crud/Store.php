@@ -4,10 +4,9 @@ namespace Laraquick\Controllers\Traits\Crud;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Database\Eloquent\Model;
-
-use DB;
-use Log;
+use Laraquick\Helpers\DB;
 use Laraquick\Models\Dud;
+use Exception;
 
 /**
  * Methods for storing a resource
@@ -76,37 +75,35 @@ trait Store
             return $this->modelNotSetError();
         }
 
-        try {
-            DB::beginTransaction();
-            if ($resp = $this->beforeStore($data)) {
-                return $resp;
+        return DB::transaction(
+            function () use ($data, $model) {
+                if ($resp = $this->beforeStore($data)) {
+                    return $resp;
+                }
+    
+                $item = is_object($model)
+                    ? $model->create($data)
+                    : $model::create($data);
+    
+                if (!$item) {
+                    throw new Exception('Create method returned falsable', null, 500);
+                }
+    
+                if ($resp = $this->beforeStoreResponse($item)) {
+                    return $resp;
+                }
+                return $this->storeResponse($item);
+            },
+            function ($ex) use($data, $item) {
+                logger()->error('Store: ' . $ex->getMessage(), $data);
+                try {
+                    $this->rollbackStore($data, @$item ?: new Dud);
+                }
+                catch (Exception $ex) {
+                    logger()->error('Rollback: ' . $ex->getMessage());
+                }
             }
-
-            $item = is_object($model)
-                ? $model->create($data)
-                : $model::create($data);
-
-            if (!$item) {
-                throw new \Exception('Create method returned falsable', null, 500);
-            }
-
-            if ($resp = $this->beforeStoreResponse($item)) {
-                return $resp;
-            }
-        } catch (\Exception $ex) {
-            Log::error('Store: ' . $ex->getMessage(), $data);
-            try {
-                $this->rollbackStore($data, @$item ?: new Dud);
-            }
-            catch (\Exception $ex) {
-                Log::error('Rollback: ' . $ex->getMessage());
-            }
-            DB::rollback();
-            return $this->storeFailedError();
-        }
-
-        DB::commit();
-        return $this->storeResponse($item);
+        );
     }
 
     /**

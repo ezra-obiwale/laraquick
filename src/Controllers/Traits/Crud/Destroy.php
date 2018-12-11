@@ -4,8 +4,8 @@ namespace Laraquick\Controllers\Traits\Crud;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Database\Eloquent\Model;
-use DB;
-use Log;
+use Laraquick\Helpers\DB;
+use Exception;
 
 /**
  * Methods for destorying a single resource
@@ -20,13 +20,13 @@ trait Destroy
      * @return Response
      */
     abstract protected function notFoundError($message = null);
-	
+    
     /**
      * Create a model not set error response
      *
      * @return Response
      */
-	abstract protected function modelNotSetError();
+    abstract protected function modelNotSetError();
 
     /**
      * Called when a delete action fails
@@ -77,43 +77,42 @@ trait Destroy
     public function destroy($id)
     {
         $model = $this->destroyModel();
-		if (!$model) {
-			logger()->error('Destroy model undefined');
-			return $this->modelNotSetError();
-		}
+        if (!$model) {
+            logger()->error('Destroy model undefined');
+            return $this->modelNotSetError();
+        }
         $item = is_object($model)
             ? $model->find($id)
             : $model::find($id);
 
-        if (!$item) return $this->notFoundError();
-
-        try {
-            DB::beginTransaction();
-            $this->beforeDestroy($item);
-            $result = $item->delete();
-
-            if (!$result) {
-                throw new \Exception('Delete method returned falsable', 500);
-            }
-            
-            if ($resp = $this->beforeDestroyResponse($item)) {
-                return $resp;
-            }
-        }
-        catch (\Exception $ex) {
-            Log::error('Delete: ' . $ex->getMessage());
-            try {
-                $this->rollbackDestroy($item);
-            }
-            catch (\Exception $ex) {
-                Log::error('Rollback: ' . $ex->getMessage());
-            }
-            DB::rollback();
-            return $this->destroyFailedError();
+        if (!$item) {
+            return $this->notFoundError();
         }
 
-        DB::commit();
-        return $this->destroyResponse($item);
+        return DB::transaction(
+            function () use ($item) {
+                $this->beforeDestroy($item);
+                $result = $item->delete();
+    
+                if (!$result) {
+                    throw new Exception('Delete method returned falsable', 500);
+                }
+                
+                if ($resp = $this->beforeDestroyResponse($item)) {
+                    return $resp;
+                }
+                return $this->destroyResponse($item);
+            },
+            function ($ex) use ($item) {
+                logger()->error('Delete: ' . $ex->getMessage());
+                try {
+                    $this->rollbackDestroy($item);
+                } catch (Exception $ex) {
+                    logger()->error('Rollback: ' . $ex->getMessage());
+                }
+                return $this->destroyFailedError();
+            }
+        );
     }
 
     /**
@@ -161,37 +160,37 @@ trait Destroy
     public function destroyMany(Request $request)
     {
         $model = $this->destroyModel();
-		if (!$model) {
-			logger()->error('Destroy model undefined');
-			return $this->modelNotSetError();
-		}
+        if (!$model) {
+            logger()->error('Destroy model undefined');
+            return $this->modelNotSetError();
+        }
         $data = $request->all();
         if (!array_key_exists('ids', $data)) {
-            throw new \Exception('Ids not found');
+            throw new Exception('Ids not found');
         }
-        DB::beginTransaction();
-        $this->beforeDestroyMany($data);
-
-        $result = is_object($model)
-            ? $model->whereIn('id', $data['ids'])->delete()
-            : $model::whereIn('id', $data['ids'])->delete();
-
-        if (!$result) {
-            try {
+        return DB::transaction(
+            function () use ($data, $model) {
+                $this->beforeDestroyMany($data);
+        
+                $result = is_object($model)
+                    ? $model->whereIn('id', $data['ids'])->delete()
+                    : $model::whereIn('id', $data['ids'])->delete();
+        
+                if (!$result) {
+                    throw new Exception('Delete failed');
+                }
+        
+                if ($resp = $this->beforeDestroyManyResponse($result, $data['ids'])) {
+                    return $resp;
+                }
+                return $this->destroyManyResponse($result);
+            },
+            function ($ex) {
+                logger()->error('Rollback: ' . $ex->getMessage());
                 $this->rollbackDestroyMany($data['ids']);
+                return $this->destroyFailedError();
             }
-            catch (\Exception $ex) {
-                Log::error('Rollback: ' . $ex->getMessage());
-            }
-            DB::rollback();
-            return $this->destroyFailedError();
-        }
-
-        if ($resp = $this->beforeDestroyManyResponse($result, $data['ids'])) {
-            return $resp;
-        }
-        DB::commit();
-        return $this->destroyManyResponse($result);
+        );
     }
 
     /**
@@ -242,36 +241,41 @@ trait Destroy
     public function forceDestroy($id)
     {
         $model = $this->destroyModel();
-		if (!$model) {
-			logger()->error('Destroy model undefined');
-			return $this->modelNotSetError();
-		}
+        if (!$model) {
+            logger()->error('Destroy model undefined');
+            return $this->modelNotSetError();
+        }
         $item = is_object($model)
             ? $model->find($id)
             : $model::find($id);
 
-        if (!$item) return $this->notFoundError();
-
-        DB::beginTransaction();
-        $this->beforeForceDestroy($item);
-        $result = $item->forceDelete();
-
-        if (!$result) {
-            try {
-                $this->rollbackForceDestroy($item);
-            }
-            catch (\Exception $ex) {
-                Log::error('Rollback: ' . $ex->getMessage());
-            }
-            DB::rollback();
-            return $this->destroyFailedError();
+        if (!$item) {
+            return $this->notFoundError();
         }
 
-        if ($resp = $this->beforeForceDestroyResponse($item)) {
-            return $resp;
-        }
-        DB::commit();
-        return $this->forceDestroyResponse($item);
+        return DB::transaction(
+            function () use (&$item) {
+                $this->beforeForceDestroy($item);
+                $result = $item->forceDelete();
+        
+                if (!$result) {
+                    throw new Exception('Force delete failed');
+                }
+        
+                if ($resp = $this->beforeForceDestroyResponse($item)) {
+                    return $resp;
+                }
+                return $this->forceDestroyResponse($item);
+            },
+            function ($ex) use ($item) {
+                try {
+                    $this->rollbackForceDestroy($item);
+                } catch (Exception $ex) {
+                    logger()->error('Rollback: ' . $ex->getMessage());
+                }
+                return $this->destroyFailedError();
+            }
+        );
     }
 
     /**
@@ -290,7 +294,8 @@ trait Destroy
      * @param Model $model
      * @return Response|array
      */
-    protected function forceDestroyResponse(Model $model) {
+    protected function forceDestroyResponse(Model $model)
+    {
         return $this->destroyResponse($model);
     }
     
@@ -319,36 +324,42 @@ trait Destroy
     public function restoreDestroyed($id)
     {
         $model = $this->destroyModel();
-		if (!$model) {
-			logger()->error('Destroy model undefined');
-			return $this->modelNotSetError();
-		}
+        if (!$model) {
+            logger()->error('Destroy model undefined');
+            return $this->modelNotSetError();
+        }
         $item = is_object($model)
             ? $model->find($id)
             : $model::find($id);
 
-        if (!$item) return $this->notFoundError();
-
-        DB::beginTransaction();
-        $this->beforeRestoreDestroyed($item);
-        $result = $item->restore();
-
-        if (!$result) {
-            try {
-                $this->rollbackRestoreDestroyed($item);
-            }
-            catch (\Exception $ex) {
-                Log::error('Rollback: ' . $ex->getMessage());
-            }
-            DB::rollback();
-            return $this->restoreFailedError();
+        if (!$item) {
+            return $this->notFoundError();
         }
 
-        if ($resp = $this->beforeRestoreDestroyedResponse($item)) {
-            return $resp;
-        }
-        DB::commit();
-        return $this->restoreDestroyedResponse($item);
+        return DB::transaction(
+            function () use (&$item) {
+                $this->beforeRestoreDestroyed($item);
+                $result = $item->restore();
+        
+                if (!$result) {
+                    throw new Exception('Restore failed');
+                }
+        
+                if ($resp = $this->beforeRestoreDestroyedResponse($item)) {
+                    return $resp;
+                }
+                return $this->restoreDestroyedResponse($item);
+            },
+            function ($ex) use($item) {
+                try {
+                    $this->rollbackRestoreDestroyed($item);
+                } catch (Exception $ex) {
+                    logger()->error('Rollback: ' . $ex->getMessage());
+                }
+                DB::rollback();
+                return $this->restoreFailedError();
+            }
+        );
     }
 
     /**
@@ -368,5 +379,4 @@ trait Destroy
      * @return Response|array
      */
     abstract protected function restoreDestroyedResponse(Model $data);
-
 }

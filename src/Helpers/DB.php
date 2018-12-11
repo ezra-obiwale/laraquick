@@ -5,8 +5,8 @@ namespace Laraquick\Helpers;
 use Illuminate\Support\Facades\DB as iDB;
 use Exception;
 
-class DB {
-
+class DB
+{
     protected $tableName;
 
     public function __construct($tableName)
@@ -14,7 +14,8 @@ class DB {
         $this->tableName = $tableName;
     }
 
-    public static function table($tableName) {
+    public static function table($tableName)
+    {
         return new static($tableName);
     }
 
@@ -32,7 +33,7 @@ class DB {
         return $this;
     }
 
-    protected function getFullTextKeyName(array $columns) 
+    protected function getFullTextKeyName(array $columns)
     {
         return implode('_', $columns) . '_fulltext';
     }
@@ -49,7 +50,7 @@ class DB {
         return $this;
     }
 
-    public static function transaction(callable $func)
+    public static function transaction(callable $func, callable $catch = null)
     {
         try {
             iDB::beginTransaction();
@@ -58,7 +59,11 @@ class DB {
             return $result;
         } catch (Exception $ex) {
             iDB::rollback();
-            return $ex;
+            if ($catch) {
+                return call_user_func($catch, $ex);
+            } else {
+                throw new Exception($ex->getMessage(), $ex->getCode(), $ex);
+            }
         }
     }
 }
