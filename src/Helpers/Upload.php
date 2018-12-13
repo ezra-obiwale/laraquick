@@ -16,10 +16,22 @@ class Upload
      * @param string $path The path to save the file to
      * @return void
      */
-    public static function localUpload(UploadedFile $file, $path = '')
+    public static function toLocal(UploadedFile $file, $path = '')
     {
         $name = self::createFilename($file);
         return url(Storage::url($file->storeAs($path, $name)));
+    }
+
+    /**
+     * @see toLocal()
+     * @deprecated
+     * @param UploadedFile $file
+     * @param string $path
+     * @return void
+     */
+    public static function localUpload(UploadedFile $file, $path = '')
+    {
+        return self::toLocal($file, $path);
     }
 
     /**
@@ -29,7 +41,7 @@ class Upload
      * @param string $path The path to save the file to
      * @return bool|string
      */
-    public static function awsUpload(UploadedFile $file, $path = '')
+    public static function toS3Bucket(UploadedFile $file, $path = '')
     {
         $name = self::createFilename($file);
         if (!self::s3()->put(
@@ -41,6 +53,18 @@ class Upload
             return false;
         }
         return self::s3url($path . '/' . $name);
+    }
+
+    /**
+     * @see toS3Bucket
+     * @deprecated version
+     * @param UploadedFile $file
+     * @param string $path
+     * @return void
+     */
+    public static function awsUpload(UploadedFile $file, $path = '')
+    {
+        return self::toS3Bucket($file, $path);
     }
 
     private static function createFileName(UploadedFile $file)

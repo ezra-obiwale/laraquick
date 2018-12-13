@@ -17,23 +17,24 @@ class AsyncCall implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $callable;
-    protected $args;
     protected $callback;
+    protected $tags;
 
     /**
      * Create a new job instance
      *
      * @param callable|array $callable The function to call. @see call_user_func_array()
-     * @param array $args The arguments for the callable
      * @param callable|array $callback The function to call with the result of the callable. In case of an exception, the second parameter will be the exception object. @see call_user_func_array()
+     * @param array $tags The tags to attach to the job
      *
      * @return void
      */
-    public function __construct(callable $callable, array $args = [], callable $callback = null)
+    public function __construct(callable $callable, callable $callback = null, array $tag = [])
     {
         $this->callable = $callable;
-        $this->args = $args;
         $this->callback = $callback;
+        array_unshift($tags, 'async-call');
+        $this->tags = $tags;
     }
 
     /**
@@ -43,9 +44,9 @@ class AsyncCall implements ShouldQueue
      */
     public function handle()
     {
-        $result = call_user_func_array($this->callable, $this->args);
+        $result = call_user_func($this->callable);
         if ($this->callback) {
-            call_user_func_array($this->callback, [$result]);
+            call_user_func($this->callback, $result);
         }
     }
 
@@ -58,7 +59,12 @@ class AsyncCall implements ShouldQueue
     public function failed(Exception $ex)
     {
         if ($this->callback) {
-            call_user_func_array($this->callback, [$result, $ex]);
+            call_user_func($this->callback, $result, $ex);
         }
+    }
+
+    public function tags()
+    {
+        return $this->tags;
     }
 }
