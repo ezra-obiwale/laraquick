@@ -90,7 +90,7 @@ trait Destroy
         }
 
         return DB::transaction(
-            function () use ($item) {
+            function () use (&$item) {
                 $this->beforeDestroy($item);
                 $result = $item->delete();
     

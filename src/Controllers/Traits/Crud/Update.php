@@ -81,7 +81,7 @@ trait Update
         }
 
         return DB::transaction(
-            function ($data, $item) {
+            function () use ($data, $item) {
                 if ($resp = $this->beforeUpdate($data, $item)) {
                     return $resp;
                 }
