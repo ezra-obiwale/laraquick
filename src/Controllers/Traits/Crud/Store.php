@@ -85,8 +85,9 @@ trait Store
             return $this->modelNotSetError();
         }
 
+        $item = null;
         return DB::transaction(
-            function () use ($data, $model) {
+            function () use ($data, $model, &$item) {
                 if ($resp = $this->beforeStore($data)) {
                     return $resp;
                 }
