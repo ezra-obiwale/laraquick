@@ -112,6 +112,7 @@ trait Store
                 } catch (Exception $ex) {
                     logger()->error('Rollback: ' . $ex->getMessage());
                 }
+                return $this->storeFailedError();
             }
         );
     }
@@ -204,6 +205,7 @@ trait Store
                 } catch (Exception $ex) {
                     logger()->error('Rollback: ' . $ex->getMessage());
                 }
+                return $this->storeFailedError();
             }
         );
     }
