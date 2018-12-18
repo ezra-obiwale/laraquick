@@ -87,7 +87,7 @@ trait Store
 
         $item = null;
         return DB::transaction(
-            function () use ($data, $model, &$item) {
+            function () use (&$data, $model, &$item) {
                 if ($resp = $this->beforeStore($data)) {
                     return $resp;
                 }
@@ -177,7 +177,7 @@ trait Store
 
         $items = [];
         return DB::transaction(
-            function () use ($data, $model, &$items) {
+            function () use (&$data, $model, &$items) {
                 if ($resp = $this->beforeStoreMany($data)) {
                     return $resp;
                 }

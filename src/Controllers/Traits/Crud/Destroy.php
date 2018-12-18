@@ -169,7 +169,7 @@ trait Destroy
             throw new Exception('Ids not found');
         }
         return DB::transaction(
-            function () use ($data, $model) {
+            function () use (&$data, $model) {
                 $this->beforeDestroyMany($data);
         
                 $result = is_object($model)
@@ -185,7 +185,7 @@ trait Destroy
                 }
                 return $this->destroyManyResponse($result);
             },
-            function ($ex) {
+            function ($ex) use ($data) {
                 logger()->error('Rollback: ' . $ex->getMessage());
                 $this->rollbackDestroyMany($data['ids']);
                 return $this->destroyFailedError();

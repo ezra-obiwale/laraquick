@@ -4,9 +4,7 @@ namespace Laraquick\Controllers\Traits\Crud;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Database\Eloquent\Model;
-
-use DB;
-use Log;
+use Laraquick\Helpers\DB;
 
 /**
  * Methods for updating a resource
@@ -81,7 +79,7 @@ trait Update
         }
 
         return DB::transaction(
-            function () use ($data, $item) {
+            function () use (&$data, &$item) {
                 if ($resp = $this->beforeUpdate($data, $item)) {
                     return $resp;
                 }
@@ -97,7 +95,7 @@ trait Update
                 }
                 return $this->updateResponse($item);
             },
-            function ($ex) {
+            function ($ex) use ($data, $item) {
                 logger()->error('Update: ' . $ex->getMessage(), $data);
                 try {
                     $this->rollbackUpdate($data, $item);
