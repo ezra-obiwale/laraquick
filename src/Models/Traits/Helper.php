@@ -15,7 +15,7 @@ trait Helper
      */
     public function without($attributes)
     {
-        return $this->withoutGlobalScope($attributes);
+        return $this->withoutGlobalScopes(!is_array($attributes) ? [$attributes] : $attributes);
     }
     
     /**
