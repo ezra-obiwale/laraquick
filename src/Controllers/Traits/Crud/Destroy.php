@@ -89,7 +89,9 @@ trait Destroy
 
         try {
             DB::beginTransaction();
-            $this->beforeDestroy($item);
+            if ($resp = $this->beforeDestroy($item)) {
+                return $resp;
+            }
             $result = $item->delete();
 
             if (!$result) {
@@ -170,7 +172,9 @@ trait Destroy
             throw new \Exception('Ids not found');
         }
         DB::beginTransaction();
-        $this->beforeDestroyMany($data);
+        if ($resp = $this->beforeDestroyMany($data)) {
+            return $resp;
+        }
 
         $result = is_object($model)
             ? $model->whereIn('id', $data['ids'])->delete()
@@ -253,7 +257,9 @@ trait Destroy
         if (!$item) return $this->notFoundError();
 
         DB::beginTransaction();
-        $this->beforeForceDestroy($item);
+        if ($resp = $this->beforeForceDestroy($item)) {
+            return $resp;
+        }
         $result = $item->forceDelete();
 
         if (!$result) {
@@ -330,7 +336,9 @@ trait Destroy
         if (!$item) return $this->notFoundError();
 
         DB::beginTransaction();
-        $this->beforeRestoreDestroyed($item);
+        if ($resp = $this->beforeRestoreDestroyed($item)) {
+            return $resp;
+        }
         $result = $item->restore();
 
         if (!$result) {
