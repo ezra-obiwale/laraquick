@@ -130,6 +130,7 @@ trait Index
 
     /**
      * Display a listing of the resource.
+     * 
      * @return Response
      */
     public function index()
@@ -189,7 +190,7 @@ trait Index
     // ------------------ TRASHED INDEX ---------------------
     
     /**
-     * Display a listing of all soft deleted resources.
+     * Display a listing of all resources marked as deleted.
      * @return Response
      */
     public function trashedIndex()

@@ -37,5 +37,8 @@
         "psr-4": {
             "Laraquick\\": "src/"
         }
+    },
+    "require-dev": {
+        "mpociot/laravel-apidoc-generator": "^3.2"
     }
 }

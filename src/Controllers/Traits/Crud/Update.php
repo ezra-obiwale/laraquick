@@ -57,7 +57,7 @@ trait Update
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified resource.
      * @param  Request $request
      * @param int $id
      * @return Response

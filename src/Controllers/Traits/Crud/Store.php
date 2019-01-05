@@ -68,7 +68,7 @@ trait Store
     }
 
     /**
-     * Save a new resource in storage.
+     * Save a new resource.
      * @param  Request $request
      * @return Response
      */
@@ -152,12 +152,12 @@ trait Store
      * @param array $models The created model
      * @return void
      */
-    protected function rollbackStoreMany(array $data, Model $models)
+    protected function rollbackStoreMany(array $data, array $models)
     {
     }
 
     /**
-     * Save many new resources in storage.
+     * Save many new resources.
      * @param  Request $request
      * @return Response
      */
