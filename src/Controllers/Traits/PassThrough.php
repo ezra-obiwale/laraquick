@@ -117,7 +117,7 @@ trait PassThrough
             if (!Http::hasErrors()) {
                 if (array_key_exists('data', $resp)) {
                     $resp['data'] = (new Dud)->forceFill($resp['data']);
-                    $data &= $resp['data'];
+                    $data =& $resp['data'];
                 } else {
                     $resp = (new Dud)->forceFill($resp);
                     $data = $resp;
