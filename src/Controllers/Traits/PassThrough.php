@@ -17,6 +17,14 @@ trait PassThrough
     use Api;
 
     protected $responseStatusCode;
+    protected $http;
+
+    final protected function http () {
+        if (!$this->http) {
+            $this->http = new Http;
+        }
+        return $this->http;
+    }
 
     public function model()
     {
@@ -108,13 +116,13 @@ trait PassThrough
      */
     private function respond($action, $resp)
     {
-        $this->responseStatusCode = Http::getStatusCode();
+        $this->responseStatusCode = $this->http()->getStatusCode();
 
         $beforeMethod = 'before' . ucfirst($action) . 'Response';
         $data = $resp;
 
         if ($action !== 'index') {
-            if (!Http::hasErrors()) {
+            if (!$this->http()->hasErrors()) {
                 if (array_key_exists('data', $resp)) {
                     $resp['data'] = (new Dud)->forceFill($resp['data']);
                     $data =& $resp['data'];
@@ -130,7 +138,7 @@ trait PassThrough
         if ($data && $response = $this->$beforeMethod($data)) {
             return $response;
         }
-        return response()->json($resp, Http::getStatusCode());
+        return response()->json($resp, $this->http()->getStatusCode());
     }
 
     private function request($action, $id = null, $data = null)
@@ -158,7 +166,7 @@ trait PassThrough
      */
     protected function httpRequest($method, $url, array $options = [])
     {
-        return Http::request($method, $url, $options);
+        return $this->http()->request($method, $url, $options);
     }
 
     /**
@@ -168,7 +176,7 @@ trait PassThrough
      */
     protected function httpStatusCode()
     {
-        return Http::getStatusCode();
+        return $this->http()->getStatusCode();
     }
 
     /**
@@ -178,7 +186,7 @@ trait PassThrough
      */
     protected function httpResponse()
     {
-        return Http::rawResponse();
+        return $this->http()->rawResponse();
     }
 
     /**
@@ -188,7 +196,7 @@ trait PassThrough
      */
     protected function hasErrors()
     {
-        return Http::hasErrors();
+        return $this->http()->hasErrors();
     }
 
     /**
