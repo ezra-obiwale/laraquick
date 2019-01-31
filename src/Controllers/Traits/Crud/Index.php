@@ -108,26 +108,6 @@ trait Index
         return $param && ((is_array($param) && count($param)) || is_string($param));
     }
 
-    private function validArray($param, $allowedKey = null)
-    {
-        if ($this->isValid($param)) {
-            // convert to string
-            if (is_array($param)) {
-                $param = join(',', $param);
-            }
-            // join with allowed array
-            if ($allowedKey) {
-                $param .= ',' . $this->allowed[$allowedKey];
-            }
-            // remove all spaces
-            $param = str_replace(' ', '', $param);
-            // convert to array
-            $param = explode(',', $param);
-            // return only unique values
-            return array_unique($param);
-        }
-    }
-
     /**
      * Display a listing of the resource.
      * 
@@ -143,18 +123,18 @@ trait Index
         
         $builder = QueryBuilder::for($model);
 
-        if ($includes = $this->validArray($this->allowedIncludes())) {
-            $builder->allowedIncludes($includes);
+        if ($this->isValid($this->allowedIncludes())) {
+            $builder->allowedIncludes($this->allowedIncludes());
         }
-        if ($filter = $this->validArray($this->allowedFilters())) {
-            $builder->allowedFilters($filter);
+        if ($this->isValid($this->allowedFilters())) {
+            $builder->allowedFilters($this->allowedFilters());
         }
-        if ($defaultSort = $this->validArray($this->defaultSort())) {
-            $builder->defaultSort($defaultSort);
+        if ($this->isValid($this->defaultSort())) {
+            $builder->defaultSort($this->defaultSort());
         }
 
-        if ($sort = $this->validArray($this->allowedSorts())) {
-            $builder->allowedSorts($sort);
+        if ($this->isValid($this->allowedSorts())) {
+            $builder->allowedSorts($this->allowedSorts());
         }
 
         $length = request('length', $this->defaultPaginationLength());
@@ -203,18 +183,18 @@ trait Index
         
         $builder = QueryBuilder::for($model);
 
-        if ($includes = $this->validArray($this->allowedIncludes())) {
-            $builder->allowedIncludes($includes);
+        if ($this->isValid($this->allowedIncludes())) {
+            $builder->allowedIncludes($this->allowedIncludes());
         }
-        if ($filter = $this->validArray($this->allowedFilters())) {
-            $builder->allowedFilters($filter);
+        if ($this->isValid($this->allowedFilters())) {
+            $builder->allowedFilters($this->allowedFilters());
         }
-        if ($defaultSort = $this->validArray($this->defaultSort())) {
-            $builder->defaultSort($defaultSort);
+        if ($this->isValid($this->defaultSort())) {
+            $builder->defaultSort($this->defaultSort());
         }
 
-        if ($sort = $this->validArray($this->allowedSorts())) {
-            $builder->allowedSorts($sort);
+        if ($this->isValid($this->allowedSorts())) {
+            $builder->allowedSorts($this->allowedSorts());
         }
 
         $length = request('length', $this->defaultPaginationLength());
