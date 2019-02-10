@@ -4,24 +4,22 @@ namespace Laraquick\Tests\Traits;
 
 use Storage;
 use Illuminate\Foundation\Testing\TestResponse;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Laraquick\Tests\State;
 
 trait Common
 {
     protected $user;
     protected $state;
 
-    protected function state () {
-        return config('laraquick.tests.classes.state');
-    }
-
     public function setUp()
     {
         parent::setUp();
 
-        $this->state = config('laraquick.tests.classes.state');
+        $this->state = config('laraquick.tests.classes.state', State::class);
 
         if (!$this->state::$migratedAfresh) {
-            foreach ((config('laraquick.tests.commands.set_up.once') ?? []) as $key => $command) {
+            foreach ((config('laraquick.tests.commands.set_up.once', [])) as $key => $command) {
                 $options = [];
                 if (is_string($key)) {
                     $options = $command;
@@ -31,7 +29,7 @@ trait Common
             }
             $this->state::$migratedAfresh = true;
         }
-        foreach ((config('laraquick.tests.commands.set_up.always') ?? []) as $key => $command) {
+        foreach ((config('laraquick.tests.commands.set_up.always', [])) as $key => $command) {
             $options = [];
             if (is_string($key)) {
                 $options = $command;
@@ -55,12 +53,17 @@ trait Common
         parent::tearDown();
     }
 
+    /**
+     * Creates a user and return the instance
+     *
+     * @return object
+     */
     protected function user()
     {
         if (!$this->state::$user) {
             $this->state::$user = factory(config('auth.providers.users.model'))
                 ->create(
-                    config('laraquick.tests.user_array', [
+                    config('laraquick.tests.user_info', [
                         'first_name' => 'Nelseon',
                         'last_name' => 'Jones',
                         'email' => 'test2@email.com'
@@ -70,12 +73,25 @@ trait Common
         return $this->state::$user;
     }
 
+    /**
+     * Logs in the user
+     *
+     * @return mixed
+     */
     protected function login()
     {
         return $this->actingAs($this->user());
     }
 
-    protected function request()
+    /**
+     * Send a request with headers
+     *
+     * @param string $method The request method
+     * @param string $url The url of the request
+     * @param array $data The data for a POST/PUT request
+     * @return mixed
+     */
+    protected function request($method, $url, array $data = [])
     {
         $args = func_get_args();
         $method = array_shift($args);
@@ -93,13 +109,12 @@ trait Common
      */
     protected function headers()
     {
-        $headers = ['Accept' => 'application/json'];
+        $headers = array_merge(['Accept' => 'application/json'], config('laraquick.tests.headers', []));
+        $jwt = config('laraquick.tests.jwt', false);
 
-        $AuthGuard = config('laraquick.tests.classes.auth_guard');
-
-        if ($AuthGuard && $this->state::$user) {
-            $token = call_user_func([$AuthGuard, 'fromUser'], $this->state::$user);
-            call_user_func([$AuthGuard, 'setToken'], $token);
+        if ($jwt && $this->state::$user) {
+            $token = JWTAuth::fromUser($this->state::$user);
+            JWTAuth::setToken($token);
             $headers['Authorization'] = 'Bearer ' . $token;
         }
 
@@ -107,7 +122,7 @@ trait Common
     }
 
     /**
-     * Store the response of a test
+     * Save the response of a test to storage
      *
      * @param TestResponse $response
      * @param strng $path
@@ -120,6 +135,6 @@ trait Common
             $path = str_before($path, '.json');
         }
         $path = str_replace('.', '/', $path);
-        return Storage::put("docs/{$path}.json", json_encode($response->json(), JSON_PRETTY_PRINT));
+        return Storage::put("test-responses/{$path}.json", json_encode($response->json(), JSON_PRETTY_PRINT));
     }
 }
