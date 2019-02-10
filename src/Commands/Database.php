@@ -13,15 +13,16 @@ class Database extends Command
      * @var string
      */
     protected $signature = 'db:table 
-                                {table : The name of the table to act on}
-                                {--where= : A comma-separated list of <column>:<sign>:<value> e.g. id:=:1,name:like:%Ezra%}
-                                {--where-null= : A comma-separated list of columns that must be null}
-                                {--data= : A comma-separated list of <column>:<value>}
-                                {--fields= : A comma-separated list of fields to retrieve}
-                                {--c|create : Indicates to perform a create operation}
-                                {--r|read : Indicates to perform a read operation. This is default}
-                                {--u|update : Indicates to perform an update operation}
-                                {--d|delete : Indicates to perform a delete operation}
+                                { table : The name of the table to act on }
+                                { --where= : A comma-separated list of <column>:<sign>:<value> e.g. id:=:1,name:like:%Ezra% }
+                                { --where-null= : A comma-separated list of columns that must be null }
+                                { --where-not-null= : A comma-separated list of columns that must not be null }
+                                { --data= : A comma-separated list of <column>:<value> }
+                                { --fields= : A comma-separated list of fields to retrieve }
+                                { --c|create : Indicates to perform a create operation }
+                                { --r|read : Indicates to perform a read operation. This is default }
+                                { --u|update : Indicates to perform an update operation }
+                                { --d|delete : Indicates to perform a delete operation }
                                 ';
 
     /**
@@ -51,6 +52,7 @@ class Database extends Command
         $tableName = $this->argument('table');
         $where = $this->option('where');
         $whereNull = $this->option('where-null');
+        $whereNotNull = $this->option('where-not-null');
         $data = $this->option('data');
         $fields = $this->option('fields');
         $action = 'get';
@@ -74,6 +76,12 @@ class Database extends Command
         if ($whereNull) {
             foreach (explode(',', $whereNull) as $col) {
                 $table->whereNull($col);
+            }
+        }
+        
+        if ($whereNotNull) {
+            foreach (explode(',', $whereNotNull) as $col) {
+                $table->whereNotNull($col);
             }
         }
         

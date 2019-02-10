@@ -4,17 +4,23 @@ namespace Laraquick\Tests\Traits;
 
 use Storage;
 use Illuminate\Foundation\Testing\TestResponse;
-use Laraquick\Tests\State;
 
 trait Common
 {
     protected $user;
+    protected $state;
+
+    protected function state () {
+        return config('laraquick.tests.classes.state');
+    }
 
     public function setUp()
     {
         parent::setUp();
 
-        if (!State::$migratedAfresh) {
+        $this->state = config('laraquick.tests.classes.state');
+
+        if (!$this->state::$migratedAfresh) {
             foreach ((config('laraquick.tests.commands.set_up.once') ?? []) as $key => $command) {
                 $options = [];
                 if (is_string($key)) {
@@ -23,7 +29,7 @@ trait Common
                 }
                 $this->artisan($command, $options);
             }
-            State::$migratedAfresh = true;
+            $this->state::$migratedAfresh = true;
         }
         foreach ((config('laraquick.tests.commands.set_up.always') ?? []) as $key => $command) {
             $options = [];
@@ -51,17 +57,17 @@ trait Common
 
     protected function user()
     {
-        if (!State::$user) {
-            State::$user = factory(config('auth.providers.users.model'))
+        if (!$this->state::$user) {
+            $this->state::$user = factory(config('auth.providers.users.model'))
                 ->create(
-                    config('laraquick.tests.user', [
+                    config('laraquick.tests.user_array', [
                         'first_name' => 'Nelseon',
                         'last_name' => 'Jones',
                         'email' => 'test2@email.com'
                     ])
                 );
         }
-        return State::$user;
+        return $this->state::$user;
     }
 
     protected function login()
@@ -89,10 +95,10 @@ trait Common
     {
         $headers = ['Accept' => 'application/json'];
 
-        $AuthGuard = config('laraquick.tests.auth_guard');
+        $AuthGuard = config('laraquick.tests.classes.auth_guard');
 
-        if ($AuthGuard && State::$user) {
-            $token = call_user_func([$AuthGuard, 'fromUser'], State::$user);
+        if ($AuthGuard && $this->state::$user) {
+            $token = call_user_func([$AuthGuard, 'fromUser'], $this->state::$user);
             call_user_func([$AuthGuard, 'setToken'], $token);
             $headers['Authorization'] = 'Bearer ' . $token;
         }
@@ -100,13 +106,20 @@ trait Common
         return $headers;
     }
 
-    protected function documentResponse(TestResponse $response, $path)
+    /**
+     * Store the response of a test
+     *
+     * @param TestResponse $response
+     * @param strng $path
+     * @return string
+     */
+    protected function storeResponse(TestResponse $response, $path)
     {
         // document the response by creating a log file and streaming details to it.
         if (ends_with($path, '.json')) {
             $path = str_before($path, '.json');
         }
         $path = str_replace('.', '/', $path);
-        Storage::put("docs/{$path}.json", json_encode($response->json(), JSON_PRETTY_PRINT));
+        return Storage::put("docs/{$path}.json", json_encode($response->json(), JSON_PRETTY_PRINT));
     }
 }

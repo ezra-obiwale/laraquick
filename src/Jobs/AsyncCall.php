@@ -19,6 +19,7 @@ class AsyncCall implements ShouldQueue
     protected $callable;
     protected $arguments;
     protected $callback;
+    protected $callbackArguments;
     protected $tags;
 
     /**
@@ -31,11 +32,12 @@ class AsyncCall implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(callable $callable, array $arguments = [], callable $callback = null, array $tags = [])
+    public function __construct(callable $callable, array $arguments = [], callable $callback = null, array $callbackArguments = [], array $tags = [])
     {
         $this->callable = $callable;
         $this->arguments = $arguments;
         $this->callback = $callback;
+        $this->callbackArguments = $callbackArguments;
         array_unshift($tags, 'async-call');
         $this->tags = $tags;
     }
@@ -49,7 +51,8 @@ class AsyncCall implements ShouldQueue
     {
         $result = call_user_func_array($this->callable, $this->arguments);
         if ($this->callback) {
-            call_user_func($this->callback, $result);
+            array_unshift($this->callbackArguments, $result);
+            call_user_func_array($this->callback, $this->callbackArguments);
         }
     }
 
