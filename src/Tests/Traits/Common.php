@@ -130,6 +130,7 @@ trait Common
             $path = str_before($path, '.json');
         }
         $path = str_replace('.', '/', $path);
-        return Storage::put("test-responses/{$path}.json", json_encode($response->json(), JSON_PRETTY_PRINT));
+        $storagePath = config('laraquick.tests.storage_path', 'test-responses');
+        return Storage::put("$storagePath/$path.json", json_encode($response->json(), JSON_PRETTY_PRINT));
     }
 }

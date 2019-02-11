@@ -30,6 +30,8 @@ return [
         'headers' => [],
         // Use jwt token based on the tymon/jwt-auth package
         'jwt' => false,
+        // The path in the storage where responses are to be stored
+        'storage_path' => 'test-responses',
         // The information of the user to create when a user is required. Also used when logging in.
         // The instance is picked from config auth.providers.users.model
         'user_info' => [
