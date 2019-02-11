@@ -93,13 +93,8 @@ trait Common
      */
     protected function request($method, $url, array $data = [])
     {
-        $args = func_get_args();
-        $method = array_shift($args);
-        if (count($args) < 2 && $method !== 'get') {
-            $args[] = [];
-        }
-        $args[] = $this->headers();
-        return call_user_func_array([$this, $method], $args);
+        return $this->withHeaders($this->headers())
+            ->json($method, $url, $data);
     }
     
     /**
