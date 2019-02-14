@@ -32,12 +32,19 @@ return [
         'jwt' => false,
         // The path in the storage where responses are to be stored
         'storage_path' => 'test-responses',
-        // The information of the user to create when a user is required. Also used when logging in.
-        // The instance is picked from config auth.providers.users.model
-        'user_info' => [
-            'first_name' => 'John',
-            'last_name' => 'Doe',
-            'email' => 'jdoe@email.com'
+        // The information of the users to create when setting up.
+        // The instance is picked from config **auth.providers.users.model**
+        'users' => [
+            [
+                'first_name' => 'John',
+                'last_name' => 'Doe',
+                'email' => 'jdoe@email.com'
+            ],
+            [
+                'first_name' => 'Jane',
+                'last_name' => 'Doe',
+                'email' => 'jane.doe@email.com'
+            ]
         ],
     ],
     'websocket' => [

@@ -56,31 +56,45 @@ trait Common
     /**
      * Creates a user and return the instance
      *
+     * @param int $index The index of the user in the config file
+     * 
      * @return object
      */
-    protected function user()
+    protected function user($index = 0)
     {
-        if (!$this->state::$user) {
-            $this->state::$user = factory(config('auth.providers.users.model'))
-                ->create(
-                    config('laraquick.tests.user_info', [
-                        'first_name' => 'Nelseon',
-                        'last_name' => 'Jones',
-                        'email' => 'test2@email.com'
-                    ])
-                );
+        if (count($this->state::$users) <= $index) {
+            $users = config('laraquick.tests.users', [
+                [
+                    'first_name' => 'John',
+                    'last_name' => 'Doe',
+                    'email' => 'jdoe@email.com'
+                ],
+                [
+                    'first_name' => 'Jane',
+                    'last_name' => 'Doe',
+                    'email' => 'jane.doe@email.com'
+                ]
+            ]);
+            if (count($users) <= $index) {
+                throw new \Exception('There are only ' . count($users) . ' set up');
+            }
+            $this->state::$users[] = factory(config('auth.providers.users.model'))
+                ->create($users[$index]);
         }
-        return $this->state::$user;
+        return $this->state::$users[$index];
     }
 
     /**
      * Logs in the user
      *
+     * @param int $userIndex The index of the user in the config file
+     * 
      * @return mixed
      */
-    protected function login()
+    protected function login($userIndex = 0)
     {
-        return $this->actingAs($this->user());
+        $this->state::$authUser = $this->user($userIndex);
+        return $this->actingAs($this->state::$authUser);
     }
 
     /**
@@ -107,8 +121,8 @@ trait Common
         $headers = array_merge(['Accept' => 'application/json'], config('laraquick.tests.headers', []));
         $jwt = config('laraquick.tests.jwt', false);
 
-        if ($jwt && $this->state::$user) {
-            $token = JWTAuth::fromUser($this->state::$user);
+        if ($jwt && $this->state::$authUser) {
+            $token = JWTAuth::fromUser($this->state::$authUser);
             JWTAuth::setToken($token);
             $headers['Authorization'] = 'Bearer ' . $token;
         }
