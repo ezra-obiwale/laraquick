@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Builder;
 trait Helper
 {
 
+    protected $arrayWithoutNulls = false;
+
     /**
      * A shortcut to withoutGlobalScope()
      *
@@ -62,6 +64,10 @@ trait Helper
             ->all();
         foreach ($withArray as $property) {
             $array[$property] = $this->$property;
+        }
+        // remove nulls
+        if ($this->arrayWithoutNulls) {
+            $array = array_filter($array);
         }
         // merge with relations and return
         return array_merge($array, $this->relations);
