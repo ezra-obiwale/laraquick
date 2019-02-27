@@ -28,6 +28,7 @@ trait Common
                 $this->artisan($command, $options);
             }
             $this->state::$migratedAfresh = true;
+            $this->setUpOnce();
         }
         foreach ((config('laraquick.tests.commands.set_up.always', [])) as $key => $command) {
             $options = [];
@@ -37,10 +38,25 @@ trait Common
             }
             $this->artisan($command, $options);
         }
+        $this->setUpAlways();
+    }
+
+    protected function setUpAlways()
+    {
+    }
+
+    protected function setUpOnce()
+    {
+    }
+
+    protected function tearingDown()
+    {
     }
 
     public function tearDown()
     {
+        $this->tearingDown();
+
         foreach ((config('laraquick.tests.commands.tear_down', [])) as $key => $command) {
             $options = [];
             if (is_string($key)) {
@@ -57,7 +73,7 @@ trait Common
      * Creates a user and return the instance
      *
      * @param int $index The index of the user in the config file
-     * 
+     *
      * @return object
      */
     protected function user($index = 0)
@@ -88,7 +104,7 @@ trait Common
      * Logs in the user
      *
      * @param int $userIndex The index of the user in the config file
-     * 
+     *
      * @return mixed
      */
     protected function login($userIndex = 0)
