@@ -2,7 +2,6 @@
 
 namespace Laraquick\Tests;
 
-use Laraquick\Tests\Traits\ApiHttpTest;
 use TestCase;
 
 if (class_exists('Tests\TestCase')) {
@@ -13,5 +12,5 @@ if (class_exists('Tests\TestCase')) {
 
 abstract class HttpTestCase extends TestCase
 {
-    use ApiHttpTest;
+    use Traits\ApiHttpTest;
 }

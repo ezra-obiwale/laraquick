@@ -50,11 +50,13 @@ trait ApiHttpTest
 
     protected function expectedIndexResponse(array &$response)
     {
-        $resp = [
-            'data' => $response['data'][0]
-        ];
-        $this->expectedStoreResponse($resp);
-        $response['data'][0] = $resp['data'];
+        if (count($response['data'])) {
+            $resp = [
+                'data' => $response['data'][0]
+            ];
+            $this->expectedStoreResponse($resp);
+            $response['data'][0] = $resp['data'];
+        }
     }
 
     protected function expectedStoreResponse(array &$response)
@@ -78,6 +80,10 @@ trait ApiHttpTest
 
     public function testStore()
     {
+        if (!in_array('store', $this->methods)) {
+            return;
+        }
+
         $payload = $this->payload();
         $this->beforeStore($payload);
         $response = $this->apiRequest('post', $this->indexUrl(), $payload);
@@ -97,11 +103,15 @@ trait ApiHttpTest
     /**
      * @depends testStore
      *
-     * @param array $resource
+     * @param array $resource The resource created in @see testStore()
+     * @param boolean $forced Indicates to force run the test
      * @return void
      */
-    public function testIndex(array $resource)
+    public function testIndex(array $resource = null, $forced = false)
     {
+        if (!$forced && (!in_array('index', $this->methods) || !in_array('store', $this->methods))) {
+            return;
+        }
         $this->beforeIndex();
         $response = $this->apiRequest('get', $this->indexUrl());
         if ($this->storeResponses) {
@@ -113,18 +123,46 @@ trait ApiHttpTest
             'data' => [ $resource ],
             'meta' => []
         ];
+        if ($forced) {
+            $expectedResponse['data'] = [];
+            unset($expectedResponse['meta']);
+        }
         $this->expectedIndexResponse($expectedResponse);
         $response->assertJson($expectedResponse)->isOK();
     }
 
     /**
-     * @depends testStore
+     * Will run if store method is not being tested but index is
      *
-     * @param array $resource
      * @return void
      */
-    public function testShow(array $resource)
+    public function testForcedIndex()
     {
+        if (!in_array('store', $this->methods) && in_array('index', $this->methods)) {
+            $resource = $this->payload();
+            $resource['id'] = 1;
+            return $this->testIndex($resource, true);
+        }
+    }
+
+    /**
+     * @depends testStore
+     *
+     * @param array $resource The resource created in @see testStore()
+     * @param boolean $forced Indicates to force run the test
+     * @return void
+     */
+    public function testShow(array $resource = null, $forced = false)
+    {
+        if (!$forced && (!in_array('show', $this->methods) || !in_array('store', $this->methods))) {
+            return;
+        }
+
+        if (!$resource) {
+            $resource = $this->payload();
+            $resource['id'] = 1;
+        }
+
         $model = (new Dud)->forceFill($resource);
         $this->beforeShow($model);
 
@@ -141,13 +179,32 @@ trait ApiHttpTest
     }
 
     /**
-     * @depends testStore
+     * Will run if store method is not being tested but show is
      *
-     * @param array $resource
      * @return void
      */
-    public function testUpdate(array $resource)
+    public function testForcedShow()
     {
+        if (!in_array('store', $this->methods) && in_array('show', $this->methods)) {
+            $resource = $this->payload();
+            $resource['id'] = 1;
+            return $this->testShow($resource, true);
+        }
+    }
+
+    /**
+     * @depends testStore
+     *
+     * @param array $resource The resource created in @see testStore()
+     * @param boolean $forced Indicates to force run the test
+     * @return void
+     */
+    public function testUpdate(array $resource = null, $forced = false)
+    {
+        if (!$forced && (!in_array('update', $this->methods) || !in_array('store', $this->methods))) {
+            return;
+        }
+        
         $payload = $this->payload(true);
         $model = (new Dud)->forceFill($resource);
         $this->beforeUpdate($payload, $model);
@@ -167,13 +224,32 @@ trait ApiHttpTest
     }
 
     /**
-     * @depends testUpdate
+     * Will run if store method is not being tested but update is
      *
-     * @param array $resource
      * @return void
      */
-    public function testDestroy(array $resource)
+    public function testForcedUpdate()
     {
+        if (!in_array('store', $this->methods) && in_array('update', $this->methods)) {
+            $resource = $this->payload(true);
+            $resource['id'] = 1;
+            return $this->testUpdate($resource, true);
+        }
+    }
+
+    /**
+     * @depends testUpdate
+     *
+     * @param array $resource The resource updated in @see testUpdate()
+     * @param boolean $forced Indicates to force run the test
+     * @return void
+     */
+    public function testDestroy(array $resource = null, $forced = false)
+    {
+        if (!$forced && (!in_array('destroy', $this->methods) || !in_array('update', $this->methods))) {
+            return;
+        }
+        
         $model = (new Dud)->forceFill($resource);
         $this->beforeDestroy($model);
 
@@ -187,5 +263,19 @@ trait ApiHttpTest
         ];
         $this->expectedDestroyResponse($expectedResponse);
         $response->assertJson($expectedResponse)->isOK();
+    }
+
+    /**
+     * Will run if update method is not being tested but destroy is
+     *
+     * @return void
+     */
+    public function testForcedDestroy()
+    {
+        if (!in_array('update', $this->methods) && in_array('destroy', $this->methods)) {
+            $resource = $this->payload(true);
+            $resource['id'] = 1;
+            return $this->testDestroy($resource, true);
+        }
     }
 }
