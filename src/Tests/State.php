@@ -2,10 +2,9 @@
 
 namespace Laraquick\Tests;
 
-class State {
-
+class State
+{
+    public static $authUser = null;
     public static $migratedAfresh = false;
     public static $users = [];
-    public static $authUser = null;
-
 }

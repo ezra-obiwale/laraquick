@@ -97,7 +97,7 @@ trait Store
                     : $model::create($data);
     
                 if (!$item) {
-                    throw new Exception('Create method returned falsable', null, 500);
+                    throw new Exception('Create method returned falsable');
                 }
     
                 if ($resp = $this->beforeStoreResponse($item)) {
@@ -188,7 +188,7 @@ trait Store
                         : $model::create($data);
         
                     if (!$item) {
-                        throw new Exception('Create method returned falsable', null, 500);
+                        throw new Exception('Create method returned falsable');
                     }
                     $items[] = $item;
                 }

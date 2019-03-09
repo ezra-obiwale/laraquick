@@ -110,7 +110,7 @@ trait Index
 
     /**
      * Display a listing of the resource.
-     * 
+     *
      * @return Response
      */
     public function index()
@@ -227,6 +227,6 @@ trait Index
      */
     protected function trashedIndexResponse(array $data)
     {
-        return $this->indexResponse();
+        return $this->indexResponse($data);
     }
 }

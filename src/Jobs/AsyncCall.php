@@ -65,7 +65,8 @@ class AsyncCall implements ShouldQueue
     public function failed(Exception $ex)
     {
         if ($this->callback) {
-            call_user_func($this->callback, $result, $ex);
+            array_unshift($this->callbackArguments, $ex);
+            call_user_func_array($this->callback, $this->callbackArguments);
         }
     }
 

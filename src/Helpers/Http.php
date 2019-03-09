@@ -7,6 +7,7 @@ use GuzzleHttp\Exception\RequestException;
 use Exception;
 use Laraquick\Jobs\AsyncCall;
 use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
 
 /**
  * @method mixed delete($url, $_ = null)
@@ -41,11 +42,11 @@ class Http
     /**
      * Process json response
      *
-     * @param ResponseInterface $response The response object
+     * @param Response $response The response object
      * @param boolean $toArray Indicate whether to parse to an array
      * @return stdClass|array
      */
-    public static function processJsonResponse(ResponseInterface $response, $toArray = true)
+    public static function processJsonResponse(Response $response, $toArray = true)
     {
         return json_decode(strval($response->getBody()), $toArray);
     }
@@ -58,7 +59,7 @@ class Http
 
     /**
      * Send a request
-     * 
+     *
      * This takes the same parameters as Guzzle's request method.
      *
      * @param string $method Any request method supported by Guzzle
@@ -83,9 +84,9 @@ class Http
      * This takes the same parameters as Guzzle's request method.
      * An additional callback is accepted as the last parameter. This receives the
      * response of the request.
-     * 
+     *
      * Aysnc request uses the queue system. It must therefore be set up properly.
-     * 
+     *
      * @param string $method Any request method supported by Guzzle
      * @param string $url The url to send the request to
      * @param mixed $_
@@ -95,7 +96,7 @@ class Http
     public static function requestAsync($method, $url, $_ = null)
     {
         $args = func_get_args();
-        $callback = array_pop();
+        $callback = array_pop($args);
         if (!is_callable($callback)) {
             $args[] = $callback;
             $callback = null;
@@ -110,7 +111,7 @@ class Http
      * @param callable $callback
      * @return void
      */
-    public static function asyncCallback($response, callable $callback = null)
+    public static function asyncCallback(Response $response, callable $callback = null)
     {
         if ($callback) {
             call_user_func($callback, self::processJsonResponse($response));
@@ -162,7 +163,7 @@ class Http
      *
      * @return Response
      */
-    public static function respond() : Response
+    public static function respond() : JsonResponse
     {
         return response()->json(static::response(), static::getStatusCode());
     }

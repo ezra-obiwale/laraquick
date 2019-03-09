@@ -6,6 +6,7 @@ use Storage;
 use Illuminate\Foundation\Testing\TestResponse;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Laraquick\Tests\State;
+use Mockery;
 
 trait Common
 {
@@ -162,5 +163,22 @@ trait Common
         $path = str_replace('.', '/', $path);
         $storagePath = config('laraquick.tests.storage_path', 'test-responses');
         return Storage::put("$storagePath/$path.json", json_encode($response->json(), JSON_PRETTY_PRINT));
+    }
+
+    /**
+     * Mock a class
+     *
+     * @param string $className The FQN of the class
+     * @param callable $callback The function to call with the mocked class if successfully mocked
+     * @param boolean $static Indicate whether the intended method is static
+     * @return mixed
+     */
+    protected function mockClass($className, callable $callback, $static = false)
+    {
+        $mockArgPrefix = $static ? 'alias:' : '';
+        $mocked = Mockery::mock($mockArgPrefix . $className);
+        $result = call_user_func($callback, $mocked);
+        $this->app->instance($className, $mocked);
+        return $result;
     }
 }

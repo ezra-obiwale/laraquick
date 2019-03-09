@@ -87,7 +87,7 @@ trait Update
                 $result = $item->update(array_only($data, $item->getFillable()));
     
                 if (!$result) {
-                    throw new \Exception('Update method returned falsable', null, 500);
+                    throw new \Exception('Update method returned falsable');
                 }
     
                 if ($resp = $this->beforeUpdateResponse($item)) {

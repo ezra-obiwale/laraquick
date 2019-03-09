@@ -19,7 +19,8 @@ trait PassThrough
     protected $responseStatusCode;
     protected $http;
 
-    final protected function http () {
+    final protected function http()
+    {
         if (!$this->http) {
             $this->http = new Http;
         }
