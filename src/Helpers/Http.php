@@ -46,7 +46,7 @@ class Http
      * @param boolean $toArray Indicate whether to parse to an array
      * @return stdClass|array
      */
-    public static function processJsonResponse(mixed $response, $toArray = true)
+    public static function processJsonResponse($response, $toArray = true)
     {
         return json_decode(strval($response->getBody()), $toArray);
     }
