@@ -42,11 +42,11 @@ class Http
     /**
      * Process json response
      *
-     * @param Response $response The response object
+     * @param mixed $response The response object
      * @param boolean $toArray Indicate whether to parse to an array
      * @return stdClass|array
      */
-    public static function processJsonResponse(Response $response, $toArray = true)
+    public static function processJsonResponse(mixed $response, $toArray = true)
     {
         return json_decode(strval($response->getBody()), $toArray);
     }
@@ -107,11 +107,11 @@ class Http
     /**
      * Processes async responses and passes it to the callback
      *
-     * @param Response $response
+     * @param mixed $response
      * @param callable $callback
      * @return void
      */
-    public static function asyncCallback(Response $response, callable $callback = null)
+    public static function asyncCallback($response, callable $callback = null)
     {
         if ($callback) {
             call_user_func($callback, self::processJsonResponse($response));
