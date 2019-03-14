@@ -54,15 +54,6 @@ trait Referer
      */
     protected function originFromUrl($url)
     {
-        // remove protocol
-        if ($u = stristr($url, '://')) {
-            $url = substr($u, 3);
-        }
-        // remove everything from slash (/)
-        if (-1 !== $pos = strpos($url, '/')) {
-            $url = substr($url, 0, $pos);
-        }
-
-        return $url;
+        return str_before(str_after($url, '://'), '/');
     }
 }
