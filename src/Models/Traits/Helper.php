@@ -69,6 +69,6 @@ trait Helper
             $array = array_filter($array);
         }
         // merge with relations and return
-        return array_merge($array, $this->relations);
+        return array_merge($array, array_except($this->relations, $this->hidden));
     }
 }
