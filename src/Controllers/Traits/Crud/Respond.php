@@ -105,7 +105,7 @@ trait Respond
      */
     protected function notFoundError($message = null)
     {
-        return $this->error($message !== null ?: 'Resource not found', null, 404);
+        return $this->error($message ?? 'Resource not found', null, 404);
     }
     
     /**
