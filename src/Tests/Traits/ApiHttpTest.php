@@ -81,7 +81,7 @@ trait ApiHttpTest
     public function testStore()
     {
         if (!in_array('store', $this->methods)) {
-            return;
+            return $this->assertTrue(true);
         }
 
         $payload = $this->payload();
@@ -110,7 +110,7 @@ trait ApiHttpTest
     public function testIndex(array $resource = null, $forced = false)
     {
         if (!$forced && (!in_array('index', $this->methods) || !in_array('store', $this->methods))) {
-            return;
+            return $this->assertTrue(true);
         }
         $this->beforeIndex();
         $response = $this->apiRequest('get', $this->indexUrl());
@@ -143,6 +143,7 @@ trait ApiHttpTest
             $resource['id'] = 1;
             return $this->testIndex($resource, true);
         }
+        $this->assertTrue(true);
     }
 
     /**
@@ -155,7 +156,7 @@ trait ApiHttpTest
     public function testShow(array $resource = null, $forced = false)
     {
         if (!$forced && (!in_array('show', $this->methods) || !in_array('store', $this->methods))) {
-            return;
+            return $this->assertTrue(true);
         }
 
         if (!$resource) {
@@ -190,6 +191,7 @@ trait ApiHttpTest
             $resource['id'] = 1;
             return $this->testShow($resource, true);
         }
+        $this->assertTrue(true);
     }
 
     /**
@@ -202,7 +204,7 @@ trait ApiHttpTest
     public function testUpdate(array $resource = null, $forced = false)
     {
         if (!$forced && (!in_array('update', $this->methods) || !in_array('store', $this->methods))) {
-            return;
+            return $this->assertTrue(true);
         }
         
         $payload = $this->payload(true);
@@ -235,6 +237,7 @@ trait ApiHttpTest
             $resource['id'] = 1;
             return $this->testUpdate($resource, true);
         }
+        $this->assertTrue(true);
     }
 
     /**
@@ -247,7 +250,7 @@ trait ApiHttpTest
     public function testDestroy(array $resource = null, $forced = false)
     {
         if (!$forced && (!in_array('destroy', $this->methods) || !in_array('update', $this->methods))) {
-            return;
+            return $this->assertTrue(true);
         }
         
         $model = (new Dud)->forceFill($resource);
@@ -277,5 +280,6 @@ trait ApiHttpTest
             $resource['id'] = 1;
             return $this->testDestroy($resource, true);
         }
+        $this->assertTrue(true);
     }
 }
