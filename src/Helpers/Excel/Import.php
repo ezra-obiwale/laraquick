@@ -10,16 +10,28 @@ use Maatwebsite\Excel\Concerns\RegistersEventListeners;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Maatwebsite\Excel\Exceptions\NoFilePathGivenException;
 use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Events\BeforeImport;
+use Maatwebsite\Excel\Events\AfterImport;
+use Maatwebsite\Excel\Events\BeforeSheet;
+use Maatwebsite\Excel\Events\AfterSheet;
+use Illuminate\Support\Facades\Storage;
 
-class Import implements WithBatchInserts, WithChunkReading, WithLimit, ToModel
+class Import implements WithBatchInserts, WithChunkReading, WithLimit, WithEvents, ToModel
 {
     use Importable, RegistersEventListeners;
+
+    const EVENT_BEFORE_IMPORT = 'beforeImport';
+    const EVENT_AFTER_IMPORT = 'afterImport';
+    const EVENT_BEFORE_SHEET = 'beforeSheet';
+    const EVENT_AFTER_SHEET = 'afterSheet';
 
     protected $batchSize = 100;
     protected $chunkSize = 100;
     protected $each = null;
     protected $limit = 100;
     protected $filePath;
+    protected static $eventListeners = [];
 
     /**
      * Class constructor
@@ -177,7 +189,72 @@ class Import implements WithBatchInserts, WithChunkReading, WithLimit, ToModel
      */
     public function delete(string $filePath = null) : self
     {
-        unlink($this->getFilePath());
+        Storage::delete($this->getFilePath($filePath));
         return $this;
+    }
+
+    /**
+     * Adds a callback to an event
+     *
+     * @param string $event One of Import::EVENT_BEFORE_IMPORT, Import::EVENT_AFTER_IMPORT, Import::EVENT_BEFORE_SHEET and Import::EVENT_AFTER_SHEET
+     * @param callable $callback
+     * @return self
+     */
+    public function addEventListener($event, callable $callback): self
+    {
+        self::$eventListeners[$event] = $callback;
+        return $this;
+    }
+    
+    /**
+     * Called before any import is done
+     *
+     * @param BeforeImport $event
+     * @return void
+     */
+    public static function beforeImport(BeforeImport $event)
+    {
+        if (array_key_exists(self::EVENT_BEFORE_IMPORT, self::$eventListeners)) {
+            call_user_func(self::$eventListeners[self::EVENT_BEFORE_IMPORT], $event);
+        }
+    }
+    
+    /**
+     * Called after all imports are done
+     *
+     * @param AfterImport $event
+     * @return void
+     */
+    public static function afterImport(AfterImport $event)
+    {
+        if (array_key_exists(self::EVENT_AFTER_IMPORT, self::$eventListeners)) {
+            call_user_func(self::$eventListeners[self::EVENT_AFTER_IMPORT], $event);
+        }
+    }
+
+    /**
+     * Called before processing a sheet
+     *
+     * @param BeforeSheet $event
+     * @return void
+     */
+    public static function beforeSheet(BeforeSheet $event)
+    {
+        if (array_key_exists(self::EVENT_BEFORE_SHEET, self::$eventListeners)) {
+            call_user_func(self::$eventListeners[self::EVENT_BEFORE_SHEET], $event);
+        }
+    }
+
+    /**
+     * Called after processing a sheet
+     *
+     * @param AfterSheet $event
+     * @return void
+     */
+    public static function afterSheet(AfterSheet $event)
+    {
+        if (array_key_exists(self::EVENT_AFTER_SHEET, self::$eventListeners)) {
+            call_user_func(self::$eventListeners[self::EVENT_AFTER_SHEET], $event);
+        }
     }
 }
