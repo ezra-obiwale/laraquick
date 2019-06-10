@@ -14,24 +14,14 @@ class Upload
      *
      * @param UploadedFile $file The oploaded file
      * @param string $path The path to save the file to
-     * @return void
+     * @param boolean $absoluteUrl Indicates whether to return an absolute url to the upload file or not
+     * @return string
      */
-    public static function toLocal(UploadedFile $file, $path = '')
+    public static function toLocal(UploadedFile $file, $path = '', $absoluteUrl = true) : string
     {
         $name = self::createFilename($file);
-        return url(Storage::url($file->storeAs($path, $name)));
-    }
-
-    /**
-     * @see toLocal()
-     * @deprecated
-     * @param UploadedFile $file
-     * @param string $path
-     * @return void
-     */
-    public static function localUpload(UploadedFile $file, $path = '')
-    {
-        return self::toLocal($file, $path);
+        $storeUrl = $file->storeAs($path, $name);
+        return $absoluteUrl ? Storage::url(url($storeUrl)) : $storeUrl;
     }
 
     /**
@@ -39,9 +29,10 @@ class Upload
      *
      * @param UploadedFile $file The oploaded file
      * @param string $path The path to save the file to
+     * @param boolean $absoluteUrl Indicates whether to return an absolute url to the upload file or not
      * @return bool|string
      */
-    public static function toS3Bucket(UploadedFile $file, $path = '')
+    public static function toS3Bucket(UploadedFile $file, $path = '', $absoluteUrl = true)
     {
         $name = self::createFilename($file);
         if (!self::s3()->put(
@@ -52,7 +43,9 @@ class Upload
         ) {
             return false;
         }
-        return self::s3url($path . '/' . $name);
+
+        $pathToFile = $path . '/' . $name;
+        return $absoluteUrl ? self::s3url($pathToFile) : $pathToFile;
     }
 
     /**
@@ -60,14 +53,15 @@ class Upload
      * @deprecated version
      * @param UploadedFile $file
      * @param string $path
-     * @return void
+     * @param boolean $absoluteUrl Indicates whether to return an absolute url to the upload file or not
+     * @return string|bool
      */
     public static function awsUpload(UploadedFile $file, $path = '')
     {
         return self::toS3Bucket($file, $path);
     }
 
-    private static function createFileName(UploadedFile $file)
+    private static function createFileName(UploadedFile $file) : string
     {
         return md5(auth()->id() . time()) . '.' . $file->getClientOriginalExtension();
     }
@@ -90,7 +84,7 @@ class Upload
      * @param string $path The file path on s3
      * @return string
      */
-    public static function s3url($path)
+    public static function s3url($path) : string
     {
         $config = config('filesystems.disks.s3');
         return '//s3.' . $config['region'] . '.amazonaws.com/'

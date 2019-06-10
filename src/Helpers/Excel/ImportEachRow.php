@@ -5,7 +5,7 @@ namespace Laraquick\Helpers\Excel;
 use Maatwebsite\Excel\Concerns\OnEachRow;
 use Maatwebsite\Excel\Row;
 
-class EachRow extends Import implements OnEachRow
+class ImportEachRow extends Import implements OnEachRow
 {
 
     /**
