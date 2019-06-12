@@ -21,7 +21,7 @@ class Upload
     {
         $name = self::createFilename($file);
         $storeUrl = $file->storeAs($path, $name);
-        return $absoluteUrl ? Storage::url(url($storeUrl)) : $storeUrl;
+        return $absoluteUrl ? url(Storage::url($storeUrl)) : $storeUrl;
     }
 
     /**
