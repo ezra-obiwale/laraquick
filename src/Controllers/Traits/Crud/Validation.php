@@ -14,17 +14,6 @@ trait Validation
     protected $validator;
 
     /**
-     * Indicates whether validation should be strict and throw errors if unwanted
-     * values exists
-     *
-     * @return boolean
-     */
-    protected function strictValidation()
-    {
-        return false;
-    }
-
-    /**
      * Checks the request data against validation rules
      *
      * @param array $data

@@ -32,6 +32,8 @@ return [
         'jwt' => false,
         // The path in the storage where responses are to be stored
         'storage_path' => 'test-responses',
+        // The format of all stored test responses
+        'stored_response_format' => 'json',
         // The information of the users to create when setting up.
         // The instance is picked from config **auth.providers.users.model**
         'users' => [
@@ -49,10 +51,14 @@ return [
     ],
     'websocket' => [
         // 0.0.0.0 <=> any ip address
-        'allowed_ip_address' => '0.0.0.0',
+        'allowed_ip_address' => env('WEBSOCKET_ALLOWED_IP_ADDRESS', '0.0.0.0'),
         // The websocket controller
         'controller' => 'Laraquick\\Controllers\\WebSocketController',
         // port to run websocket on
-        'port' => '8080'
+        'port' => env('WEBSOCKET_PORT', 8080),
+        // the channels to listen to
+        'channels' => [
+            'events'
+        ]
     ]
 ];

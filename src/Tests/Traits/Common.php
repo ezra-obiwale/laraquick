@@ -13,7 +13,7 @@ trait Common
     protected $user;
     protected $state;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -54,7 +54,7 @@ trait Common
     {
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->tearingDown();
 
@@ -124,8 +124,18 @@ trait Common
      */
     protected function request($method, $url, array $data = [])
     {
-        return $this->withHeaders($this->headers())
+        return $this->addHeaders()
             ->json($method, $url, $data);
+    }
+
+    /**
+     * Adds headers to the request
+     *
+     * @return self
+     */
+    protected function addHeaders()
+    {
+        return $this->withHeaders($this->headers());
     }
     
     /**
@@ -151,10 +161,11 @@ trait Common
      * Save the response of a test to storage
      *
      * @param TestResponse $response
-     * @param strng $path
+     * @param string $path
+     * @param array $overrideWith An array of key=>values to override on the stored response
      * @return string
      */
-    protected function storeResponse(TestResponse $response, $path)
+    protected function storeResponse(TestResponse $response, $path, $overrideWith = [])
     {
         // document the response by creating a log file and streaming details to it.
         if (ends_with($path, '.json')) {
@@ -162,7 +173,12 @@ trait Common
         }
         $path = str_replace('.', '/', $path);
         $storagePath = config('laraquick.tests.storage_path', 'test-responses');
-        return Storage::put("$storagePath/$path.json", json_encode($response->json(), JSON_PRETTY_PRINT));
+        $format = config('laraquick.tests.response_format') ?? '';
+        if ($format) {
+            $format = '.' . $format;
+        }
+        $data = collect($response->json())->merge($overrideWith)->all();
+        return Storage::put("$storagePath/$path" . $format, json_encode($data, JSON_PRETTY_PRINT));
     }
 
     /**
@@ -180,5 +196,18 @@ trait Common
         $result = call_user_func($callback, $mocked);
         $this->app->instance($className, $mocked);
         return $result;
+    }
+
+    /**
+     * Mocks a facade
+     *
+     * @param string $facadeName The name of the facade
+     * @param callable $callback The function to call with the mocked class if successfully mocked
+     * @return object
+     */
+    protected function mockFacade($facadeName, callable $callback)
+    {
+        $facadeClass = get_class(call_user_func([$facadeName, 'getFacadeRoot']));
+        return $this->mockClass($facadeClass, $callback);
     }
 }

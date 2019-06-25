@@ -8,6 +8,7 @@ use Laraquick\Commands\Database;
 use Laraquick\Commands\Logs\Backup;
 use Laraquick\Commands\WebSocketServer\Restart;
 use Laraquick\Commands\WebSocketServer\Start;
+use Illuminate\Http\Request;
 
 class ServiceProvider extends BaseServiceProvider
 {
@@ -29,6 +30,8 @@ class ServiceProvider extends BaseServiceProvider
      */
     public function boot()
     {
+        Request::macro();
+        
         $this->publishes([
             $this->configPath() => config_path('laraquick.php'),
         ], 'config');
