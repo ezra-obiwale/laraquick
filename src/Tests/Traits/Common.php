@@ -197,17 +197,4 @@ trait Common
         $this->app->instance($className, $mocked);
         return $result;
     }
-
-    /**
-     * Mocks a facade
-     *
-     * @param string $facadeName The name of the facade
-     * @param callable $callback The function to call with the mocked class if successfully mocked
-     * @return object
-     */
-    protected function mockFacade($facadeName, callable $callback)
-    {
-        $facadeClass = get_class(call_user_func([$facadeName, 'getFacadeRoot']));
-        return $this->mockClass($facadeClass, $callback);
-    }
 }
