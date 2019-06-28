@@ -58,43 +58,58 @@ trait Respond
     }
 
     /**
-     * Called when create action fails
+     * Should be called when an error occurred which is not a fault of the user's
      *
+     * @param string $message The message to send with a 500 status code
      * @return Response
      */
-    protected function storeFailedError()
+    protected function serverError($message)
     {
-        return $this->error('Create failed', null, 500);
+        return $this->error($message, null, 500);
+    }
+
+    /**
+     * Called when create action fails
+     *
+     * @param string $message The message to send with a 500 status code
+     * @return Response
+     */
+    protected function storeFailedError($message = 'Create failed')
+    {
+        return $this->serverError($message);
     }
 
     /**
      * Error message for when an update action fails
      *
+     * @param string $message The message to send with a 500 status code
      * @return Response
      */
-    protected function updateFailedError()
+    protected function updateFailedError($message = 'Update failed')
     {
-        return $this->error('Update failed', null, 500);
+        return $this->serverError($message);
     }
 
     /**
      * Called when a delete action fails
      *
+     * @param string $message The message to send with a 500 status code
      * @return Response
      */
-    protected function destroyFailedError()
+    protected function destroyFailedError($message = 'Delete failed')
     {
-        return $this->error('Delete failed', null, 500);
+        return $this->serverError($message);
     }
 
     /**
      * Called when a restore deleted action fails
      *
+     * @param string $message The message to send with a 500 status code
      * @return Response
      */
-    protected function restoreFailedError()
+    protected function restoreFailedError($message = 'Restoration failed')
     {
-        return $this->error('Restoration failed', null, 500);
+        return $this->serverError($message);
     }
 
     /**
@@ -103,18 +118,19 @@ trait Respond
      * @param string $message The message to send with a 404 status code
      * @return Response
      */
-    protected function notFoundError($message = null)
+    protected function notFoundError($message = 'Resource not found')
     {
-        return $this->error($message ?? 'Resource not found', null, 404);
+        return $this->error($message, null, 404);
     }
     
     /**
      * Create a model not set error response
      *
+     * @param string $message The message to send with a 500 status code
      * @return Response
      */
-    protected function modelNotSetError()
+    protected function modelNotSetError($message = 'Model not set for action')
     {
-        return $this->error('Model not set for action', null, 500);
+        return $this->serverError($message);
     }
 }

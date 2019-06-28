@@ -14,13 +14,22 @@ use Exception;
  */
 trait Store
 {
+    use Authorize;
     
     /**
      * Create a model not set error response
      *
      * @return Response
      */
-    abstract protected function modelNotSetError();
+    abstract protected function modelNotSetError($message = 'Model not set for action');
+
+    /**
+     * Called when store action fails
+     *
+     * @param string $message The message to send with a 500 status code
+     * @return Response
+     */
+    abstract protected function storeFailedError($message = 'Create failed');
 
     /**
      * The model to use in the store method.
@@ -38,13 +47,6 @@ trait Store
     {
         return $this->storeModel();
     }
-
-    /**
-     * Called when store action fails
-     *
-     * @return Response
-     */
-    abstract protected function storeFailedError();
 
     /**
      * Called after validation but before store method is called
@@ -74,15 +76,17 @@ trait Store
      */
     public function store(Request $request)
     {
+        $model = $this->storeModel();
+
+        $this->authorizeMethod('store', [$model]);
+
         if ($resp = $this->validateRequest()) {
             return $resp;
         }
 
         $data = $request->all();
-        $model = $this->storeModel();
         if (!$model) {
-            logger()->error('Store model undefined');
-            return $this->modelNotSetError();
+            return $this->modelNotSetError('Store model undefined');
         }
 
         $item = null;
@@ -106,13 +110,13 @@ trait Store
                 return $this->storeResponse($item);
             },
             function ($ex) use ($data, $item) {
-                logger()->error('Store: ' . $ex->getMessage(), $data);
+                $message = $ex->getMessage();
                 try {
                     $this->rollbackStore($data, @$item ?: new Dud);
                 } catch (Exception $ex) {
-                    logger()->error('Rollback: ' . $ex->getMessage());
+                    $message = $ex->getMessage();
                 }
-                return $this->storeFailedError();
+                return $this->storeFailedError($message);
             }
         );
     }
@@ -163,16 +167,16 @@ trait Store
      */
     public function storeMany(Request $request)
     {
+        $model = $this->storeModel();
+        if (!$model) {
+            return $this->modelNotSetError('Store model undefined');
+        }
+
+        $this->authorizeMethod('storeMany', [$model]);
+
         $data = $request->all();
         if ($resp = $this->validateRequest($this->manyValidationRules($data))) {
             return $resp;
-        }
-
-
-        $model = $this->storeModel();
-        if (!$model) {
-            logger()->error('Store model undefined');
-            return $this->modelNotSetError();
         }
 
         $items = [];
@@ -199,13 +203,13 @@ trait Store
                 return $this->storeManyResponse($items);
             },
             function ($ex) use ($data, $items) {
-                logger()->error('Store: ' . $ex->getMessage(), $data);
+                $message = $ex->getMessage();
                 try {
                     $this->rollbackStoreMany($data, $items);
                 } catch (Exception $ex) {
-                    logger()->error('Rollback: ' . $ex->getMessage());
+                    $message = $ex->getMessage();
                 }
-                return $this->storeFailedError();
+                return $this->storeFailedError($message);
             }
         );
     }

@@ -13,27 +13,39 @@ use Exception;
  */
 trait Destroy
 {
+    use Authorize;
 
     /**
      * Create a 404 not found error response
      *
+     * @param string $message The message to send with a 404 status code
      * @return Response
      */
-    abstract protected function notFoundError($message = null);
+    abstract protected function notFoundError($message = "Resource not found");
     
     /**
      * Create a model not set error response
      *
+     * @param string $message The message to send with a 500 status code
      * @return Response
      */
-    abstract protected function modelNotSetError();
+    abstract protected function modelNotSetError($message = 'Model not set for action');
 
     /**
      * Called when a delete action fails
      *
+     * @param string $message The message to send with a 500 status code
      * @return Response
      */
-    abstract protected function destroyFailedError();
+    abstract protected function destroyFailedError($message = 'Delete failed');
+    
+    /**
+     * Called when a restore deleted action fails
+     *
+     * @param string $message The message to send with a 500 status code
+     * @return Response
+     */
+    abstract protected function restoreFailedError($message = 'Restoration failed');
     
     /**
      * The model to use in the delete method.
@@ -41,13 +53,6 @@ trait Destroy
      * @return mixed
      */
     abstract protected function destroyModel();
-    
-    /**
-     * Called when a restore deleted action fails
-     *
-     * @return Response
-     */
-    abstract protected function restoreFailedError();
 
     /**
      * Called when the model has been found but before deleting
@@ -77,9 +82,9 @@ trait Destroy
     public function destroy($id)
     {
         $model = $this->destroyModel();
+
         if (!$model) {
-            logger()->error('Destroy model undefined');
-            return $this->modelNotSetError();
+            return $this->modelNotSetError('Destroy model undefined');
         }
         $item = is_object($model)
             ? $model->find($id)
@@ -88,6 +93,8 @@ trait Destroy
         if (!$item) {
             return $this->notFoundError();
         }
+
+        $this->authorizeMethod('destroy', [$model, $item]);
 
         return DB::transaction(
             function () use (&$item) {
@@ -106,13 +113,13 @@ trait Destroy
                 return $this->destroyResponse($item);
             },
             function ($ex) use ($item) {
-                logger()->error('Delete: ' . $ex->getMessage());
+                $message = $ex->getMessage();
                 try {
                     $this->rollbackDestroy($item);
                 } catch (Exception $ex) {
-                    logger()->error('Rollback: ' . $ex->getMessage());
+                    $message = $ex->getMessage();
                 }
-                return $this->destroyFailedError();
+                return $this->destroyFailedError($message);
             }
         );
     }
@@ -163,9 +170,11 @@ trait Destroy
     {
         $model = $this->destroyModel();
         if (!$model) {
-            logger()->error('Destroy model undefined');
-            return $this->modelNotSetError();
+            return $this->modelNotSetError('Destroy model undefined');
         }
+
+        $this->authorizeMethod('destroyMany', [$model]);
+
         $data = $request->all();
         if (!array_key_exists('ids', $data)) {
             throw new Exception('Ids not found');
@@ -190,9 +199,14 @@ trait Destroy
                 return $this->destroyManyResponse($result);
             },
             function ($ex) use ($data) {
-                logger()->error('Rollback: ' . $ex->getMessage());
-                $this->rollbackDestroyMany($data['ids']);
-                return $this->destroyFailedError();
+                $message = $ex->getMessage();
+
+                try {
+                    $this->rollbackDestroyMany($data['ids']);
+                } catch (\Exception $ex) {
+                    $message = $ex->getMessage();
+                }
+                return $this->destroyFailedError($message);
             }
         );
     }
@@ -246,8 +260,7 @@ trait Destroy
     {
         $model = $this->destroyModel();
         if (!$model) {
-            logger()->error('Destroy model undefined');
-            return $this->modelNotSetError();
+            return $this->modelNotSetError('Destroy model undefined');
         }
         $item = is_object($model)
             ? $model->find($id)
@@ -256,6 +269,8 @@ trait Destroy
         if (!$item) {
             return $this->notFoundError();
         }
+
+        $this->authorizeMethod('forceDestroy', [$model, $item]);
 
         return DB::transaction(
             function () use (&$item) {
@@ -274,12 +289,13 @@ trait Destroy
                 return $this->forceDestroyResponse($item);
             },
             function ($ex) use ($item) {
+                $message = $ex->getMessage();
                 try {
                     $this->rollbackForceDestroy($item);
                 } catch (Exception $ex) {
-                    logger()->error('Rollback: ' . $ex->getMessage());
+                    $message = $ex->getMessage();
                 }
-                return $this->destroyFailedError();
+                return $this->destroyFailedError($message);
             }
         );
     }
@@ -331,8 +347,7 @@ trait Destroy
     {
         $model = $this->destroyModel();
         if (!$model) {
-            logger()->error('Destroy model undefined');
-            return $this->modelNotSetError();
+            return $this->modelNotSetError('Destroy model undefined');
         }
         $item = is_object($model)
             ? $model->find($id)
@@ -359,13 +374,14 @@ trait Destroy
                 return $this->restoreDestroyedResponse($item);
             },
             function ($ex) use ($item) {
+                $message = $ex->getMessage();
                 try {
                     $this->rollbackRestoreDestroyed($item);
                 } catch (Exception $ex) {
-                    logger()->error('Rollback: ' . $ex->getMessage());
+                    $message = $ex->getMessage();
                 }
                 DB::rollback();
-                return $this->restoreFailedError();
+                return $this->restoreFailedError($message);
             }
         );
     }

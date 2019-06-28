@@ -10,20 +10,23 @@ use Illuminate\Database\Eloquent\Model;
  */
 trait Show
 {
+    use Authorize;
 
     /**
      * Create a 404 not found error response
      *
+     * @param string $message The message to send with a 404 status code
      * @return Response
      */
-    abstract protected function notFoundError($message = null);
+    abstract protected function notFoundError($message = 'Resource not found');
     
     /**
      * Create a model not set error response
      *
+     * @param string $message The message to send with a 500 status code
      * @return Response
      */
-    abstract protected function modelNotSetError();
+    abstract protected function modelNotSetError($message = 'Model not set for action');
 
     /**
      * The model to use in the show method.
@@ -41,8 +44,7 @@ trait Show
     {
         $model = $this->showModel();
         if (!$model) {
-            logger()->error('Show model undefined');
-            return $this->modelNotSetError();
+            return $this->modelNotSetError('Show model undefined');
         }
         $item = is_object($model)
             ? $model->find($id)
@@ -51,6 +53,8 @@ trait Show
         if (!$item) {
             return $this->notFoundError();
         }
+
+        $this->authorizeMethod('show', [$model, $item]);
 
         if ($resp = $this->beforeShowResponse($item)) {
             return $resp;

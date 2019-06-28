@@ -12,20 +12,31 @@ use Laraquick\Helpers\DB;
  */
 trait Update
 {
+    use Authorize;
 
     /**
      * Create a 404 not found error response
      *
+     * @param string $message The message to send with a 404 status code
      * @return Response
      */
-    abstract protected function notFoundError($message = null);
-
+    abstract protected function notFoundError($message = "Resource not found");
+ 
     /**
      * Error message for when an update action fails
      *
+     * @param string $message The message to send with a 500 status code
      * @return Response
      */
-    abstract protected function updateFailedError();
+    abstract protected function updateFailedError($message = 'Update failed');
+    
+    /**
+     * Create a model not set error response
+     *
+     * @param string $message The message to send with a 500 status code
+     * @return Response
+     */
+    abstract protected function modelNotSetError($message = 'Model not set for action');
     
     /**
      * The model to use in the update method.
@@ -64,18 +75,21 @@ trait Update
      */
     public function update(Request $request, $id)
     {
-        $data = $request->all();
-        if ($resp = $this->validateRequest($this->validationRules($data, $id), $this->validationMessages($data, $id))) {
-            return $resp;
-        }
-
         $model = $this->updateModel();
 
         $item = is_object($model)
             ? $model->find($id)
             : $model::find($id);
+
         if (!$item) {
             return $this->notFoundError();
+        }
+
+        $this->authorizeMethod('update', [$model, $item]);
+
+        $data = $request->all();
+        if ($resp = $this->validateRequest($this->validationRules($data, $id), $this->validationMessages($data, $id))) {
+            return $resp;
         }
 
         return DB::transaction(
@@ -96,14 +110,13 @@ trait Update
                 return $this->updateResponse($item);
             },
             function ($ex) use ($data, $item) {
-                logger()->error('Update: ' . $ex->getMessage(), $data);
+                $message = $ex->getMessage();
                 try {
                     $this->rollbackUpdate($data, $item);
                 } catch (\Exception $ex) {
-                    logger()->error('Rollback: ' . $ex->getMessage());
+                    $message = $ex->getMessage();
                 }
-                $this->rollbackUpdate($data, $item);
-                return $this->updateFailedError();
+                return $this->updateFailedError($message);
             }
         );
     }

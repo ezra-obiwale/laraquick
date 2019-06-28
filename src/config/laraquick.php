@@ -1,6 +1,9 @@
 <?php
 
 return [
+    'controllers' => [
+        'use_policies' => false
+    ],
     'tests' => [
         // Class definitions
         'classes' => [
