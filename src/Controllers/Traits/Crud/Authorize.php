@@ -13,7 +13,7 @@ trait Authorize
      */
     protected function authorizeMethod($method, array $arguments = [])
     {
-        if (!config('laraquick.controllers.use_policies', false)) {
+        if (!$this->usePolicy()) {
             return;
         }
         if (!method_exists('resourceAbilityMap', $this)) {
@@ -26,5 +26,14 @@ trait Authorize
         if (array_key_exists($method, $map)) {
             $this->authorize($map[$method], $arguments);
         }
+    }
+
+    /**
+     * Indicates whether to use policy for the crud methods
+     *
+     * @return boolean
+     */
+    protected function usePolicy() {
+        return config('laraquick.controllers.use_policies', false);
     }
 }
