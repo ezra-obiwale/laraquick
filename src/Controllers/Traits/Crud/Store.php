@@ -15,7 +15,8 @@ use Exception;
 trait Store
 {
     use Authorize;
-    
+
+
     /**
      * Create a model not set error response
      *
@@ -84,26 +85,28 @@ trait Store
             return $resp;
         }
 
-        $data = $request->all();
+        $model = $this->storeModel();
         if (!$model) {
             return $this->modelNotSetError('Store model undefined');
         }
 
+        $data = $request->only(array_keys($this->validationRules($request->all())));
         $item = null;
+
         return DB::transaction(
             function () use (&$data, $model, &$item) {
                 if ($resp = $this->beforeStore($data)) {
                     return $resp;
                 }
-    
+
                 $item = is_object($model)
                     ? $model->create($data)
                     : $model::create($data);
-    
+
                 if (!$item) {
                     throw new Exception('Create method returned falsable');
                 }
-    
+
                 if ($resp = $this->beforeStoreResponse($item)) {
                     return $resp;
                 }
@@ -174,7 +177,7 @@ trait Store
 
         $this->authorizeMethod('storeMany', [$model]);
 
-        $data = $request->all();
+        $data = $request->only(array_keys($this->manyValidationRules($request->all())));
         if ($resp = $this->validateRequest($this->manyValidationRules($data))) {
             return $resp;
         }
@@ -185,18 +188,18 @@ trait Store
                 if ($resp = $this->beforeStoreMany($data)) {
                     return $resp;
                 }
-    
+
                 foreach ($data['many'] as $currentData) {
                     $item = is_object($model)
                         ? $model->create($data)
                         : $model::create($data);
-        
+
                     if (!$item) {
                         throw new Exception('Create method returned falsable');
                     }
                     $items[] = $item;
                 }
-    
+
                 if ($resp = $this->beforeStoreManyResponse($items)) {
                     return $resp;
                 }
