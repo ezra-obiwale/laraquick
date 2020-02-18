@@ -26,7 +26,7 @@ trait Update
      * @return Response
      */
     abstract protected function updateFailedError();
-    
+
     /**
      * The model to use in the update method.
      *
@@ -64,7 +64,7 @@ trait Update
      */
     public function update(Request $request, $id)
     {
-        $data = $request->all();
+        $data = $request->only(array_keys($this->validationRules($request->all(), $id)));
         if ($resp = $this->validateRequest($this->validationRules($data, $id), $this->validationMessages($data, $id))) {
             return $resp;
         }
@@ -83,13 +83,13 @@ trait Update
                 if ($resp = $this->beforeUpdate($data, $item)) {
                     return $resp;
                 }
-    
+
                 $result = $item->update(array_only($data, $item->getFillable()));
-    
+
                 if (!$result) {
                     throw new \Exception('Update method returned falsable');
                 }
-    
+
                 if ($resp = $this->beforeUpdateResponse($item)) {
                     return $resp;
                 }
