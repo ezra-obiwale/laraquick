@@ -2,63 +2,89 @@
 namespace Laraquick\Controllers\Traits;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Response;
+use Laraquick\Controllers\Traits\Response\Common;
+use Laraquick\Controllers\Traits\Response\Web as WebResponse;
 
-use DB;
-
+/**
+ * A collection of api methods to assist in quick controller generation
+ */
 trait Web
 {
-    use Crud\Crud;
-    
+    use Crud\Crud, WebResponse, Common;
+
     /**
-     * Called when an action is successfully processed.
+     * Store method success response
      *
-     * @param string $message
+     * @param Model $data
      * @return Response
      */
-    protected function success($status)
-    {
-        return back()->withStatus($status);
-    }
-    
-    protected function error($message, $errors = null, $code = 400)
-    {
-        $back = back()->withInput()->withMessage($message);
-        if ($errors) {
-            $back->withErrors($errors);
-        }
-        return $back;
-    }
-
     protected function storeResponse(Model $data)
     {
         return $this->success('Create successful');
     }
 
+    /**
+     * StoreMany method success response
+     *
+     * @param array $data
+     * @return Response
+     */
     protected function storeManyResponse(array $data)
     {
         return $this->success('Create many successful', 201);
     }
 
+    /**
+     * Update method success response
+     *
+     * @param Model $data
+     * @return Response
+     */
     protected function updateResponse(Model $data)
     {
         return $this->success('Update successful');
     }
 
+    /**
+     * Destroy method success response
+     *
+     * @param Model $data
+     * @return Response
+     */
     protected function destroyResponse(Model $data)
     {
         return $this->success('Delete successful');
     }
-    
+
+    /**
+     * ForceDestroy method success response
+     *
+     * @param Model $data
+     * @return Response
+     */
     protected function forceDestroyResponse(Model $data)
     {
         return $this->success('Permanent delete successful');
     }
-    
+
+    /**
+     * DestroyMany method success response
+     *
+     * @param int $deletedCount
+     * @return Response
+     */
     protected function destroyManyResponse($deletedCount)
     {
         return $this->success("Deleted $deletedCount item(s) successfully");
     }
-    
+
+    /**
+     * RestoreDestroyed method success response
+     *
+     * @param Model $data
+     * @return Response
+     */
     protected function restoreDestroyedResponse(Model $data)
     {
         return $this->success('Restoration successful');

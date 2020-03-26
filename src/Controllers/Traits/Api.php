@@ -2,85 +2,111 @@
 namespace Laraquick\Controllers\Traits;
 
 use Illuminate\Database\Eloquent\Model;
-use DB;
+use Illuminate\Http\JsonResponse;
+use Laraquick\Controllers\Traits\Response\Api as ApiResponse;
+use Laraquick\Controllers\Traits\Response\Common;
 
 /**
- * A collection of methods to assist in quick controller generation
- *
+ * A collection of api methods to assist in quick controller generation
  */
 trait Api
 {
-    use Crud\Crud;
+    use Crud\Crud, ApiResponse, Common;
 
     /**
-     * Called when an action is successfully processed.
+     * Index method success response
      *
-     * @param mixed $response
-     * @param integer $code
-     * @param array $meta
-     * @return Response
+     * @param mixed $data
+     * @return JsonResponse
      */
-    protected function success($response = null, $code = 200, array $meta = [])
-    {
-        $resp = [
-            'status' => is_array($response) && array_key_exists('status', $response)
-             ? $response['status'] : 'ok'
-        ];
-        if (is_array($response)) {
-            $resp = array_merge($resp, $response);
-        } elseif (is_string($response)) {
-            $resp['message'] = $response;
-        } elseif ($response !== null) {
-            $resp['data'] = $response;
-        }
-
-        if (count($meta)) {
-            $resp['meta'] = $meta;
-        }
-        
-        return response()->json($resp, $code);
-    }
-
     protected function indexResponse($data)
     {
         return $this->paginatedList($data->toArray());
     }
 
+    /**
+     * StoreMany method success response
+     *
+     * @param array $data
+     * @return JsonResponse
+     */
     protected function storeManyResponse(array $data)
     {
         return $this->success($data, 201);
     }
 
+    /**
+     * Store method success response
+     *
+     * @param Model $data
+     * @return JsonResponse
+     */
     protected function storeResponse(Model $data)
     {
         return $this->success($data, 201);
     }
 
+    /**
+     * Show method success response
+     *
+     * @param Model $data
+     * @return JsonResponse
+     */
     protected function showResponse(Model $data)
     {
         return $this->success($data, 200);
     }
 
+    /**
+     * Update method success response
+     *
+     * @param Model $data
+     * @return JsonResponse
+     */
     protected function updateResponse(Model $data)
     {
         return $this->success($data, 202);
     }
 
+    /**
+     * Destroy method success response
+     *
+     * @param Model $data
+     * @return JsonResponse
+     */
     protected function destroyResponse(Model $data)
     {
         return $this->success($data, 202);
     }
 
+    /**
+     * ForceDestroy method success response
+     *
+     * @param Model $data
+     * @return JsonResponse
+     */
     protected function forceDestroyResponse(Model $data)
     {
         return $this->success($data, 202);
     }
 
+    /**
+     * DestroyMany method success response
+     *
+     * @param int $deletedCount
+     * @return JsonResponse
+     */
     protected function destroyManyResponse($deletedCount)
     {
         return $this->success("$deletedCount item(s) deleted successfully", 202);
     }
-    
+
+    /**
+     * RestoreDestroyed method success response
+     *
+     * @param Model $data
+     * @return JsonResponse
+     */
     protected function restoreDestroyedResponse(Model $data)
     {
         return $this->success($data, 202);

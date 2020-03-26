@@ -1,12 +1,6 @@
 <?php
+
 namespace Laraquick\Controllers\Traits\Crud;
-
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Database\Eloquent\Model;
-
-use DB;
 
 /**
  * A collection of methods to assist in quick controller generation for crud actions
@@ -14,7 +8,7 @@ use DB;
  */
 trait Crud
 {
-    use Index, Store, Show, Update, Destroy, Validation, Respond;
+    use Index, Store, Show, Update, Destroy, Validation;
 
     /**
      * Should return a static instance of the target model class or
@@ -46,7 +40,7 @@ trait Crud
     {
         return $this->indexModel();
     }
-    
+
     /**
      * The model to use in the store method. Defaults to @see model()
      *
@@ -67,7 +61,7 @@ trait Crud
         return $this->model();
     }
 
-    
+
     /**
      * The model to use in the update method. Defaults to @see model()
      *
@@ -77,7 +71,7 @@ trait Crud
     {
         return $this->model();
     }
-    
+
     /**
      * The model to use in the delete method. Defaults to @see model()
      *

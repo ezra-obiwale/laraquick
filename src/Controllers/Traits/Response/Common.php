@@ -1,31 +1,10 @@
 <?php
-namespace Laraquick\Controllers\Traits\Crud;
+namespace Laraquick\Controllers\Traits\Response;
 
 use Illuminate\Http\Response;
-use Illuminate\Database\Eloquent\Collection;
 
-trait Respond
+trait Common
 {
-
-    /**
-     * Called when an error occurs while performing an action
-     *
-     * @param string $message
-     * @param mixed $errors
-     * @param integer $code
-     * @return Response
-     */
-    protected function error($message, $errors = null, $code = 400)
-    {
-        $resp = [
-            "status" => "error",
-            "message" => $message
-        ];
-        if ($errors !== null) {
-            $resp["errors"] = $errors;
-        }
-        return response()->json($resp, $code);
-    }
 
     /**
      * Called when return a list of paginated items.
@@ -122,7 +101,7 @@ trait Respond
     {
         return $this->error($message, null, 404);
     }
-    
+
     /**
      * Create a model not set error response
      *

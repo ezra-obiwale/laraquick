@@ -3,6 +3,7 @@
 namespace Laraquick\Models\Traits;
 
 use Illuminate\Database\Eloquent\Builder;
+use Arr;
 
 trait Helper
 {
@@ -18,7 +19,7 @@ trait Helper
     {
         return $this->withoutGlobalScopes(!is_array($attributes) ? [$attributes] : $attributes);
     }
-    
+
     /**
      * Excludes the given values from being selected from the database
      * Thanks to Ikechi Michael (@mykeels)
@@ -49,7 +50,7 @@ trait Helper
         $this->timestamps = false;
         return $this;
     }
-    
+
     public function toArray()
     {
         $withArray = property_exists($this, 'withArray')
@@ -69,6 +70,6 @@ trait Helper
             $array = array_filter($array);
         }
         // merge with relations and return
-        return array_merge($array, array_except($this->relations, $this->hidden));
+        return array_merge($array, Arr::except($this->relations, $this->hidden));
     }
 }

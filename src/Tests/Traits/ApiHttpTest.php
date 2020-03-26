@@ -4,6 +4,7 @@ namespace Laraquick\Tests\Traits;
 
 use Illuminate\Database\Eloquent\Model;
 use Laraquick\Models\Dud;
+use Str;
 
 trait ApiHttpTest
 {
@@ -22,7 +23,7 @@ trait ApiHttpTest
 
     private function resource()
     {
-        return $this->resource ?? str_replace(['\\', '_test'], ['_', ''], strtolower(get_called_class()));
+        return $this->resource ?? Str::replace(['\\', '_test'], ['_', ''], strtolower(get_called_class()));
     }
 
     abstract protected function payload($updating = false) : array;
@@ -76,7 +77,7 @@ trait ApiHttpTest
     {
         $this->expectedUpdateResponse($response);
     }
-    
+
 
     public function testStore()
     {
@@ -206,7 +207,7 @@ trait ApiHttpTest
         if (!$forced && (!in_array('update', $this->methods) || !in_array('store', $this->methods))) {
             return $this->assertTrue(true);
         }
-        
+
         $payload = $this->payload(true);
         $model = (new Dud)->forceFill($resource);
         $this->beforeUpdate($payload, $model);
@@ -252,7 +253,7 @@ trait ApiHttpTest
         if (!$forced && (!in_array('destroy', $this->methods) || !in_array('update', $this->methods))) {
             return $this->assertTrue(true);
         }
-        
+
         $model = (new Dud)->forceFill($resource);
         $this->beforeDestroy($model);
 
