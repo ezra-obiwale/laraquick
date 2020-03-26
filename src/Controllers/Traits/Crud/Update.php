@@ -4,6 +4,7 @@ namespace Laraquick\Controllers\Traits\Crud;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use Laraquick\Helpers\DB;
 
 /**
@@ -99,7 +100,7 @@ trait Update
                     return $resp;
                 }
 
-                $result = $item->update(array_only($data, $item->getFillable()));
+                $result = $item->update(Arr::only($data, $item->getFillable()));
 
                 if (!$result) {
                     throw new \Exception('Update method returned falsable');
@@ -125,18 +126,18 @@ trait Update
     /**
      * Called on success but before sending the response
      *
-     * @param mixed $data
+     * @param Model $model
      * @return mixed The response to send or null
      */
-    protected function beforeUpdateResponse(Model &$data)
+    protected function beforeUpdateResponse(Model $model)
     {
     }
 
     /**
      * Called for the response to method update()
      *
-     * @param Model $data
+     * @param Model $model
      * @return Response|array
      */
-    abstract protected function updateResponse(Model $data);
+    abstract protected function updateResponse(Model $model);
 }

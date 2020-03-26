@@ -3,7 +3,6 @@
 namespace Laraquick\Models\Traits;
 
 use Illuminate\Database\Eloquent\Builder;
-use Arr;
 
 trait Helper
 {
@@ -31,7 +30,7 @@ trait Helper
     public function scopeExcept($query, $value)
     {
         $defaultColumns = ['id', 'created_at', 'updated_at'];
-        if (in_array_('deleted_at', $this->dates)) {
+        if (in_array('deleted_at', $this->dates)) {
             $defaultColumns[] = 'deleted_at';
         }
         if (is_string($value)) {
@@ -70,6 +69,6 @@ trait Helper
             $array = array_filter($array);
         }
         // merge with relations and return
-        return array_merge($array, Arr::except($this->relations, $this->hidden));
+        return array_merge($array, array_except($this->relations, $this->hidden));
     }
 }

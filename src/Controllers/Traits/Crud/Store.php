@@ -127,20 +127,20 @@ trait Store
     /**
      * Called on success but before sending the response
      *
-     * @param mixed $data
+     * @param Model $model
      * @return mixed The response to send or null
      */
-    protected function beforeStoreResponse(Model &$data)
+    protected function beforeStoreResponse(Model $model)
     {
     }
 
     /**
      * Called for the response to method store()
      *
-     * @param Model $data
+     * @param Model $model
      * @return Response|array
      */
-    abstract protected function storeResponse(Model $data);
+    abstract protected function storeResponse(Model $model);
 
     /**
      * Called after validation but before store method is called
@@ -223,7 +223,7 @@ trait Store
      * @param array $data
      * @return mixed The response to send or null
      */
-    protected function beforeStoreManyResponse(array $data)
+    protected function beforeStoreManyResponse(array &$data)
     {
     }
 
@@ -233,5 +233,5 @@ trait Store
      * @param array $data
      * @return Response|array
      */
-    abstract protected function storeManyResponse(array $data);
+    abstract protected function storeManyResponse(array &$data);
 }

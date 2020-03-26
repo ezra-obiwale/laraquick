@@ -2,6 +2,8 @@
 
 namespace Laraquick\Controllers\Traits;
 
+use Illuminate\Support\Str;
+
 trait Referer
 {
 
@@ -54,6 +56,6 @@ trait Referer
      */
     protected function originFromUrl($url)
     {
-        return str_before(str_after($url, '://'), '/');
+        return Str::before(Str::after($url, '://'), '/');
     }
 }

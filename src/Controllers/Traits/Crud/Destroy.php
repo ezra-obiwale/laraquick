@@ -22,7 +22,7 @@ trait Destroy
      * @return Response
      */
     abstract protected function notFoundError($message = "Resource not found");
-    
+
     /**
      * Create a model not set error response
      *
@@ -38,7 +38,7 @@ trait Destroy
      * @return Response
      */
     abstract protected function destroyFailedError($message = 'Delete failed');
-    
+
     /**
      * Called when a restore deleted action fails
      *
@@ -46,7 +46,7 @@ trait Destroy
      * @return Response
      */
     abstract protected function restoreFailedError($message = 'Restoration failed');
-    
+
     /**
      * The model to use in the delete method.
      *
@@ -57,10 +57,10 @@ trait Destroy
     /**
      * Called when the model has been found but before deleting
      *
-     * @param mixed $data
+     * @param Model $model
      * @return void
      */
-    protected function beforeDestroy(Model &$data)
+    protected function beforeDestroy(Model $model)
     {
     }
 
@@ -102,11 +102,11 @@ trait Destroy
                     return $resp;
                 }
                 $result = $item->delete();
-    
+
                 if (!$result) {
                     throw new Exception('Delete method returned falsable');
                 }
-                
+
                 if ($resp = $this->beforeDestroyResponse($item)) {
                     return $resp;
                 }
@@ -127,27 +127,27 @@ trait Destroy
     /**
      * Called on success but before sending the response
      *
-     * @param mixed $data
+     * @param Model $model
      * @return mixed The response to send or null
      */
-    protected function beforeDestroyResponse(Model &$data)
+    protected function beforeDestroyResponse(Model $model)
     {
     }
 
     /**
      * Called for the response to method @see destroy()
      *
-     * @param Model $data
+     * @param Model $model
      * @return Response|array
      */
-    abstract protected function destroyResponse(Model $data);
-    
+    abstract protected function destroyResponse(Model $model);
+
     // ------------------ DESTROY MANY ---------------------------------
 
     /**
      * Called when the model has been found but before deleting
      *
-     * @param mixed $data
+     * @param array $data
      * @return void
      */
     protected function beforeDestroyMany(array &$data)
@@ -184,15 +184,15 @@ trait Destroy
                 if ($resp = $this->beforeDestroyMany($data)) {
                     return $resp;
                 }
-        
+
                 $result = is_object($model)
                     ? $model->whereIn('id', $data['ids'])->delete()
                     : $model::whereIn('id', $data['ids'])->delete();
-        
+
                 if (!$result) {
                     throw new Exception('Delete failed');
                 }
-        
+
                 if ($resp = $this->beforeDestroyManyResponse($result, $data['ids'])) {
                     return $resp;
                 }
@@ -220,7 +220,7 @@ trait Destroy
     protected function beforeDestroyManyResponse($deletedCount)
     {
     }
-    
+
     /**
      * Called for the response to method destroyMany()
      *
@@ -228,7 +228,7 @@ trait Destroy
      * @return Response|array
      */
     abstract protected function destroyManyResponse($deleteCount);
-    
+
     // -------------------- FORCE DESTROY ------------------------------
 
     /**
@@ -278,11 +278,11 @@ trait Destroy
                     return $resp;
                 }
                 $result = $item->forceDelete();
-        
+
                 if (!$result) {
                     throw new Exception('Force delete failed');
                 }
-        
+
                 if ($resp = $this->beforeForceDestroyResponse($item)) {
                     return $resp;
                 }
@@ -309,7 +309,7 @@ trait Destroy
     protected function beforeForceDestroyResponse(Model $model)
     {
     }
-    
+
     /**
      * Called for the response to method @see forceDestroy()
      *
@@ -320,16 +320,16 @@ trait Destroy
     {
         return $this->destroyResponse($model);
     }
-    
+
     // ---------------- RESTORE DESTROYED -------------------------
 
     /**
      * Called when the model has been found but before restoring a deleted resource
      *
-     * @param Model $data
+     * @param Model $model
      * @return void
      */
-    protected function beforeRestoreDestroyed(Model $data)
+    protected function beforeRestoreDestroyed(Model $model)
     {
     }
 
@@ -363,11 +363,11 @@ trait Destroy
                     return $resp;
                 }
                 $result = $item->restore();
-        
+
                 if (!$result) {
                     throw new Exception('Restore failed');
                 }
-        
+
                 if ($resp = $this->beforeRestoreDestroyedResponse($item)) {
                     return $resp;
                 }
@@ -380,7 +380,6 @@ trait Destroy
                 } catch (Exception $ex) {
                     $message = $ex->getMessage();
                 }
-                DB::rollback();
                 return $this->restoreFailedError($message);
             }
         );
@@ -399,8 +398,8 @@ trait Destroy
     /**
      * Called for the response to method @see restoreDestroyed()
      *
-     * @param Model $data
+     * @param Model $model
      * @return Response|array
      */
-    abstract protected function restoreDestroyedResponse(Model $data);
+    abstract protected function restoreDestroyedResponse(Model $model);
 }
