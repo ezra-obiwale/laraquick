@@ -59,10 +59,12 @@ class Send extends Notification
     public function via($notifiable)
     {
         $via = ['mail'];
+
         if (($this->toDatabase && count($this->toDatabase))
             || ($this->toArray && count($this->toArray))) {
             $via[] = 'database';
         }
+
         return $via;
     }
 

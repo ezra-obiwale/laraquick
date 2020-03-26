@@ -38,7 +38,9 @@ class AsyncCall implements ShouldQueue
         $this->arguments = $arguments;
         $this->callback = $callback;
         $this->callbackArguments = $callbackArguments;
+
         array_unshift($tags, 'async-call');
+
         $this->tags = $tags;
     }
 
@@ -50,6 +52,7 @@ class AsyncCall implements ShouldQueue
     public function handle()
     {
         $result = call_user_func_array($this->callable, $this->arguments);
+
         if ($this->callback) {
             array_unshift($this->callbackArguments, $result);
             call_user_func_array($this->callback, $this->callbackArguments);

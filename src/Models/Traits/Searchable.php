@@ -76,6 +76,7 @@ trait Searchable
             $columns = '`' . $this->getTable() . '`.`'
                 . implode("`, `{$this->getTable()}`.`", $this->searchableColumns())
                 . '`';
+
             $this->fullTextMatchString = "MATCH ({$columns}) AGAINST (? IN BOOLEAN MODE)";
             $query->whereRaw($this->fullTextMatchString, $this->treat($text));
 
@@ -83,6 +84,7 @@ trait Searchable
                 $this->scopeOrderByRelevance($query, ...$this->orderParams);
             }
         }
+
         return $query;
     }
 

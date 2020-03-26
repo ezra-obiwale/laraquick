@@ -37,7 +37,7 @@ trait PassThrough
      * @return array
      */
     abstract protected function headers();
-    
+
     /**
      * The url to pass the request to
      *
@@ -216,10 +216,7 @@ trait PassThrough
      */
     public function store(Request $request)
     {
-        $data = $request->all();
-        if ($resp = $this->validateRequest()) {
-            return $resp;
-        }
+        $data = $this->validateRequest();
 
         if ($resp = $this->beforeStore($data)) {
             return $resp;
@@ -246,10 +243,8 @@ trait PassThrough
      */
     public function update(Request $request, $id)
     {
-        $data = $request->all();
-        if ($resp = $this->validateRequest($this->validationRules($data, $id), $this->validationMessages($data, $id))) {
-            return $resp;
-        }
+        $requestData = $request->all();
+        $data = $this->validateRequest($this->validationRules($requestData, $id), $this->validationMessages($requestData, $id));
 
         if ($resp = $this->beforeUpdate($data, (new Dud)->forceFill($data))) {
             return $resp;
@@ -267,7 +262,7 @@ trait PassThrough
     {
         return $this->request('destroy', $id);
     }
-    
+
     /**
      * An array map of actions to request methods
      *

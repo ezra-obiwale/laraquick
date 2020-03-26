@@ -17,6 +17,7 @@ class WebSocket
         if (!self::$clients) {
             self::$clients = new SplObjectStorage;
         }
+
         if (!self::$shouldReceiveEvent) {
             self::$shouldReceiveEvent = function () {
                 return true;
@@ -32,12 +33,14 @@ class WebSocket
     public static function addClient(ConnectionInterface $client)
     {
         self::init();
+
         self::$clients->attach($client);
     }
 
     public static function removeClient(ConnectionInterface $client)
     {
         self::init();
+
         self::$clients->detach($client);
     }
 
@@ -53,6 +56,7 @@ class WebSocket
                 !call_user_func(self::$shouldReceiveEvent, $client, $event, $data)) {
                 continue;
             }
+
             self::emitTo($client, $event, $data);
         }
     }
@@ -90,6 +94,7 @@ class WebSocket
         if (!array_key_exists($event, self::$callbacks)) {
             return;
         }
+
         foreach (self::$callbacks[$event] as $callback) {
             $callback($data, $from);
         }

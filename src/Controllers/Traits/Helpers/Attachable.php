@@ -111,11 +111,14 @@ trait Attachable
         $model = is_object($model)
             ? $model->find($id)
             : $model::find($id);
+
         if (!$model) {
             return $this->notFoundError();
         }
+
         $this->treatRelation($model, $relation);
-        $list = $model->$relation()->simplePaginate();
+        $list = $model->$relation()->paginate();
+
         return $this->paginatedList($list->toArray());
     }
 
@@ -130,28 +133,28 @@ trait Attachable
     public function attach($id, $relation, $paramKey = null)
     {
         $paramKey = $paramKey ?: $relation;
-        if (!$this->validate(request(), [
+
+        $items = $this->validateRequest([
             $paramKey => 'required|array'
-        ])) {
-            return $this->error($this->validationErrorMessage(), $this->validator->errors());
-        }
+        ]);
+
         $model = $this->attachModel();
         $model = is_object($model)
             ? $model->find($id)
             : $model::find($id);
+
         if (!$model) {
             return $this->notFoundError();
         }
+
         try {
-            $items = request()->input($paramKey);
             $this->treatRelation($model, $relation);
             $model->$relation()->syncWithoutDetaching($this->prepareAttachItems($items, $model, $relation));
-            return response()->json([
-                'status' => 'ok',
-                'data' => $model->load($relation)->$relation
-            ]);
+
+            return $this->success($model->load($relation)->$relation);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
+
             return $this->error('Something went wrong. Are you sure the ' . str_replace('_', ' ', $paramKey) . ' exists?');
         }
     }
@@ -167,29 +170,29 @@ trait Attachable
     public function detach($id, $relation, $paramKey = null)
     {
         $paramKey = $paramKey ?: $relation;
-        if (!$this->validate(request(), [
+
+        $items = $this->validateRequest([
             $paramKey => 'required|array'
-        ])) {
-            return $this->error($this->validationErrorMessage(), $this->validator->errors());
-        }
+        ]);
+
         $model = $this->detachModel();
         $model = is_object($model)
             ? $model->find($id)
             : $model::find($id);
+
         if (!$model) {
             return $this->notFoundError();
         }
+
         try {
-            $items = request()->input($paramKey);
             $this->treatRelation($model, $relation);
             $_items = $model->$relation()->find($items);
             $model->$relation()->detach($this->prepareDetachItems($items, $model, $relation));
-            return response()->json([
-                'status' => 'ok',
-                'data' => $_items
-            ]);
+
+            return $this->success($_items);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
+
             return $this->error('Something went wrong. Are you sure the ' . str_replace('_', ' ', $paramKey) . ' exists?');
         }
     }
@@ -205,30 +208,30 @@ trait Attachable
     public function sync($id, $relation, $paramKey = null)
     {
         $paramKey = $paramKey ?: $relation;
-        if (!$this->validate(request(), [
+
+        $items = $this->validateRequest([
             $paramKey => 'required|array'
-        ])) {
-            return $this->error($this->validationErrorMessage(), $this->validator->errors());
-        }
+        ]);
+
         $model = $this->syncModel();
         $model = is_object($model)
             ? $model->find($id)
             : $model::find($id);
+
         if (!$model) {
             return $this->notFoundError();
         }
+
         try {
-            $items = request()->input($paramKey);
             $this->treatRelation($model, $relation);
+
             $resp = $model->$relation()->sync($this->prepareSyncItems($items, $model, $relation));
             $resp['added'] = $resp['attached'];
             $resp['removed'] = $resp['detached'];
             unset($resp['attached']);
             unset($resp['detached']);
-            return response()->json([
-                'status' => 'ok',
-                'data' => $model->load($relation)->$relation
-            ]);
+
+            return $this->success($model->load($relation)->$relation);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return $this->error('Something went wrong. Are you sure the ' . str_replace('_', ' ', $paramKey) . ' exists?');

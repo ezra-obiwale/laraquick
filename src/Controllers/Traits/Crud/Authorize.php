@@ -16,6 +16,7 @@ trait Authorize
         if (!$this->usePolicy()) {
             return;
         }
+
         if (!method_exists('resourceAbilityMap', $this)) {
             throw new \Exception('Method "resourceAbilityMap" does not exist');
         } elseif (!method_exists('authorize', $this)) {
@@ -23,6 +24,7 @@ trait Authorize
         }
 
         $map = $this->resourceAbilityMap();
+
         if (array_key_exists($method, $map)) {
             $this->authorize($map[$method], $arguments);
         }

@@ -41,9 +41,11 @@ class Start extends Command
     public function handle()
     {
         $socketControllerClass = config('laraquick.websocket.controller');
+
         if (!class_exists($socketControllerClass)) {
             return $this->error('WebSocket controller not found');
         }
+
         $address = config('laraquick.websocket.allowed_ip_address');
         $port = config('laraquick.websocket.port');
         $server = IoServer::factory(
@@ -55,7 +57,9 @@ class Start extends Command
             intval($port),
             $address
        );
-        $this->info("Websocket server running on port $port");
-        $server->run();
+
+       $this->info("Websocket server running on port $port");
+
+       $server->run();
     }
 }

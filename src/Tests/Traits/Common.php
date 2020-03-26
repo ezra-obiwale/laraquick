@@ -21,7 +21,9 @@ trait Common
         $mockArgPrefix = $static ? 'alias:' : '';
         $mocked = Mockery::mock($mockArgPrefix . $className);
         $result = call_user_func($callback, $mocked);
+
         $this->app->instance($className, $mocked);
+
         return $result;
     }
 }

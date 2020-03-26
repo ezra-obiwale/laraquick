@@ -18,10 +18,12 @@ trait Common
     protected function paginatedList(array $items, $code = 200, array $meta = [])
     {
         $resp['data'] = array_key_exists('data', $items) ? $items['data'] : $items;
+
         if (request()->query('length') != 'all' && count($resp['data'])) {
             unset($items['data']);
             $meta['pagination'] = $items;
         }
+
         return $this->success($resp, $code, $meta);
     }
 
@@ -111,5 +113,16 @@ trait Common
     protected function modelNotSetError($message = 'Model not set for action')
     {
         return $this->serverError($message);
+    }
+
+    /**
+     * Translates a given text
+     *
+     * @param string $text
+     * @return string
+     */
+    protected function translate(string $text): string
+    {
+        return $text;
     }
 }

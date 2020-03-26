@@ -21,6 +21,7 @@ class Upload
     {
         $name = self::createFilename($file);
         $storeUrl = $file->storeAs($path, $name);
+
         return $absoluteUrl ? url(Storage::url($storeUrl)) : $storeUrl;
     }
 
@@ -35,16 +36,16 @@ class Upload
     public static function toS3Bucket(UploadedFile $file, $path = '', $absoluteUrl = true)
     {
         $name = self::createFilename($file);
+
         if (!self::s3()->put(
             $path . '/' . $name,
-            fopen($file->getRealPath(), 'r+'),
-            'public'
-        )
+            fopen($file->getRealPath(), 'r+'), 'public')
         ) {
             return false;
         }
 
         $pathToFile = $path . '/' . $name;
+
         return $absoluteUrl ? self::s3url($pathToFile) : $pathToFile;
     }
 
@@ -87,6 +88,7 @@ class Upload
     public static function s3url($path) : string
     {
         $config = config('filesystems.disks.s3');
+
         return '//s3.' . $config['region'] . '.amazonaws.com/'
             . $config['bucket'] . '/' . $path;
     }

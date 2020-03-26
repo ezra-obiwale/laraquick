@@ -81,16 +81,13 @@ trait Store
 
         $this->authorizeMethod('store', [$model]);
 
-        if ($resp = $this->validateRequest()) {
-            return $resp;
-        }
-
         $model = $this->storeModel();
+
         if (!$model) {
             return $this->modelNotSetError('Store model undefined');
         }
 
-        $data = $request->only(array_keys($this->validationRules($request->all())));
+        $data = $this->validateRequest();
         $item = null;
 
         return DB::transaction(
@@ -110,15 +107,18 @@ trait Store
                 if ($resp = $this->beforeStoreResponse($item)) {
                     return $resp;
                 }
+
                 return $this->storeResponse($item);
             },
             function ($ex) use ($data, $item) {
                 $message = $ex->getMessage();
+
                 try {
                     $this->rollbackStore($data, @$item ?: new Dud);
                 } catch (Exception $ex) {
                     $message = $ex->getMessage();
                 }
+
                 return $this->storeFailedError($message);
             }
         );
@@ -171,6 +171,7 @@ trait Store
     public function storeMany(Request $request)
     {
         $model = $this->storeModel();
+
         if (!$model) {
             return $this->modelNotSetError('Store model undefined');
         }
@@ -178,11 +179,13 @@ trait Store
         $this->authorizeMethod('storeMany', [$model]);
 
         $data = $request->only(array_keys($this->manyValidationRules($request->all())));
+
         if ($resp = $this->validateRequest($this->manyValidationRules($data))) {
             return $resp;
         }
 
         $items = [];
+
         return DB::transaction(
             function () use (&$data, $model, &$items) {
                 if ($resp = $this->beforeStoreMany($data)) {
@@ -197,21 +200,25 @@ trait Store
                     if (!$item) {
                         throw new Exception('Create method returned falsable');
                     }
+
                     $items[] = $item;
                 }
 
                 if ($resp = $this->beforeStoreManyResponse($items)) {
                     return $resp;
                 }
+
                 return $this->storeManyResponse($items);
             },
             function ($ex) use ($data, $items) {
                 $message = $ex->getMessage();
+
                 try {
                     $this->rollbackStoreMany($data, $items);
                 } catch (Exception $ex) {
                     $message = $ex->getMessage();
                 }
+
                 return $this->storeFailedError($message);
             }
         );

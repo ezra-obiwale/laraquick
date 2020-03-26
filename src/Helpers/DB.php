@@ -56,9 +56,11 @@ class DB
             iDB::beginTransaction();
             $result = call_user_func($func);
             iDB::commit();
+
             return $result;
         } catch (Exception $ex) {
             iDB::rollback();
+
             if ($catch) {
                 return call_user_func($catch, $ex);
             } else {

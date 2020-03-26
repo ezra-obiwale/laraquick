@@ -76,11 +76,10 @@ trait Update
      */
     public function update(Request $request, $id)
     {
-        if ($resp = $this->validateRequest()) {
-            return $resp;
-        }
-
         $model = $this->updateModel();
+
+        $requestData = $request->all();
+        $data = $this->validateRequest($this->validationRules($requestData, $id), $this->validationMessages($requestData, $id));
 
         $item = is_object($model)
             ? $model->find($id)
@@ -92,15 +91,13 @@ trait Update
 
         $this->authorizeMethod('update', [$model, $item]);
 
-        $data = $request->only(array_keys($this->validationRules($request->all(), $id)));
-
         return DB::transaction(
             function () use (&$data, &$item) {
                 if ($resp = $this->beforeUpdate($data, $item)) {
                     return $resp;
                 }
 
-                $result = $item->update(Arr::only($data, $item->getFillable()));
+                $result = $item->update($data);
 
                 if (!$result) {
                     throw new \Exception('Update method returned falsable');
@@ -109,15 +106,18 @@ trait Update
                 if ($resp = $this->beforeUpdateResponse($item)) {
                     return $resp;
                 }
+
                 return $this->updateResponse($item);
             },
             function ($ex) use ($data, $item) {
                 $message = $ex->getMessage();
+
                 try {
                     $this->rollbackUpdate($data, $item);
                 } catch (\Exception $ex) {
                     $message = $ex->getMessage();
                 }
+
                 return $this->updateFailedError($message);
             }
         );

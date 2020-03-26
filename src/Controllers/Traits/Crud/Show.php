@@ -19,7 +19,7 @@ trait Show
      * @return Response
      */
     abstract protected function notFoundError($message = 'Resource not found');
-    
+
     /**
      * Create a model not set error response
      *
@@ -43,9 +43,11 @@ trait Show
     public function show($id)
     {
         $model = $this->showModel();
+
         if (!$model) {
             return $this->modelNotSetError('Show model undefined');
         }
+
         $item = is_object($model)
             ? $model->find($id)
             : $model::find($id);
@@ -59,6 +61,7 @@ trait Show
         if ($resp = $this->beforeShowResponse($item)) {
             return $resp;
         }
+
         return $this->showResponse($item);
     }
 

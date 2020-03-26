@@ -16,14 +16,14 @@ trait Index
         'sorts' => [],
         'appends' => []
     ];
-    
+
     /**
      * Create a model not set error response
      *
      * @return Response
      */
     abstract protected function modelNotSetError();
-    
+
     /**
      * The model to use in the index method.
      *
@@ -51,6 +51,7 @@ trait Index
     protected function allowed($type, $value)
     {
         $this->allowed[$type] = is_array($value) ? join(',', $value) : $value;
+
         return $this;
     }
 
@@ -116,19 +117,23 @@ trait Index
     public function index()
     {
         $model = $this->indexModel();
+
         if (!$model) {
             logger()->error('Index model undefined');
+
             return $this->modelNotSetError();
         }
-        
+
         $builder = QueryBuilder::for($model);
 
         if ($this->isValid($this->allowedIncludes())) {
             $builder->allowedIncludes($this->allowedIncludes());
         }
+
         if ($this->isValid($this->allowedFilters())) {
             $builder->allowedFilters($this->allowedFilters());
         }
+
         if ($this->isValid($this->defaultSort())) {
             $builder->defaultSort($this->defaultSort());
         }
@@ -138,17 +143,20 @@ trait Index
         }
 
         $length = request('length', $this->defaultPaginationLength());
+
         if ($length == 'all') {
             $data = $builder->get();
         } else {
-            $data = $builder->simplePaginate($length);
+            $data = $builder->paginate($length);
         }
+
         if ($resp = $this->beforeIndexResponse($data)) {
             return $resp;
         }
+
         return $this->indexResponse($data);
     }
-    
+
     /**
      * Called before sending the response
      *
@@ -158,7 +166,7 @@ trait Index
     protected function beforeIndexResponse(&$data)
     {
     }
-    
+
     /**
      * Called for the response to method index()
      *
@@ -168,7 +176,7 @@ trait Index
     abstract protected function indexResponse(array $data);
 
     // ------------------ TRASHED INDEX ---------------------
-    
+
     /**
      * Display a listing of all resources marked as deleted.
      * @return Response
@@ -176,19 +184,23 @@ trait Index
     public function trashedIndex()
     {
         $model = $this->indexModel();
+
         if (!$model) {
             logger()->error('Index model undefined');
+
             return $this->modelNotSetError();
         }
-        
+
         $builder = QueryBuilder::for($model);
 
         if ($this->isValid($this->allowedIncludes())) {
             $builder->allowedIncludes($this->allowedIncludes());
         }
+
         if ($this->isValid($this->allowedFilters())) {
             $builder->allowedFilters($this->allowedFilters());
         }
+
         if ($this->isValid($this->defaultSort())) {
             $builder->defaultSort($this->defaultSort());
         }
@@ -198,14 +210,17 @@ trait Index
         }
 
         $length = request('length', $this->defaultPaginationLength());
+
         if ($length == 'all') {
             $data = $builder->onlyTrashed()->get();
         } else {
-            $data = $builder->onlyTrashed()->simplePaginate($length);
+            $data = $builder->onlyTrashed()->paginate($length);
         }
+
         if ($resp = $this->beforeTrashedIndexResponse($data)) {
             return $resp;
         }
+
         return $this->trashedIndexResponse($data);
     }
 

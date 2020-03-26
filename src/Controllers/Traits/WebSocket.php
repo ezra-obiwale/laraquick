@@ -33,6 +33,7 @@ trait WebSocket
     final public function onOpen(ConnectionInterface $conn)
     {
         $conn->subscriptions = ['on' => [], 'off' => []];
+
         $this->connected($conn);
         HWebSocket::addClient($conn);
     }
@@ -72,11 +73,13 @@ trait WebSocket
     final public function onMessage(ConnectionInterface $from, $msg)
     {
         $msg = json_decode($msg, true);
+
         if (!is_array($msg) ||
             !array_key_exists('event', $msg) ||
             !trim($msg['event'])) {
             return;
         }
+
         HWebSocket::setCurrentClient($from);
         static::onEvent($msg['event'], @$msg['data'], $from);
         HWebSocket::resolve($msg['event'], @$msg['data'], $from);
@@ -128,9 +131,11 @@ trait WebSocket
     private function subscribe(ConnectionInterface $client, $to)
     {
         $subs = $client->subscriptions;
+
         if (in_array($to, $subs['on'])) {
             return;
         }
+
         $subs['on'][] = $to;
         $client->subscriptions = $subs;
     }
@@ -145,11 +150,13 @@ trait WebSocket
     private function unsubscribe(ConnectionInterface $client, $from)
     {
         $subs = $client->subscriptions;
+
         if (($key = array_search($from, $subs['on'])) !== false) {
             unset($subs['on'][$key]);
         } elseif (in_array($from, $subs['off'])) {
             $subs['off'][] = $from;
         }
+
         $client->subscriptions = $subs;
     }
 
@@ -193,9 +200,11 @@ trait WebSocket
     {
         $str = '';
         $max = mb_strlen($keyspace, '8bit') - 1;
+
         for ($i = 0; $i < $length; ++$i) {
             $str .= $keyspace[random_int(0, $max)];
         }
+
         return $str;
     }
 
@@ -209,6 +218,7 @@ trait WebSocket
     {
         $lower = str_repeat('1', $length);
         $upper = str_repeat('9', $length);
+
         return mt_rand($lower, $upper);
     }
 
@@ -217,15 +227,19 @@ trait WebSocket
     {
         return true;
     }
+
     protected function onEvent($event, $data, $client)
     {
     }
+
     protected function connected($client)
     {
     }
+
     protected function disconnected($client)
     {
     }
+
     protected function catchErrors($exception, $client)
     {
     }

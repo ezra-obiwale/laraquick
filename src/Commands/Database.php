@@ -12,7 +12,7 @@ class Database extends Command
      *
      * @var string
      */
-    protected $signature = 'db:table 
+    protected $signature = 'db:table
                                 { table : The name of the table to act on }
                                 { --where= : A comma-separated list of <column>:<sign>:<value> e.g. id:=:1,name:like:%Ezra% }
                                 { --where-null= : A comma-separated list of columns that must be null }
@@ -56,12 +56,15 @@ class Database extends Command
         $data = $this->option('data');
         $fields = $this->option('fields');
         $action = 'get';
+
         if ($this->option('create')) {
             $action = 'insert';
         }
+
         if ($this->option('update')) {
             $action = 'update';
         }
+
         if ($this->option('delete')) {
             $action = 'delete';
         }
@@ -69,22 +72,23 @@ class Database extends Command
         $table = DB::table($tableName);
 
         $where = $this->prepWhere($where);
+
         if (count($where)) {
             $table->where($where);
         }
-        
+
         if ($whereNull) {
             foreach (explode(',', $whereNull) as $col) {
                 $table->whereNull($col);
             }
         }
-        
+
         if ($whereNotNull) {
             foreach (explode(',', $whereNotNull) as $col) {
                 $table->whereNotNull($col);
             }
         }
-        
+
         switch ($action) {
             case 'delete':
                 if (!$this->confirm('Are you sure you want to delete all rows in table "' . $tableName . '"?')) {
@@ -98,9 +102,11 @@ class Database extends Command
             case 'insert':
             case 'update':
                 $data = $this->prepData($data);
+
                 if (!count($data)) {
                     return $this->error('Empty data found. Please use option --data');
                 }
+
                 $result = $table->$action($data);
                 break;
         }
@@ -115,9 +121,12 @@ class Database extends Command
             if (!count($result)) {
                 return $this->info('Result: empty');
             }
+
             $this->info('Result:');
+
             $h = $action == 'get' ? $result[0] : $result;
             $headers = array_keys((array) $h);
+
             $this->table($headers, $result);
         } else {
             $this->info('Result: ' . $result);
@@ -127,9 +136,11 @@ class Database extends Command
     private function prepWhere($where)
     {
         $where = $where ? explode(',', $where) : [];
+
         foreach ($where as &$d) {
             $d = explode(':', $d);
         }
+
         return $where;
     }
 
@@ -137,10 +148,12 @@ class Database extends Command
     {
         $newData = [];
         $data = $data ? explode(',', $data) : [];
+
         foreach ($data as $d) {
             $parts = explode(':', $d);
             $newData[$parts[0]] = $parts[1];
         }
+
         return $newData;
     }
 }

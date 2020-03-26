@@ -36,6 +36,7 @@ class Http
         if (!self::$client) {
             self::$client = new Client;
         }
+
         return self::$client;
     }
 
@@ -54,6 +55,7 @@ class Http
     private static function req($method, array $args)
     {
         array_unshift($args, $method);
+
         return call_user_func_array([get_called_class(), 'request'], $args);
     }
 
@@ -77,7 +79,7 @@ class Http
 
         return static::processJsonResponse(self::$response);
     }
-    
+
     /**
      * Send a request asynchronously
      *
@@ -97,10 +99,12 @@ class Http
     {
         $args = func_get_args();
         $callback = array_pop($args);
+
         if (!is_callable($callback)) {
             $args[] = $callback;
             $callback = null;
         }
+
         AsyncCall::dispatch([self::class, 'request', $args], $args, [self::class, 'asyncCallback'], [$callback], ['request-async']);
     }
 

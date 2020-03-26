@@ -3,6 +3,7 @@
 namespace Laraquick\Models\Traits;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Arr;
 
 trait Helper
 {
@@ -30,12 +31,15 @@ trait Helper
     public function scopeExcept($query, $value)
     {
         $defaultColumns = ['id', 'created_at', 'updated_at'];
+
         if (in_array('deleted_at', $this->dates)) {
             $defaultColumns[] = 'deleted_at';
         }
+
         if (is_string($value)) {
             $value = [$value];
         }
+
         return $query->select(array_diff(array_merge($defaultColumns, $this->fillable), (array) $value));
     }
 
@@ -47,6 +51,7 @@ trait Helper
     public function scopeWithoutTimestamps()
     {
         $this->timestamps = false;
+
         return $this;
     }
 
@@ -61,14 +66,17 @@ trait Helper
             // Show only fillables
             ->only($fillable)
             ->all();
+
         foreach ($withArray as $property) {
             $array[$property] = $this->$property;
         }
+
         // remove nulls
         if ($this->arrayWithoutNulls) {
             $array = array_filter($array);
         }
+
         // merge with relations and return
-        return array_merge($array, array_except($this->relations, $this->hidden));
+        return array_merge($array, Arr::except($this->relations, $this->hidden));
     }
 }

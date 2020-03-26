@@ -56,6 +56,7 @@ class Import implements WithBatchInserts, WithChunkReading, WithLimit, WithEvent
     public function batch(int $size = 100) : self
     {
         $this->batchSize = $size;
+
         return $this;
     }
 
@@ -68,6 +69,7 @@ class Import implements WithBatchInserts, WithChunkReading, WithLimit, WithEvent
     public function chunk(int $size = 100) : self
     {
         $this->chunkSize = $size;
+
         return $this;
     }
 
@@ -80,6 +82,7 @@ class Import implements WithBatchInserts, WithChunkReading, WithLimit, WithEvent
     public function limitTo(int $size) : self
     {
         $this->limit = $size;
+
         return $this;
     }
 
@@ -112,6 +115,7 @@ class Import implements WithBatchInserts, WithChunkReading, WithLimit, WithEvent
     public function setModelClass($className) : self
     {
         $this->className = $className;
+
         return $this;
     }
 
@@ -124,6 +128,7 @@ class Import implements WithBatchInserts, WithChunkReading, WithLimit, WithEvent
     public function rowToData(callable $func) : self
     {
         $this->each = $func;
+
         return $this;
     }
 
@@ -139,6 +144,7 @@ class Import implements WithBatchInserts, WithChunkReading, WithLimit, WithEvent
         if (!$data = call_user_func($this->each, $row)) {
             return;
         }
+
         return new $this->className($data);
     }
 
@@ -161,6 +167,7 @@ class Import implements WithBatchInserts, WithChunkReading, WithLimit, WithEvent
     public function setFilePath(string $filePath) : self
     {
         $this->filePath = $filePath;
+
         return $this;
     }
 
@@ -190,6 +197,7 @@ class Import implements WithBatchInserts, WithChunkReading, WithLimit, WithEvent
     public function delete(string $filePath = null) : self
     {
         Storage::delete($this->getFilePath($filePath));
+
         return $this;
     }
 
@@ -203,9 +211,10 @@ class Import implements WithBatchInserts, WithChunkReading, WithLimit, WithEvent
     public function addEventListener($event, callable $callback): self
     {
         self::$eventListeners[$event] = $callback;
+
         return $this;
     }
-    
+
     /**
      * Called before any import is done
      *
@@ -218,7 +227,7 @@ class Import implements WithBatchInserts, WithChunkReading, WithLimit, WithEvent
             call_user_func(self::$eventListeners[self::EVENT_BEFORE_IMPORT], $event);
         }
     }
-    
+
     /**
      * Called after all imports are done
      *

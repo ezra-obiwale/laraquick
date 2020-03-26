@@ -11,8 +11,8 @@ class Backup extends Command
      *
      * @var string
      */
-    protected $signature = 'log:backup 
-        { name=laravel : The name of the log file to backup } 
+    protected $signature = 'log:backup
+        { name=laravel : The name of the log file to backup }
         { --clear : Clear the log file after backup }';
 
     /**
@@ -50,12 +50,15 @@ class Backup extends Command
         $count = 0;
         $newLogName = $logName  . '-' . now()->toDateString();
         $newLogPath = $this->logPath($newLogName, $count);
+
         while (file_exists($newLogPath)) {
             $count++;
             $newLogPath = $this->logPath($newLogName, $count);
         }
+
         if (copy($logPath, $newLogPath)) {
             $this->info("Backed " . basename($logPath) . " up to " . basename($newLogPath));
+
             if ($clear) {
                 if (!file_put_contents($logPath, '')) {
                     $this->info(basename($logPath) . ' has been cleared');
@@ -69,9 +72,11 @@ class Backup extends Command
     protected function logPath($name, $count = 0)
     {
         $logName = $name;
+
         if ($count) {
             $logName .= '-' . $count;
         }
+
         return storage_path('logs' . DIRECTORY_SEPARATOR . $logName . '.log');
     }
 }

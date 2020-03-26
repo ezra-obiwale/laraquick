@@ -20,10 +20,11 @@ trait Api
             'status' => is_array($response) && array_key_exists('status', $response)
              ? $response['status'] : 'ok'
         ];
+
         if (is_array($response)) {
             $resp = array_merge($resp, $response);
         } elseif (is_string($response)) {
-            $resp['message'] = $response;
+            $resp['message'] = $this->translate($response);
         } elseif ($response !== null) {
             $resp['data'] = $response;
         }
@@ -47,11 +48,13 @@ trait Api
     {
         $resp = [
             "status" => "error",
-            "message" => $message
+            "message" => $this->translate($message)
         ];
+
         if ($errors !== null) {
             $resp["errors"] = $errors;
         }
+
         return response()->json($resp, $code);
     }
 }

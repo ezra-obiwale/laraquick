@@ -11,12 +11,14 @@ class MailMessage extends iMailMessage
     public function setTableTitle(string $title) : self
     {
         $this->table['title'] = $title;
+
         return $this;
     }
 
     public function setTableHeaders(array $headers) : self
     {
         $this->table['headers'] = $headers;
+
         return $this;
     }
 
@@ -27,18 +29,21 @@ class MailMessage extends iMailMessage
         } else {
             $this->table['rows'][] = $rowData;
         }
+
         return $this;
     }
 
     public function setTableFooters(array $footers) : self
     {
         $this->table['footers'] = $footers;
+
         return $this;
     }
 
     public function table(array $table) : self
     {
         $this->table = $table;
+
         return $this;
     }
 

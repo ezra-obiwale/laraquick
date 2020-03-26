@@ -1,32 +1,11 @@
 <?php
 namespace Laraquick\Controllers\Traits\Crud;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
-
+use Illuminate\Validation\ValidationException;
 trait Validation
 {
-    
-    /**
-     * Validator instance
-     *
-     * @var Illuminate\Support\Facades\Validator
-     */
-    protected $validator;
-
-    /**
-     * Checks the request data against validation rules
-     *
-     * @param array $data
-     * @param array $rules
-     * @param boolean $ignoreStrict Indicates whether to ignore strict validation
-     * @return void
-     *
-     * @deprecated v3.3.4
-     */
-    protected function checkRequestData(array $data, array $rules, $ignoreStrict = false)
-    {
-        return $this->validateData($data, $rules);
-    }
 
     /**
      * Checks the data against validation rules
@@ -34,14 +13,17 @@ trait Validation
      * @param array $data
      * @param array $rules
      * @param array $messages
-     * @return void
+     * @return array
      */
     protected function validateData(array $data, array $rules, array $messages = [])
     {
-        $this->validator = Validator::make($data, $rules, $messages);
-        if ($this->validator->fails()) {
-            return $this->validationError($this->validator->errors());
+        $validator = Validator::make($data, $rules, $messages);
+
+        if ($validator->fails()) {
+            throw new ValidationException($validator);
         }
+
+        return Arr::only($data, array_keys($rules));
     }
 
     /**
@@ -49,18 +31,19 @@ trait Validation
      *
      * @param array $rules
      * @param array $messages
-     * @return void
+     * @return array
      */
     protected function validateRequest(array $rules = null, array $messages = null)
     {
         $data = request()->all();
+
         return $this->validateData(
             $data,
             $rules ?: $this->validationRules($data),
             $messages ?: $this->validationMessages($data)
         );
     }
-    
+
     /**
      * Should return the validation rules for when using @see store() and @see update().
      *
@@ -81,6 +64,7 @@ trait Validation
     {
         $rules = $this->validationRules($data, $id);
         $manyRules = [];
+
         foreach ($rules as $key => $rule) {
             if (is_int($key)) {
                 $manyRules[] = 'many.*.' . $rule;
@@ -88,6 +72,7 @@ trait Validation
                 $manyRules['many.*.' . $key] = $rule;
             }
         }
+
         return $manyRules;
     }
 

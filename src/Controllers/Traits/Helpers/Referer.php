@@ -2,7 +2,7 @@
 
 namespace Laraquick\Controllers\Traits\Helpers;
 
-use Log;
+use Illuminate\Support\Str;
 
 trait Referer
 {
@@ -19,13 +19,16 @@ trait Referer
         if (!is_array($url)) {
             $url = [$url];
         }
+
         $referer = request()->headers->get('referer');
         $refOrigin = $this->originFromUrl($referer);
+
         foreach ($url as $urll) {
-            if ($this->urlsMatch($referer, $urll, $allowSubdomains)) {
+            if ($this->urlsMatch($refOrigin, $urll, $allowSubdomains)) {
                 return;
             }
         }
+
         throw new \Exception($referer . ' is not a valid domain.');
     }
 
@@ -33,6 +36,7 @@ trait Referer
     {
         $refOrigin = $this->originFromUrl($url1);
         $urlOrigin = $this->originFromUrl($url2);
+
         if ($refOrigin == $urlOrigin) {
             return true;
         } elseif ($ignoreSubdomains) {
@@ -45,6 +49,7 @@ trait Referer
                 return true;
             }
         }
+
         return false;
     }
 
@@ -56,15 +61,6 @@ trait Referer
      */
     protected function originFromUrl($url)
     {
-        // remove protocol
-        if ($u = stristr($url, '://')) {
-            $url = substr($u, 3);
-        }
-        // remove everything from slash (/)
-        if (-1 !== $pos = strpos($url, '/')) {
-            $url = substr($url, 0, $pos);
-        }
-
-        return $url;
+        return Str::before(Str::after($url, '://'), '/');
     }
 }

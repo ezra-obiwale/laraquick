@@ -20,6 +20,7 @@ trait Importable
     public static function upload(UploadedFile $file, $path = '') : Import
     {
         $filePath = Upload::toLocal($file, $path, false);
+
         return (new Import)
             ->setFilePath($filePath)
             ->setModelClass(self::class);

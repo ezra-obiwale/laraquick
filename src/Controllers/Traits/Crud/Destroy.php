@@ -86,6 +86,7 @@ trait Destroy
         if (!$model) {
             return $this->modelNotSetError('Destroy model undefined');
         }
+
         $item = is_object($model)
             ? $model->find($id)
             : $model::find($id);
@@ -101,6 +102,7 @@ trait Destroy
                 if ($resp = $this->beforeDestroy($item)) {
                     return $resp;
                 }
+
                 $result = $item->delete();
 
                 if (!$result) {
@@ -110,15 +112,18 @@ trait Destroy
                 if ($resp = $this->beforeDestroyResponse($item)) {
                     return $resp;
                 }
+
                 return $this->destroyResponse($item);
             },
             function ($ex) use ($item) {
                 $message = $ex->getMessage();
+
                 try {
                     $this->rollbackDestroy($item);
                 } catch (Exception $ex) {
                     $message = $ex->getMessage();
                 }
+
                 return $this->destroyFailedError($message);
             }
         );
@@ -169,6 +174,7 @@ trait Destroy
     public function destroyMany(Request $request)
     {
         $model = $this->destroyModel();
+
         if (!$model) {
             return $this->modelNotSetError('Destroy model undefined');
         }
@@ -176,9 +182,11 @@ trait Destroy
         $this->authorizeMethod('destroyMany', [$model]);
 
         $data = $request->all();
+
         if (!array_key_exists('ids', $data)) {
             throw new Exception('Ids not found');
         }
+
         return DB::transaction(
             function () use (&$data, $model) {
                 if ($resp = $this->beforeDestroyMany($data)) {
@@ -196,6 +204,7 @@ trait Destroy
                 if ($resp = $this->beforeDestroyManyResponse($result, $data['ids'])) {
                     return $resp;
                 }
+
                 return $this->destroyManyResponse($result);
             },
             function ($ex) use ($data) {
@@ -206,6 +215,7 @@ trait Destroy
                 } catch (\Exception $ex) {
                     $message = $ex->getMessage();
                 }
+
                 return $this->destroyFailedError($message);
             }
         );
@@ -259,9 +269,11 @@ trait Destroy
     public function forceDestroy($id)
     {
         $model = $this->destroyModel();
+
         if (!$model) {
             return $this->modelNotSetError('Destroy model undefined');
         }
+
         $item = is_object($model)
             ? $model->find($id)
             : $model::find($id);
@@ -277,6 +289,7 @@ trait Destroy
                 if ($resp = $this->beforeForceDestroy($item)) {
                     return $resp;
                 }
+
                 $result = $item->forceDelete();
 
                 if (!$result) {
@@ -286,15 +299,18 @@ trait Destroy
                 if ($resp = $this->beforeForceDestroyResponse($item)) {
                     return $resp;
                 }
+
                 return $this->forceDestroyResponse($item);
             },
             function ($ex) use ($item) {
                 $message = $ex->getMessage();
+
                 try {
                     $this->rollbackForceDestroy($item);
                 } catch (Exception $ex) {
                     $message = $ex->getMessage();
                 }
+
                 return $this->destroyFailedError($message);
             }
         );
@@ -346,9 +362,11 @@ trait Destroy
     public function restoreDestroyed($id)
     {
         $model = $this->destroyModel();
+
         if (!$model) {
             return $this->modelNotSetError('Destroy model undefined');
         }
+
         $item = is_object($model)
             ? $model->find($id)
             : $model::find($id);
@@ -362,6 +380,7 @@ trait Destroy
                 if ($resp = $this->beforeRestoreDestroyed($item)) {
                     return $resp;
                 }
+
                 $result = $item->restore();
 
                 if (!$result) {
@@ -371,15 +390,18 @@ trait Destroy
                 if ($resp = $this->beforeRestoreDestroyedResponse($item)) {
                     return $resp;
                 }
+
                 return $this->restoreDestroyedResponse($item);
             },
             function ($ex) use ($item) {
                 $message = $ex->getMessage();
+
                 try {
                     $this->rollbackRestoreDestroyed($item);
                 } catch (Exception $ex) {
                     $message = $ex->getMessage();
                 }
+
                 return $this->restoreFailedError($message);
             }
         );

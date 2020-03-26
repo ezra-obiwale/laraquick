@@ -54,7 +54,9 @@ trait ApiHttpTest
             $resp = [
                 'data' => $response['data'][0]
             ];
+
             $this->expectedStoreResponse($resp);
+
             $response['data'][0] = $resp['data'];
         }
     }
@@ -76,7 +78,7 @@ trait ApiHttpTest
     {
         $this->expectedUpdateResponse($response);
     }
-    
+
 
     public function testStore()
     {
@@ -87,13 +89,16 @@ trait ApiHttpTest
         $payload = $this->payload();
         $this->beforeStore($payload);
         $response = $this->apiRequest('post', $this->indexUrl(), $payload);
+
         if ($this->storeResponses) {
             $this->storeResponse($response, $this->storePaths['store'] ?? $this->resource() . '/store');
         }
+
         $expectedResponse = [
             'status' => 'ok',
             'data' => $payload
         ];
+
         $this->expectedStoreResponse($expectedResponse);
         $response->assertJson($expectedResponse)->isOK();
 
@@ -112,8 +117,10 @@ trait ApiHttpTest
         if (!$forced && (!in_array('index', $this->methods) || !in_array('store', $this->methods))) {
             return $this->assertTrue(true);
         }
+
         $this->beforeIndex();
         $response = $this->apiRequest('get', $this->indexUrl());
+
         if ($this->storeResponses) {
             $this->storeResponse($response, $this->storePaths['index'] ?? $this->resource() . '/index');
         }
@@ -123,10 +130,12 @@ trait ApiHttpTest
             'data' => [ $resource ],
             'meta' => []
         ];
+
         if ($forced) {
             $expectedResponse['data'] = [];
             unset($expectedResponse['meta']);
         }
+
         $this->expectedIndexResponse($expectedResponse);
         $response->assertJson($expectedResponse)->isOK();
     }
@@ -141,8 +150,10 @@ trait ApiHttpTest
         if (!in_array('store', $this->methods) && in_array('index', $this->methods)) {
             $resource = $this->payload();
             $resource['id'] = 1;
+
             return $this->testIndex($resource, true);
         }
+
         $this->assertTrue(true);
     }
 
@@ -168,13 +179,16 @@ trait ApiHttpTest
         $this->beforeShow($model);
 
         $response = $this->apiRequest('get', $this->indexUrl() . '/' . $model->id);
+
         if ($this->storeResponses) {
             $this->storeResponse($response, $this->storePaths['show'] ?? $this->resource() . '/show');
         }
+
         $expectedResponse = [
             'status' => 'ok',
             'data' => $resource
         ];
+
         $this->expectedShowResponse($expectedResponse);
         $response->assertJson($expectedResponse)->isOK();
     }
@@ -189,8 +203,10 @@ trait ApiHttpTest
         if (!in_array('store', $this->methods) && in_array('show', $this->methods)) {
             $resource = $this->payload();
             $resource['id'] = 1;
+
             return $this->testShow($resource, true);
         }
+
         $this->assertTrue(true);
     }
 
@@ -206,12 +222,14 @@ trait ApiHttpTest
         if (!$forced && (!in_array('update', $this->methods) || !in_array('store', $this->methods))) {
             return $this->assertTrue(true);
         }
-        
+
         $payload = $this->payload(true);
         $model = (new Dud)->forceFill($resource);
+
         $this->beforeUpdate($payload, $model);
 
         $response = $this->apiRequest('put', $this->indexUrl() . '/' . $model->id, $payload);
+
         if ($this->storeResponses) {
             $this->storeResponse($response, $this->storePaths['update'] ?? $this->resource() . '/update');
         }
@@ -235,8 +253,10 @@ trait ApiHttpTest
         if (!in_array('store', $this->methods) && in_array('update', $this->methods)) {
             $resource = $this->payload(true);
             $resource['id'] = 1;
+
             return $this->testUpdate($resource, true);
         }
+
         $this->assertTrue(true);
     }
 
@@ -252,18 +272,21 @@ trait ApiHttpTest
         if (!$forced && (!in_array('destroy', $this->methods) || !in_array('update', $this->methods))) {
             return $this->assertTrue(true);
         }
-        
+
         $model = (new Dud)->forceFill($resource);
         $this->beforeDestroy($model);
 
         $response = $this->apiRequest('delete', $this->indexUrl() . '/' . $model->id);
+
         if ($this->storeResponses) {
             $this->storeResponse($response, $this->storePaths['destroy'] ?? $this->resource() . '/destroy');
         }
+
         $expectedResponse = [
             'status' => 'ok',
             'data' => $resource
         ];
+
         $this->expectedDestroyResponse($expectedResponse);
         $response->assertJson($expectedResponse)->isOK();
     }
@@ -278,8 +301,10 @@ trait ApiHttpTest
         if (!in_array('update', $this->methods) && in_array('destroy', $this->methods)) {
             $resource = $this->payload(true);
             $resource['id'] = 1;
+
             return $this->testDestroy($resource, true);
         }
+
         $this->assertTrue(true);
     }
 }
