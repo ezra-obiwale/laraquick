@@ -65,6 +65,8 @@ class MailMessage extends iMailMessage
 
     public function toArray() : array
     {
-        return get_object_vars($this);
+        $array = parent::toArray();
+        $array['table'] = $this->table;
+        return $array;
     }
 }
