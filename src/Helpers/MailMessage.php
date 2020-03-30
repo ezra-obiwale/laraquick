@@ -63,6 +63,23 @@ class MailMessage extends iMailMessage
         return $this;
     }
 
+    /**
+     * Creates the MailMessage from an array of data
+     *
+     * @param array $data
+     * @return self
+     */
+    public function hydrate(array $data)
+    {
+        foreach ($data as $property => $value) {
+            if (property_exists($this, $property)) {
+                $this->$property = $value;
+            }
+        }
+
+        return $this;
+    }
+
     public function toArray() : array
     {
         $array = parent::toArray();
