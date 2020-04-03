@@ -19,9 +19,6 @@ return [
             // The file format for all stored test responses
             'format' => 'json',
 
-            // The number of models to list in the index response
-            'index_models' => 5,
-
         ],
     ],
     'websocket' => [

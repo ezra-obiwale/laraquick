@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use Illuminate\Testing\TestResponse;
+use InvalidArgumentException;
 
 trait Api
 {
@@ -25,6 +26,13 @@ trait Api
      * @var array
      */
     protected $methods = ['index', 'store', 'update', 'show', 'destroy'];
+
+    /**
+     * The number of models to create for the index endpoint
+     *
+     * @var integer
+     */
+    protected $indexModelCount = 5;
 
     /**
      * The paths to store each method's response to. See @method void storeResponse()
@@ -63,10 +71,38 @@ trait Api
      */
     abstract protected function createModel(array $attributes = []): Model;
 
-    protected function beforeIndex()
+    /**
+     * Creates the url to use for each method
+     *
+     * @param string $method One of the methods in the $methods property.
+     * @param integer $id The id of the target model
+     *
+     * @return string
+     */
+    protected function createUrl($method, $id = null): string
+    {
+        if (!in_array($method, $this->methods)) {
+            throw new InvalidArgumentException('Unknown method [' . $method . ']');
+        }
+
+        $url = $this->indexUrl();
+
+        if (!in_array($method, ['index', 'store'])) {
+            $url .= '/' . $id;
+        }
+
+        return $url;
+    }
+
+    /**
+     * Called before sending the index request
+     *
+     * @return void
+     */
+    protected function beforeIndex(): void
     {
         $count = 0;
-        $totalModels = Config::get('laraquick.tests.responses.index_models');
+        $totalModels = $this->indexModelCount;
 
         while ($count < $totalModels) {
             $this->createModel();
@@ -74,39 +110,95 @@ trait Api
         }
     }
 
-    protected function beforeStore(array &$data)
+    /**
+     * Called before sending the store request
+     *
+     * @param array $data
+     * @return void
+     */
+    protected function beforeStore(array &$data): void
     {
     }
 
-    protected function beforeUpdate(array &$data, Model $model)
+    /**
+     * Called before sending the update request
+     *
+     * @param array $data
+     * @param Model $model
+     * @return void
+     */
+    protected function beforeUpdate(array &$data, Model $model): void
     {
     }
 
-    protected function beforeShow(Model $model)
+    /**
+     * Called before calling the show request
+     *
+     * @param Model $model
+     * @return void
+     */
+    protected function beforeShow(Model $model): void
     {
     }
 
-    protected function beforeDestroy(Model $model)
+    /**
+     * Called before callign the destroy request
+     *
+     * @param Model $model
+     * @return void
+     */
+    protected function beforeDestroy(Model $model): void
     {
     }
 
-    protected function assertIndex(TestResponse $response)
+    /**
+     * Called after all index test assertions pass
+     *
+     * @param TestResponse $response
+     * @return void
+     */
+    protected function assertIndex(TestResponse $response): void
     {
     }
 
-    protected function assertStore(TestResponse $response)
+    /**
+     * Called after all store test assertions pass
+     *
+     * @param TestResponse $response
+     * @return void
+     */
+    protected function assertStore(TestResponse $response): void
     {
     }
 
-    protected function assertUpdate(TestResponse $response, Model $model)
+    /**
+     * Called after all update test assertions pass
+     *
+     * @param TestResponse $response
+     * @param Model $model
+     * @return void
+     */
+    protected function assertUpdate(TestResponse $response, Model $model): void
     {
     }
 
-    protected function assertShow(TestResponse $response)
+    /**
+     * Called after all show test assertions pass
+     *
+     * @param TestResponse $response
+     * @return void
+     */
+    protected function assertShow(TestResponse $response): void
     {
     }
 
-    protected function assertDestroy(TestResponse $response)
+    /**
+     * Called after all destroy test assertions pass
+     *
+     * @param TestResponse $response
+     * @return void
+     */
+    protected function assertDestroy(TestResponse $response): void
     {
     }
 
@@ -118,7 +210,8 @@ trait Api
 
         $payload = $this->payload();
         $this->beforeStore($payload);
-        $response = $this->post($this->indexUrl(), $payload);
+
+        $response = $this->post($this->createUrl('store'), $payload);
 
         if ($this->storeResponses) {
             $this->storeResponse($response, $this->storePaths['store'] ?? $this->resource() . '/store');
@@ -136,7 +229,7 @@ trait Api
         }
 
         $this->beforeIndex();
-        $response = $this->get($this->indexUrl());
+        $response = $this->get($this->createUrl('index'));
 
         if ($this->storeResponses) {
             $this->storeResponse($response, $this->storePaths['index'] ?? $this->resource() . '/index');
@@ -156,7 +249,7 @@ trait Api
         $model = $this->createModel();
         $this->beforeShow($model);
 
-        $response = $this->get($this->indexUrl() . '/' . $model->id);
+        $response = $this->get($this->createUrl('show', $model->id));
 
         if ($this->storeResponses) {
             $this->storeResponse($response, $this->storePaths['show'] ?? $this->resource() . '/show');
@@ -178,7 +271,7 @@ trait Api
 
         $this->beforeUpdate($payload, $model);
 
-        $response = $this->put($this->indexUrl() . '/' . $model->id, $payload);
+        $response = $this->put($this->createUrl('update', $model->id), $payload);
 
         if ($this->storeResponses) {
             $this->storeResponse($response, $this->storePaths['update'] ?? $this->resource() . '/update');
@@ -204,7 +297,7 @@ trait Api
         $model = $this->createModel();
         $this->beforeDestroy($model);
 
-        $response = $this->delete($this->indexUrl() . '/' . $model->id);
+        $response = $this->delete($this->createUrl('destroy', $model->id));
 
         if ($this->storeResponses) {
             $this->storeResponse($response, $this->storePaths['destroy'] ?? $this->resource() . '/destroy');
