@@ -2,6 +2,7 @@
 
 namespace Laraquick\Tests\Traits;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
@@ -152,54 +153,85 @@ trait Api
     }
 
     /**
-     * Called after all index test assertions pass
+     * Transform a data to a response data
+     *
+     * @param array $data
+     * @return array
+     */
+    protected function makeResponse(array $data): array
+    {
+        return ['data' => $data];
+    }
+
+    /**
+     * Called to test index response
      *
      * @param TestResponse $response
      * @return void
      */
     protected function assertIndex(TestResponse $response): void
     {
+        $response->assertStatus(200);
     }
 
     /**
-     * Called after all store test assertions pass
+     * Called to test store response
      *
      * @param TestResponse $response
+     * @param array $payload
      * @return void
      */
-    protected function assertStore(TestResponse $response): void
+    protected function assertStore(TestResponse $response, array $payload): void
     {
+        $response->assertStatus(201)
+            ->assertJson($this->makeResponse($payload));
     }
 
     /**
-     * Called after all update test assertions pass
+     * Called to test update response
      *
      * @param TestResponse $response
      * @param Model $model
+     * @param array $payload
      * @return void
      */
-    protected function assertUpdate(TestResponse $response, Model $model): void
+    protected function assertUpdate(TestResponse $response, Model $model, array $payload): void
     {
+        $model->refresh();
+
+        $response->assertStatus(202)
+            ->assertJson($this->makeResponse($payload));
     }
 
     /**
-     * Called after all show test assertions pass
+     * Called to test show response
      *
      * @param TestResponse $response
      * @return void
      */
     protected function assertShow(TestResponse $response): void
     {
+        $response->assertStatus(200);
     }
 
     /**
-     * Called after all destroy test assertions pass
+     * Called to test destroy response
      *
      * @param TestResponse $response
+     * @param Model $model
      * @return void
      */
-    protected function assertDestroy(TestResponse $response): void
+    protected function assertDestroy(TestResponse $response, Model $model): void
     {
+        $response->assertStatus(202);
+
+        $model = $model->fresh();
+
+        if ($model && method_exists($model, 'trashed')) {
+            $this->assertTrue($model->trashed());
+        } else {
+            $this->assertNull($model);
+        }
     }
 
     public function testStore()
@@ -217,9 +249,7 @@ trait Api
             $this->storeResponse($response, $this->storePaths['store'] ?? $this->resource() . '/store');
         }
 
-        $response->assertStatus(201);
-
-        $this->assertStore($response);
+        $this->assertStore($response, $payload);
     }
 
     public function testIndex()
@@ -234,8 +264,6 @@ trait Api
         if ($this->storeResponses) {
             $this->storeResponse($response, $this->storePaths['index'] ?? $this->resource() . '/index');
         }
-
-        $response->assertStatus(200);
 
         $this->assertIndex($response);
     }
@@ -254,8 +282,6 @@ trait Api
         if ($this->storeResponses) {
             $this->storeResponse($response, $this->storePaths['show'] ?? $this->resource() . '/show');
         }
-
-        $response->assertStatus(200);
 
         $this->assertShow($response);
     }
@@ -277,15 +303,7 @@ trait Api
             $this->storeResponse($response, $this->storePaths['update'] ?? $this->resource() . '/update');
         }
 
-        $model->refresh();
-
-        $response->assertStatus(202);
-
-        foreach ($payload as $attr => $val) {
-            $this->assertEquals($model->$attr, $val);
-        }
-
-        $this->assertUpdate($response, $model);
+        $this->assertUpdate($response, $model, $payload);
     }
 
     public function testDestroy()
@@ -303,17 +321,7 @@ trait Api
             $this->storeResponse($response, $this->storePaths['destroy'] ?? $this->resource() . '/destroy');
         }
 
-        $response->assertStatus(202);
-
-        $model = $model->fresh();
-
-        if ($model && method_exists($model, 'trashed')) {
-            $this->assertTrue($model->trashed());
-        } else {
-            $this->assertNull($model);
-        }
-
-        $this->assertDestroy($response);
+        $this->assertDestroy($response, $model);
     }
 
     private function canTest($method)

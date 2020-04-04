@@ -7,8 +7,6 @@ use Illuminate\Support\Arr;
 
 trait Helper
 {
-    protected $arrayWithoutNulls = false;
-
     /**
      * A shortcut to withoutGlobalScope()
      *
@@ -57,26 +55,21 @@ trait Helper
 
     public function toArray()
     {
-        $withArray = property_exists($this, 'withArray')
-            ? $this->withArray : [];
-        $fillable = $this->fillable;
+        $fillable = $this->fillable ?? [];
+        $appends = $this->appends ?? [];
+        $relations = array_keys($this->relations);
 
         array_unshift($fillable, 'id');
         $array = collect(parent::toArray())
-            // Show only fillables
-            ->only($fillable)
+            // Show only fillables, appends and relations
+            ->only(array_merge($fillable, $appends, $relations))
             ->all();
 
-        foreach ($withArray as $property) {
-            $array[$property] = $this->$property;
-        }
-
         // remove nulls
-        if ($this->arrayWithoutNulls) {
+        if (property_exists($this, 'arrayWithoutNulls') && $this->arrayWithoutNulls) {
             $array = array_filter($array);
         }
 
-        // merge with relations and return
-        return array_merge($array, Arr::except($this->relations, $this->hidden));
+        return $array;
     }
 }
