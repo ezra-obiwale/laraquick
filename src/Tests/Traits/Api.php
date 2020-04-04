@@ -228,9 +228,9 @@ trait Api
         $model = $model->fresh();
 
         if ($model && method_exists($model, 'trashed')) {
-            $this->assertTrue($model->trashed());
+            $this->assertTrue($model->trashed(), 'Model not soft-deleted');
         } else {
-            $this->assertNull($model);
+            $this->assertNull($model, 'Model not deleted');
         }
     }
 
