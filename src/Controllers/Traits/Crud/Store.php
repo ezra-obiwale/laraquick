@@ -1,6 +1,7 @@
 <?php
 namespace Laraquick\Controllers\Traits\Crud;
 
+use Laraquick\Helpers\Arr;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Database\Eloquent\Model;
@@ -178,9 +179,12 @@ trait Store
 
         $this->authorizeMethod('storeMany', [$model]);
 
-        $data = $request->only(array_keys($this->manyValidationRules($request->all())));
+        $rules = $this->manyValidationRules($request->all());
+        $ruleKeys = array_keys($rules);
 
-        if ($resp = $this->validateRequest($this->manyValidationRules($data))) {
+        $data = Arr::only($request->all(), $ruleKeys);
+
+        if ($resp = $this->validateRequest($rules)) {
             return $resp;
         }
 
@@ -194,11 +198,11 @@ trait Store
 
                 foreach ($data['many'] as $currentData) {
                     $item = is_object($model)
-                        ? $model->create($data)
-                        : $model::create($data);
+                        ? $model->create($currentData)
+                        : $model::create($currentData);
 
                     if (!$item) {
-                        throw new Exception('Create method returned falsable');
+                        throw new Exception('Create failed');
                     }
 
                     $items[] = $item;

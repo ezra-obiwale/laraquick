@@ -21,9 +21,7 @@ trait Api
              ? $response['status'] : 'ok'
         ];
 
-        if (is_array($response)) {
-            $resp = array_merge($resp, $response);
-        } elseif (is_string($response)) {
+        if (!is_array($response) && !is_object($response)) {
             $resp['message'] = $this->translate($response);
         } elseif ($response !== null) {
             $resp['data'] = $response;

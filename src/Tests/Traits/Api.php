@@ -2,9 +2,7 @@
 
 namespace Laraquick\Tests\Traits;
 
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use Illuminate\Testing\TestResponse;
 use InvalidArgumentException;
@@ -76,11 +74,12 @@ trait Api
      * Creates the url to use for each method
      *
      * @param string $method One of the methods in the $methods property.
-     * @param integer $id The id of the target model
+     * @param integer $id The id of the target model.
+     * @param array $payload The array of payload for the method.
      *
      * @return string
      */
-    protected function createUrl($method, $id = null): string
+    protected function createUrl($method, $id = null, array $payload = []): string
     {
         if (!in_array($method, $this->methods)) {
             throw new InvalidArgumentException('Unknown method [' . $method . ']');
@@ -243,7 +242,7 @@ trait Api
         $payload = $this->payload();
         $this->beforeStore($payload);
 
-        $response = $this->post($this->createUrl('store'), $payload);
+        $response = $this->post($this->createUrl('store', null, $payload), $payload);
 
         if ($this->storeResponses) {
             $this->storeResponse($response, $this->storePaths['store'] ?? $this->resource() . '/store');
@@ -297,7 +296,7 @@ trait Api
 
         $this->beforeUpdate($payload, $model);
 
-        $response = $this->put($this->createUrl('update', $model->id), $payload);
+        $response = $this->put($this->createUrl('update', $model->id, $payload), $payload);
 
         if ($this->storeResponses) {
             $this->storeResponse($response, $this->storePaths['update'] ?? $this->resource() . '/update');

@@ -69,7 +69,7 @@ trait Crud
      */
     protected function updateModel()
     {
-        return $this->model();
+        return $this->showModel();
     }
 
     /**
@@ -79,6 +79,6 @@ trait Crud
      */
     protected function destroyModel()
     {
-        return $this->model();
+        return $this->showModel();
     }
 }

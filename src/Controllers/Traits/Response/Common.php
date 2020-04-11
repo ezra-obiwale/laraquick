@@ -17,9 +17,9 @@ trait Common
      */
     protected function paginatedList(array $items, $code = 200, array $meta = [])
     {
-        $resp['data'] = array_key_exists('data', $items) ? $items['data'] : $items;
+        $resp = array_key_exists('data', $items) ? $items['data'] : $items;
 
-        if (request()->query('length') != 'all' && count($resp['data'])) {
+        if (request()->query('length') != 'all' && count($resp)) {
             unset($items['data']);
             $meta['pagination'] = $items;
         }
