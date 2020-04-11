@@ -1,6 +1,10 @@
 <?php
 
 return [
+    'classes' => [
+        // User model must use \Laraquick\Models\Traits\Notifiable
+        'database_notification' => \Illuminate\Notifications\DatabaseNotification::class
+    ],
     'controllers' => [
         'use_policies' => false
     ],
