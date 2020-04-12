@@ -57,12 +57,14 @@ trait Helper
     {
         $fillable = $this->fillable ?? [];
         $appends = $this->appends ?? [];
-        $relations = array_keys($this->relations);
+        $relations = array_keys($this->relations ?? []);
+        $counts = array_keys($this->withCount ?? []);
+        $withArray = $this->withArray ?? [];
 
         array_unshift($fillable, 'id');
         $array = collect(parent::toArray())
             // Show only fillables, appends and relations
-            ->only(array_merge($fillable, $appends, $relations))
+            ->only(array_merge($fillable, $appends, $relations, $counts, $withArray))
             ->all();
 
         // remove nulls

@@ -21,10 +21,12 @@ trait Api
              ? $response['status'] : 'ok'
         ];
 
-        if (!is_array($response) && !is_object($response)) {
-            $resp['message'] = $this->translate($response);
-        } elseif ($response !== null) {
-            $resp['data'] = $response;
+        if (!is_null($response)) {
+            if (!is_array($response) && !is_object($response)) {
+                $resp['message'] = $this->translate($response);
+            } elseif ($response !== null) {
+                $resp['data'] = $response;
+            }
         }
 
         if (count($meta)) {
