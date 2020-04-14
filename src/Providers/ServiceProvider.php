@@ -27,6 +27,14 @@ class ServiceProvider extends BaseServiceProvider
             $only = Arr::exists($options, 'only') ? $options['only'] : ['index', 'store', 'show', 'update', 'destroy'];
             $except = Arr::exists($options, 'except') ? $options['except'] : [];
 
+            if (!is_array($only)) {
+                $only = [$only];
+            }
+
+            if (!is_array($except)) {
+                $except = [$except];
+            }
+
             if (in_array('index', $only) && !in_array('index', $except)) {
                 $this->get($path, $controller . '@getIndex');
             }
