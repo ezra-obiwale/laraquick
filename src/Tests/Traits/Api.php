@@ -51,9 +51,10 @@ trait Api
      * The payload to create/update with
      *
      * @param boolean $updating
+     * @param array $attributes
      * @return array
      */
-    abstract protected function payload($updating = false): array;
+    abstract protected function payload($updating = false, array $attributes = []): array;
 
     /**
      * The index url from which all other endpoints are generated

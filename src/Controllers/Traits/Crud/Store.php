@@ -1,10 +1,10 @@
 <?php
 namespace Laraquick\Controllers\Traits\Crud;
 
-use Laraquick\Helpers\Arr;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use Laraquick\Helpers\DB;
 use Laraquick\Models\Dud;
 use Exception;
@@ -182,7 +182,7 @@ trait Store
         $rules = $this->manyValidationRules($request->all());
         $ruleKeys = array_keys($rules);
 
-        $data = Arr::only($request->all(), $ruleKeys);
+        $data = $this->getManyValues($request->many, $ruleKeys);
 
         if ($resp = $this->validateRequest($rules)) {
             return $resp;
@@ -196,7 +196,7 @@ trait Store
                     return $resp;
                 }
 
-                foreach ($data['many'] as $currentData) {
+                foreach ($data as $currentData) {
                     $item = is_object($model)
                         ? $model->create($currentData)
                         : $model::create($currentData);
@@ -226,6 +226,20 @@ trait Store
                 return $this->storeFailedError($message);
             }
         );
+    }
+
+    private function getManyValues($many, $ruleKeys)
+    {
+        $items = [];
+
+        $keysString = str_replace('many.*.', '', join('/', $ruleKeys));
+        $ruleKeys = explode('/', $keysString);
+
+        foreach ($many as $item) {
+            $items[] = Arr::only($item, $ruleKeys);
+        }
+
+        return $items;
     }
 
     /**
