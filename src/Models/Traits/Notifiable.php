@@ -16,6 +16,6 @@ trait Notifiable {
      */
     public function notifications()
     {
-        return $this->morphMany(config('laraquick.classes.database_notifications', DatabaseNotification::class), 'notifiable')->orderBy('created_at', 'desc');
+        return $this->morphMany(config('laraquick.classes.database_notification', DatabaseNotification::class), 'notifiable')->orderBy('created_at', 'desc');
     }
 }

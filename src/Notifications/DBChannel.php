@@ -11,7 +11,6 @@ class DBChannel
         $data = $notification->toDatabase($notifiable);
 
         $data['id'] = $notification->id;
-        $data['type'] = get_class($notification);
         $data['read_at'] = null;
 
         return $notifiable->routeNotificationFor('database')->create($data);
