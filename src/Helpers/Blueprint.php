@@ -1,6 +1,6 @@
 <?php
 
-namespace Laraquick\Helpers\Blueprint;
+namespace Laraquick\Helpers;
 
 use Illuminate\Database\Schema\Blueprint as iBlueprint;
 
