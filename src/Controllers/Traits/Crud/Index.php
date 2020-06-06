@@ -109,21 +109,8 @@ trait Index
         return $param && ((is_array($param) && count($param)) || is_string($param));
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return Response
-     */
-    public function index()
+    private function build($model)
     {
-        $model = $this->indexModel();
-
-        if (!$model) {
-            logger()->error('Index model undefined');
-
-            return $this->modelNotSetError();
-        }
-
         $createBuilder = function ($builder) use ($model) {
             if ($builder) {
                 return $builder;
@@ -158,7 +145,27 @@ trait Index
             $builder = $model;
         }
 
+        return $model;
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return Response
+     */
+    public function index()
+    {
+        $model = $this->indexModel();
+
+        if (!$model) {
+            logger()->error('Index model undefined');
+
+            return $this->modelNotSetError();
+        }
+
         $length = request('length', $this->defaultPaginationLength());
+
+        $model = $this->build($model);
 
         if ($length == 'all') {
             $data = is_object($model) ? $model->get() : $model::all();
@@ -207,30 +214,18 @@ trait Index
             return $this->modelNotSetError();
         }
 
-        $builder = QueryBuilder::for($model);
-
-        if ($this->isValid($this->allowedIncludes())) {
-            $builder->allowedIncludes($this->allowedIncludes());
-        }
-
-        if ($this->isValid($this->allowedFilters())) {
-            $builder->allowedFilters($this->allowedFilters());
-        }
-
-        if ($this->isValid($this->defaultSort())) {
-            $builder->defaultSort($this->defaultSort());
-        }
-
-        if ($this->isValid($this->allowedSorts())) {
-            $builder->allowedSorts($this->allowedSorts());
-        }
-
         $length = request('length', $this->defaultPaginationLength());
 
+        $model = $this->build($model);
+
         if ($length == 'all') {
-            $data = $builder->onlyTrashed()->get();
+            $data = is_object($model) ?
+                $model->onlyTrashed()->get() :
+                $model::onlyTrashed()->all();
         } else {
-            $data = $builder->onlyTrashed()->paginate($length);
+            $data = is_object($model) ?
+                $model->onlyTrashed()->paginate($length) :
+                $model::onlyTrashed()->paginate($length);
         }
 
         if ($resp = $this->beforeTrashedIndexResponse($data)) {

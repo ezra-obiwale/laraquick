@@ -243,4 +243,9 @@ trait WebSocket
     protected function catchErrors($exception, $client)
     {
     }
+
+    protected function translate($string)
+    {
+        return $string;
+    }
 }
