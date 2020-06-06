@@ -62,7 +62,7 @@ trait Index
      */
     protected function allowedIncludes()
     {
-        return [];
+        return $this->allowed['includes'] ?? [];
     }
 
     /**
@@ -72,7 +72,7 @@ trait Index
      */
     protected function allowedFilters()
     {
-        return [];
+        return $this->allowed['filters'] ?? [];
     }
 
     /**
@@ -82,7 +82,7 @@ trait Index
      */
     protected function allowedSorts()
     {
-        return [];
+        return $this->allowed['sorts'] ?? [];
     }
 
     /**
@@ -92,7 +92,7 @@ trait Index
      */
     protected function allowedAppends()
     {
-        return [];
+        return $this->allowed['appends'] ?? [];
     }
 
     /**
@@ -124,22 +124,38 @@ trait Index
             return $this->modelNotSetError();
         }
 
-        $builder = QueryBuilder::for($model);
+        $createBuilder = function ($builder) use ($model) {
+            if ($builder) {
+                return $builder;
+            }
+
+            return QueryBuilder::for($model);
+        };
+
+        $builder = null;
 
         if ($this->isValid($this->allowedIncludes())) {
+            $builder = $createBuilder($builder);
             $builder->allowedIncludes($this->allowedIncludes());
         }
 
         if ($this->isValid($this->allowedFilters())) {
+            $builder = $createBuilder($builder);
             $builder->allowedFilters($this->allowedFilters());
         }
 
         if ($this->isValid($this->defaultSort())) {
+            $builder = $createBuilder($builder);
             $builder->defaultSort($this->defaultSort());
         }
 
         if ($this->isValid($this->allowedSorts())) {
+            $builder = $createBuilder($builder);
             $builder->allowedSorts($this->allowedSorts());
+        }
+
+        if (!$builder) {
+            $builder = $model;
         }
 
         $length = request('length', $this->defaultPaginationLength());
