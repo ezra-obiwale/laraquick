@@ -161,9 +161,9 @@ trait Index
         $length = request('length', $this->defaultPaginationLength());
 
         if ($length == 'all') {
-            $data = $builder->get();
+            $data = is_object($model) ? $model->get() : $model::all();
         } else {
-            $data = $builder->paginate($length);
+            $data = is_object($model) ? $model->paginate($length) : $model::paginate($length);
         }
 
         if ($resp = $this->beforeIndexResponse($data)) {
