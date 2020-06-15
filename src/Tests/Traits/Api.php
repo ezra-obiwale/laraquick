@@ -324,7 +324,7 @@ trait Api
         $this->assertDestroy($response, $model);
     }
 
-    private function canTest($method)
+    private function canTest($method): bool
     {
         return in_array($method, $this->methods);
     }

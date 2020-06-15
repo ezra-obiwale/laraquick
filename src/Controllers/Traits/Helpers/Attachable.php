@@ -49,14 +49,16 @@ trait Attachable
      *
      * @param Model $model
      * @param string $relation
-     * @return void
+     * @return string
      */
-    private function treatRelation(Model $model, &$relation)
+    private function treatRelation(Model $model, &$relation): string
     {
         if (!method_exists($model, $relation)) {
             // change relation to camel case
             $relation = camel_case(str_replace('-', '_', $relation));
         }
+
+        return $relation;
     }
 
     /**
@@ -65,7 +67,7 @@ trait Attachable
      * @param mixed $items
      * @param Model $model
      * @param string $relation
-     * @return void
+     * @return mixed
      */
     protected function prepareAttachItems($items, Model $model, $relation)
     {
@@ -78,7 +80,7 @@ trait Attachable
      * @param mixed $items
      * @param Model $model
      * @param string $relation
-     * @return void
+     * @return mixed
      */
     protected function prepareDetachItems($items, Model $model, $relation)
     {
@@ -91,7 +93,7 @@ trait Attachable
      * @param mixed $items
      * @param Model $model
      * @param string $relation
-     * @return void
+     * @return mixed
      */
     protected function prepareSyncItems($items, Model $model, $relation)
     {

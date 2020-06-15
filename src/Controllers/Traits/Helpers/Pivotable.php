@@ -16,7 +16,7 @@ trait Pivotable
      *
      * @return string
      */
-    protected function relation()
+    protected function relation(): string
     {
         return 'items';
     }
@@ -27,7 +27,7 @@ trait Pivotable
      *
      * @return string
      */
-    protected function paramKey()
+    protected function paramKey(): string
     {
         return 'items';
     }
@@ -47,7 +47,7 @@ trait Pivotable
      * Attaches a list of items to the object at the given id
      *
      * @param int $id
-     * @return void
+     * @return mixed
      */
     public function addItems($id)
     {
@@ -58,7 +58,7 @@ trait Pivotable
      * Detaches a list of items from the object at the given id
      *
      * @param int $id
-     * @return void
+     * @return mixed
      */
     public function removeItems($id)
     {
@@ -69,7 +69,7 @@ trait Pivotable
      * Syncs a list of items with existing attached items on the object at the given id
      *
      * @param int $id
-     * @return void
+     * @return mixed
      */
     public function updateItems($id)
     {

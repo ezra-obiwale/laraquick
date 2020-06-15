@@ -35,7 +35,8 @@ trait Authorize
      *
      * @return boolean
      */
-    protected function usePolicy() {
+    protected function usePolicy(): bool
+    {
         return config('laraquick.controllers.use_policies', false);
     }
 }

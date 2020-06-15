@@ -73,6 +73,11 @@ class AsyncCall implements ShouldQueue
         }
     }
 
+    /**
+     * Sets the tags for the job
+     *
+     * @return string|array
+     */
     public function tags()
     {
         return $this->tags;

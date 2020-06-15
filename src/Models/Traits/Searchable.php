@@ -25,7 +25,7 @@ trait Searchable
      * @param string $text
      * @return string
      */
-    protected function treat($text)
+    protected function treat($text): string
     {
         // remove all symbols
         if ($newText = preg_replace("/[^a-zA-Z0-9]/", '', $text)) {
@@ -48,7 +48,7 @@ trait Searchable
      *
      * @return string
      */
-    protected function relevanceScoreName()
+    protected function relevanceScoreName(): string
     {
         return 'relevance_score';
     }
@@ -58,9 +58,9 @@ trait Searchable
      *
      * @return array
      */
-    protected function searchableColumns()
+    protected function searchableColumns(): array
     {
-        return $this->searchable ?: [];
+        return $this->searchable ?? [];
     }
 
     /**
@@ -70,7 +70,7 @@ trait Searchable
      * @param string $text
      * @return Builder
      */
-    public function scopeSearch(Builder $query, $text)
+    public function scopeSearch(Builder $query, $text): Builder
     {
         if ($text) {
             $columns = '`' . $this->getTable() . '`.`'
@@ -88,8 +88,15 @@ trait Searchable
         return $query;
     }
 
-
-    public function scopeOrderByRelevance(Builder $query, $direction = 'desc', $relevanceScoreName = null)
+    /**
+     * Perform a full text search according to relevance scores
+     *
+     * @param Builder $query
+     * @param string $direction
+     * @param string $relevanceScoreName
+     * @return Builder
+     */
+    public function scopeOrderByRelevance(Builder $query, $direction = 'desc', $relevanceScoreName = null): Builder
     {
         if (!$this->fullTextMatchString) {
             $this->orderParams = [$direction, $relevanceScoreName];

@@ -13,7 +13,7 @@ trait Common
      *
      * @param array $items
      * @param integer $code
-     * @return void
+     * @return JsonResponse
      */
     protected function paginatedList(array $items, $code = 200, array $meta = [])
     {
@@ -31,7 +31,7 @@ trait Common
      * Called when validation fails
      *
      * @param mixed $errors
-     * @return Response
+     * @return JsonResponse
      */
     protected function validationError($errors)
     {
@@ -42,7 +42,7 @@ trait Common
      * Should be called when an error occurred which is not a fault of the user's
      *
      * @param string $message The message to send with a 500 status code
-     * @return Response
+     * @return JsonResponse
      */
     protected function serverError($message)
     {
@@ -53,7 +53,7 @@ trait Common
      * Called when create action fails
      *
      * @param string $message The message to send with a 500 status code
-     * @return Response
+     * @return JsonResponse
      */
     protected function storeFailedError($message = 'Create failed')
     {
@@ -64,7 +64,7 @@ trait Common
      * Error message for when an update action fails
      *
      * @param string $message The message to send with a 500 status code
-     * @return Response
+     * @return JsonResponse
      */
     protected function updateFailedError($message = 'Update failed')
     {
@@ -75,7 +75,7 @@ trait Common
      * Called when a delete action fails
      *
      * @param string $message The message to send with a 500 status code
-     * @return Response
+     * @return JsonResponse
      */
     protected function destroyFailedError($message = 'Delete failed')
     {
@@ -86,7 +86,7 @@ trait Common
      * Called when a restore deleted action fails
      *
      * @param string $message The message to send with a 500 status code
-     * @return Response
+     * @return JsonResponse
      */
     protected function restoreFailedError($message = 'Restoration failed')
     {
@@ -97,7 +97,7 @@ trait Common
      * Create a 404 not found error response
      *
      * @param string $message The message to send with a 404 status code
-     * @return Response
+     * @return JsonResponse
      */
     protected function notFoundError($message = 'Resource not found')
     {
@@ -108,7 +108,7 @@ trait Common
      * Create a model not set error response
      *
      * @param string $message The message to send with a 500 status code
-     * @return Response
+     * @return JsonResponse
      */
     protected function modelNotSetError($message = 'Model not set for action')
     {

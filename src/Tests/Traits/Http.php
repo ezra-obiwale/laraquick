@@ -26,7 +26,7 @@ trait Http {
      * @param Authenticatable $uiser
      * @return self
      */
-    protected function asUser(Authenticatable $user)
+    protected function asUser(Authenticatable $user): self
     {
         $this->user = $user;
 
@@ -38,7 +38,7 @@ trait Http {
      *
      * @return self
      */
-    protected function addHeaders()
+    protected function addHeaders(): self
     {
         return $this->withHeaders($this->headers());
     }
@@ -46,9 +46,9 @@ trait Http {
     /**
      * Return request headers needed to interact with the API.
      *
-     * @return Array array of headers.
+     * @return array Array of headers.
      */
-    protected function headers()
+    protected function headers(): array
     {
         $headers = array_merge(['Accept' => 'application/json'], Config::get('laraquick.tests.headers', []));
 

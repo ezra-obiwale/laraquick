@@ -37,7 +37,7 @@ trait Common
      * @param array $overrideWith An array of key=>values to override on the stored response
      * @return string
      */
-    protected function storeResponse(TestResponse $response, $path, $overrideWith = [])
+    protected function storeResponse(TestResponse $response, $path, $overrideWith = []): string
     {
         // document the response by creating a log file and streaming details to it.
         if (Str::endsWith($path, '.json')) {

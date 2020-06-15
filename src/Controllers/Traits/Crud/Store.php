@@ -180,11 +180,13 @@ trait Store
         $this->authorizeMethod('storeMany', [$model]);
 
         $rules = $this->manyValidationRules($request->all());
+        $messages = $this->manyValidationMessages($request->all());
+
         $ruleKeys = array_keys($rules);
 
         $data = $this->getManyValues($request->many, $ruleKeys);
 
-        if ($resp = $this->validateRequest($rules)) {
+        if ($resp = $this->validateRequest($rules, $messages)) {
             return $resp;
         }
 

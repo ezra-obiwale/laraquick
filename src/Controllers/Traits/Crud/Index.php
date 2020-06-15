@@ -36,7 +36,7 @@ trait Index
      *
      * @return integer
      */
-    protected function defaultPaginationLength()
+    protected function defaultPaginationLength(): int
     {
         return 15;
     }
@@ -104,7 +104,7 @@ trait Index
     {
     }
 
-    private function isValid($param)
+    private function isValid($param): bool
     {
         return $param && ((is_array($param) && count($param)) || is_string($param));
     }

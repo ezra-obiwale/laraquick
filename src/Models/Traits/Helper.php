@@ -3,7 +3,6 @@
 namespace Laraquick\Models\Traits;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Arr;
 
 trait Helper
 {
@@ -13,7 +12,7 @@ trait Helper
      * @param string|array $attributes
      * @return Builder
      */
-    public function without($attributes)
+    public function without($attributes): Builder
     {
         return $this->withoutGlobalScopes(!is_array($attributes) ? [$attributes] : $attributes);
     }
@@ -24,9 +23,9 @@ trait Helper
      *
      * @param Builder $query
      * @param string|array $value
-     * @return void
+     * @return Builder
      */
-    public function scopeExcept($query, $value)
+    public function scopeExcept($query, $value): Builder
     {
         $defaultColumns = ['id', 'created_at', 'updated_at'];
 
@@ -44,16 +43,16 @@ trait Helper
     /**
      * Removes timestamps from query
      *
-     * @return void
+     * @return self
      */
-    public function scopeWithoutTimestamps()
+    public function scopeWithoutTimestamps($query): self
     {
         $this->timestamps = false;
 
-        return $this;
+        return $query;
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         $fillable = $this->fillable ?? [];
         $appends = $this->appends ?? [];

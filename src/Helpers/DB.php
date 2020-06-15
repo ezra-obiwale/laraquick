@@ -14,12 +14,12 @@ class DB
         $this->tableName = $tableName;
     }
 
-    public static function table($tableName)
+    public static function table($tableName): self
     {
         return new static($tableName);
     }
 
-    public function fullText($columns)
+    public function fullText($columns): self
     {
         if (!is_array($columns)) {
             $columns = [$columns];
@@ -33,12 +33,12 @@ class DB
         return $this;
     }
 
-    protected function getFullTextKeyName(array $columns)
+    protected function getFullTextKeyName(array $columns): string
     {
         return implode('_', $columns) . '_fulltext';
     }
 
-    public function dropFullText($columns)
+    public function dropFullText($columns): self
     {
         if (!is_array($columns)) {
             $columns = [$columns];

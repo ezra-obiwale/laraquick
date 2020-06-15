@@ -36,21 +36,21 @@ trait PassThrough
      *
      * @return array
      */
-    abstract protected function headers();
+    abstract protected function headers(): array;
 
     /**
      * The url to pass the request to
      *
      * @return string
      */
-    abstract protected function toUrl();
+    abstract protected function toUrl(): string;
 
     /**
      * Headers to send with index request
      *
      * @return array
      */
-    protected function indexHeaders()
+    protected function indexHeaders(): array
     {
         return $this->headers();
     }
@@ -60,7 +60,7 @@ trait PassThrough
      *
      * @return array
      */
-    protected function storeHeaders()
+    protected function storeHeaders(): array
     {
         return $this->headers();
     }
@@ -70,7 +70,7 @@ trait PassThrough
      *
      * @return array
      */
-    protected function showHeaders()
+    protected function showHeaders(): array
     {
         return $this->headers();
     }
@@ -80,7 +80,7 @@ trait PassThrough
      *
      * @return array
      */
-    protected function updateHeaders()
+    protected function updateHeaders(): array
     {
         return $this->headers();
     }
@@ -90,7 +90,7 @@ trait PassThrough
      *
      * @return array
      */
-    protected function destroyHeaders()
+    protected function destroyHeaders(): array
     {
         return $this->headers();
     }
@@ -100,7 +100,7 @@ trait PassThrough
      *
      * @return string
      */
-    private function to()
+    private function to(): string
     {
         $to = self::toUrl();
         if ($to[strlen($to) - 1] !== '/') {
@@ -163,7 +163,7 @@ trait PassThrough
      * @param string $method GET|POST|PUT|PATCH|DELETE ...
      * @param string $url
      * @param array $options
-     * @return array
+     * @return mixed
      */
     protected function httpRequest($method, $url, array $options = [])
     {
@@ -173,9 +173,9 @@ trait PassThrough
     /**
      * Shortcut to get the status code of the last request
      *
-     * @return integer
+     * @return int
      */
-    protected function httpStatusCode()
+    protected function httpStatusCode(): int
     {
         return $this->http()->getStatusCode();
     }
@@ -183,7 +183,7 @@ trait PassThrough
     /**
      * Shortcut to get the raw response object of the guzzle request
      *
-     * @return void
+     * @return mixed
      */
     protected function httpResponse()
     {
@@ -193,9 +193,9 @@ trait PassThrough
     /**
      * Check wither the request has errors or not
      *
-     * @return boolean
+     * @return bool
      */
-    protected function hasErrors()
+    protected function hasErrors(): bool
     {
         return $this->http()->hasErrors();
     }

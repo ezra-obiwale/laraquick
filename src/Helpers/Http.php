@@ -125,9 +125,9 @@ class Http
     /**
      * Indicates whether the response to the last request has status code less than or equal to 400
      *
-     * @return boolean
+     * @return bool
      */
-    public static function hasErrors()
+    public static function hasErrors(): bool
     {
         return static::getStatusCode() >= 400;
     }
@@ -135,9 +135,9 @@ class Http
     /**
      * Fetches the status code of the last response to the last request
      *
-     * @return void
+     * @return int
      */
-    public static function getStatusCode()
+    public static function getStatusCode(): int
     {
         return self::$response ? self::$response->getStatusCode() : 0;
     }
@@ -145,7 +145,7 @@ class Http
     /**
      * Fetch the response without being parsed
      *
-     * @return void
+     * @return mixed
      */
     public static function rawResponse()
     {

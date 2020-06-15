@@ -4,6 +4,7 @@ namespace Laraquick\Controllers\Traits\Crud;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+
 trait Validation
 {
 
@@ -15,7 +16,7 @@ trait Validation
      * @param array $messages
      * @return array
      */
-    protected function validateData(array $data, array $rules, array $messages = [])
+    protected function validateData(array $data, array $rules, array $messages = []): array
     {
         $validator = Validator::make($data, $rules, $messages);
 
@@ -33,7 +34,7 @@ trait Validation
      * @param array $messages
      * @return array
      */
-    protected function validateRequest(array $rules = null, array $messages = null)
+    protected function validateRequest(array $rules = null, array $messages = null): array
     {
         $data = request()->all();
 
@@ -51,7 +52,7 @@ trait Validation
      * @param mixed $id Id of the model being updated, if such were the case
      * @return array
      */
-    abstract protected function validationRules(array $data, $id = null);
+    abstract protected function validationRules(array $data, $id = null): array;
 
     /**
      * Should return the validation rules for when using @see storeMany()
@@ -60,31 +61,47 @@ trait Validation
      * @param mixed $id Id of the model being updated, if such were the case
      * @return array
      */
-    final protected function manyValidationRules(array $data, $id = null)
+    final protected function manyValidationRules(array $data, $id = null): array
     {
         $rules = $this->validationRules($data, $id);
-        $manyRules = [];
 
-        foreach ($rules as $key => $rule) {
-            if (is_int($key)) {
-                $manyRules[] = 'many.*.' . $rule;
-            } else {
-                $manyRules['many.*.' . $key] = $rule;
-            }
-        }
-
-        return $manyRules;
+        return $this->manyrize($rules);
     }
 
     /**
      * The validation messages to use with the @see validationRules()
      *
      * @param array $data The data being validated
-     * @param mixed $id The id of the mode being updated, if such were the case
+     * @param mixed $id The id of the model being updated, if such were the case
      * @return array
      */
-    protected function validationMessages(array $data, $id = null)
+    protected function validationMessages(array $data, $id = null): array
     {
         return [];
+    }
+
+    /**
+     * The validation messages to use with the @see manyValidationRules()
+     *
+     * @param array $data The data being validated
+     * @param mixed $id Id of the model being updated, if such were the case
+     * @return array
+     */
+    final protected function manyValidationMessages(array $data, $id = null): array
+    {
+        $messages = $this->validationMessages($data, $id);
+
+        return $this->manyrize($messages);
+    }
+
+    private function manyrize($array): array
+    {
+        $manyrized = [];
+
+        foreach ($array as $key => $value) {
+            $manyrized['many.*.' . $key] = $value;
+        }
+
+        return $manyrized;
     }
 }

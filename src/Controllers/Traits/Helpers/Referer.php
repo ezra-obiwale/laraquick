@@ -32,7 +32,7 @@ trait Referer
         throw new \Exception($referer . ' is not a valid domain.');
     }
 
-    protected function urlsMatch($url1, $url2, $ignoreSubdomains = false)
+    protected function urlsMatch($url1, $url2, $ignoreSubdomains = false): bool
     {
         $refOrigin = $this->originFromUrl($url1);
         $urlOrigin = $this->originFromUrl($url2);
@@ -59,7 +59,7 @@ trait Referer
      * @param string $url
      * @return string
      */
-    protected function originFromUrl($url)
+    protected function originFromUrl($url): string
     {
         return Str::before(Str::after($url, '://'), '/');
     }

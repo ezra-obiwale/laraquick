@@ -14,7 +14,7 @@ trait Notifiable {
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
-    public function notifications()
+    public function notifications(): MorphMany
     {
         return $this->morphMany(config('laraquick.classes.database_notification', DatabaseNotification::class), 'notifiable')->orderBy('created_at', 'desc');
     }
