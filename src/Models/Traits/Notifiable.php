@@ -2,6 +2,7 @@
 
 namespace Laraquick\Models\Traits;
 
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\Notifiable as NotificationsNotifiable;
 
@@ -12,7 +13,7 @@ trait Notifiable {
     /**
      * Get the entity's notifications.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     * @return MorphMany
      */
     public function notifications(): MorphMany
     {
