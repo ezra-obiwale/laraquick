@@ -145,7 +145,7 @@ trait Index
             $builder = $model;
         }
 
-        return $model;
+        return $builder;
     }
 
     /**
