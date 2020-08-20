@@ -196,7 +196,7 @@ trait WebSocket
      *                         to select from
      * @return string
      */
-    public static function generateRandomString($length = 20, $keyspace = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOOPQRSTUVWXYZ')
+    public static function generateRandomString($length = 20, $keyspace = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOOPQRSTUVWXYZ'): string
     {
         $str = '';
         $max = mb_strlen($keyspace, '8bit') - 1;
@@ -212,9 +212,9 @@ trait WebSocket
      * Generate Random Number
      *
      * @param integer $length
-     * @return void
+     * @return int
      */
-    public static function generateRandomNumber($length = 20)
+    public static function generateRandomNumber($length = 20): int
     {
         $lower = str_repeat('1', $length);
         $upper = str_repeat('9', $length);
@@ -223,7 +223,7 @@ trait WebSocket
     }
 
 
-    public function shouldReceiveEvent($client, $event, $data)
+    public function shouldReceiveEvent($client, $event, $data): bool
     {
         return true;
     }
@@ -244,7 +244,7 @@ trait WebSocket
     {
     }
 
-    protected function translate($string)
+    protected function translate($string): string
     {
         return $string;
     }

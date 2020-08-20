@@ -12,7 +12,7 @@ class WebSocket implements ShouldBroadcast
 {
     protected $event;
     protected $data;
-    
+
     public function __construct(Channel $event, array $data)
     {
         $this->event = $event;
