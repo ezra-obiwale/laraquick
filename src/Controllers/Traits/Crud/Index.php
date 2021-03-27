@@ -11,10 +11,11 @@ use Spatie\QueryBuilder\QueryBuilder;
 trait Index
 {
     protected $allowed = [
-        'includes' => [],
+        'appends' => [],
+        'fields' => [],
         'filters' => [],
+        'includes' => [],
         'sorts' => [],
-        'appends' => []
     ];
 
     /**
@@ -56,13 +57,23 @@ trait Index
     }
 
     /**
-     * Set allowed includes
+     * Set alowed appends
      *
      * @return array|string
      */
-    protected function allowedIncludes()
+    protected function allowedAppends()
     {
-        return $this->allowed['includes'] ?? [];
+        return $this->allowed['appends'] ?? [];
+    }
+
+    /**
+     * Set alowed fields
+     *
+     * @return array|string
+     */
+    protected function allowedFields()
+    {
+        return $this->allowed['fields'] ?? [];
     }
 
     /**
@@ -76,6 +87,16 @@ trait Index
     }
 
     /**
+     * Set allowed includes
+     *
+     * @return array|string
+     */
+    protected function allowedIncludes()
+    {
+        return $this->allowed['includes'] ?? [];
+    }
+
+    /**
      * Set allowed sorts
      *
      * @return array|string
@@ -83,16 +104,6 @@ trait Index
     protected function allowedSorts()
     {
         return $this->allowed['sorts'] ?? [];
-    }
-
-    /**
-     * Set alowed appends
-     *
-     * @return array|string
-     */
-    protected function allowedAppends()
-    {
-        return $this->allowed['appends'] ?? [];
     }
 
     /**
@@ -121,14 +132,24 @@ trait Index
 
         $builder = null;
 
-        if ($this->isValid($this->allowedIncludes())) {
+        if ($this->isValid($this->allowedAppends())) {
             $builder = $createBuilder($builder);
-            $builder->allowedIncludes($this->allowedIncludes());
+            $builder->allowedAppends($this->allowedAppends());
+        }
+
+        if ($this->isValid($this->allowedFields())) {
+            $builder = $createBuilder($builder);
+            $builder->allowedFields($this->allowedFields());
         }
 
         if ($this->isValid($this->allowedFilters())) {
             $builder = $createBuilder($builder);
             $builder->allowedFilters($this->allowedFilters());
+        }
+
+        if ($this->isValid($this->allowedIncludes())) {
+            $builder = $createBuilder($builder);
+            $builder->allowedIncludes($this->allowedIncludes());
         }
 
         if ($this->isValid($this->defaultSort())) {
