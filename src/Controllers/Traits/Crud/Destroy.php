@@ -1,4 +1,5 @@
 <?php
+
 namespace Laraquick\Controllers\Traits\Crud;
 
 use Illuminate\Http\Request;
@@ -87,9 +88,7 @@ trait Destroy
             return $this->modelNotSetError('Destroy model undefined');
         }
 
-        $item = is_object($model)
-            ? $model->find($id)
-            : $model::find($id);
+        $item = $this->find($model, $id);
 
         if (!$item) {
             return $this->notFoundError();
@@ -274,9 +273,7 @@ trait Destroy
             return $this->modelNotSetError('Destroy model undefined');
         }
 
-        $item = is_object($model)
-            ? $model->find($id)
-            : $model::find($id);
+        $item = $this->find($model, $id);
 
         if (!$item) {
             return $this->notFoundError();
@@ -367,9 +364,7 @@ trait Destroy
             return $this->modelNotSetError('Destroy model undefined');
         }
 
-        $item = is_object($model)
-            ? $model->find($id)
-            : $model::find($id);
+        $item = $this->find($model, $id);
 
         if (!$item) {
             return $this->notFoundError();

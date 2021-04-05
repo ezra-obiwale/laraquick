@@ -1,4 +1,5 @@
 <?php
+
 namespace Laraquick\Controllers\Traits\Crud;
 
 use Illuminate\Http\Request;
@@ -81,9 +82,7 @@ trait Update
         $requestData = $request->all();
         $data = $this->validateRequest($this->validationRules($requestData, $id), $this->validationMessages($requestData, $id));
 
-        $item = is_object($model)
-            ? $model->find($id)
-            : $model::find($id);
+        $item = $this->find($model, $id);
 
         if (!$item) {
             return $this->notFoundError();

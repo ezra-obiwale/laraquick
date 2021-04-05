@@ -1,4 +1,5 @@
 <?php
+
 namespace Laraquick\Controllers\Traits\Crud;
 
 use Illuminate\Http\Response;
@@ -48,9 +49,7 @@ trait Show
             return $this->modelNotSetError('Show model undefined');
         }
 
-        $item = is_object($model)
-            ? $model->find($id)
-            : $model::find($id);
+        $item = $this->find($model, $id);
 
         if (!$item) {
             return $this->notFoundError();

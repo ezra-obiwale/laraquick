@@ -81,4 +81,26 @@ trait Crud
     {
         return $this->showModel();
     }
+
+    /**
+     * Handles finding an entity from a model
+     *
+     * @param Model|string $model
+     * @param int|string $id
+     */
+    protected function find($model, $id)
+    {
+        return is_object($model) ? $model->find($id) : $model::find($id);
+    }
+
+    /**
+     * Handles finding an entity from a model and throws an exception if not found
+     *
+     * @param Model|string $model
+     * @param int|string $id
+     */
+    protected function findOrFail($model, $id)
+    {
+        return is_object($model) ? $model->findOrFail($id) : $model::findOrFail($id);
+    }
 }
