@@ -75,12 +75,12 @@ trait Api
      * Creates the url to use for each method
      *
      * @param string $method One of the methods in the $methods property.
-     * @param integer $id The id of the target model.
+     * @param Model $model The target model.
      * @param array $payload The array of payload for the method.
      *
      * @return string
      */
-    protected function createUrl($method, $id = null, array $payload = []): string
+    protected function createUrl($method, $model = null, array $payload = []): string
     {
         if (!in_array($method, $this->methods)) {
             throw new InvalidArgumentException('Unknown method [' . $method . ']');
@@ -89,7 +89,7 @@ trait Api
         $url = $this->indexUrl();
 
         if (!in_array($method, ['index', 'store'])) {
-            $url .= '/' . $id;
+            $url .= '/' . $model->id;
         }
 
         return $url;
@@ -277,7 +277,7 @@ trait Api
         $model = $this->createModel();
         $this->beforeShow($model);
 
-        $response = $this->get($this->createUrl('show', $model->id));
+        $response = $this->get($this->createUrl('show', $model));
 
         if ($this->storeResponses) {
             $this->storeResponse($response, $this->storePaths['show'] ?? $this->resource() . '/show');
@@ -297,7 +297,7 @@ trait Api
 
         $this->beforeUpdate($payload, $model);
 
-        $response = $this->put($this->createUrl('update', $model->id, $payload), $payload);
+        $response = $this->put($this->createUrl('update', $model, $payload), $payload);
 
         if ($this->storeResponses) {
             $this->storeResponse($response, $this->storePaths['update'] ?? $this->resource() . '/update');
@@ -315,7 +315,7 @@ trait Api
         $model = $this->createModel();
         $this->beforeDestroy($model);
 
-        $response = $this->delete($this->createUrl('destroy', $model->id));
+        $response = $this->delete($this->createUrl('destroy', $model));
 
         if ($this->storeResponses) {
             $this->storeResponse($response, $this->storePaths['destroy'] ?? $this->resource() . '/destroy');
