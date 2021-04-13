@@ -237,7 +237,7 @@ trait Api
     public function testStore()
     {
         if (!$this->canTest('store')) {
-            return $this->assertTrue(true);
+            return $this->markTestSkipped();
         }
 
         $payload = $this->payload();
@@ -255,7 +255,7 @@ trait Api
     public function testIndex()
     {
         if (!$this->canTest('index')) {
-            return $this->assertTrue(true);
+            return $this->markTestSkipped();
         }
 
         $this->beforeIndex();
@@ -271,7 +271,7 @@ trait Api
     public function testShow()
     {
         if (!$this->canTest('show')) {
-            return $this->assertTrue(true);
+            return $this->markTestSkipped();
         }
 
         $model = $this->createModel();
@@ -289,7 +289,7 @@ trait Api
     public function testUpdate()
     {
         if (!$this->canTest('update')) {
-            return $this->assertTrue(true);
+            return $this->markTestSkipped();
         }
 
         $payload = $this->payload(true);
@@ -309,7 +309,7 @@ trait Api
     public function testDestroy()
     {
         if (!$this->canTest('destroy')) {
-            return $this->assertTrue(true);
+            return $this->markTestSkipped();
         }
 
         $model = $this->createModel();
