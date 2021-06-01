@@ -32,7 +32,7 @@ trait Web
      */
     protected function storeManyResponse(array $data)
     {
-        return $this->success('Create many successful', 201);
+        return $this->success('Create many successful', Response::HTTP_CREATED);
     }
 
     /**

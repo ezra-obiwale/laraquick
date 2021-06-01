@@ -3,6 +3,7 @@ namespace Laraquick\Controllers\Traits;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 use Laraquick\Controllers\Traits\Response\Api as ApiResponse;
 use Laraquick\Controllers\Traits\Response\Common;
 
@@ -32,7 +33,7 @@ trait Api
      */
     protected function storeManyResponse(array $data)
     {
-        return $this->success($data, 201);
+        return $this->success($data, Response::HTTP_CREATED);
     }
 
     /**
@@ -43,7 +44,7 @@ trait Api
      */
     protected function storeResponse(Model $data)
     {
-        return $this->success($data, 201);
+        return $this->success($data, Response::HTTP_CREATED);
     }
 
     /**
@@ -54,7 +55,7 @@ trait Api
      */
     protected function showResponse(Model $data)
     {
-        return $this->success($data, 200);
+        return $this->success($data, Response::HTTP_OK);
     }
 
     /**
@@ -65,7 +66,7 @@ trait Api
      */
     protected function updateResponse(Model $data)
     {
-        return $this->success($data, 202);
+        return $this->success($data, Response::HTTP_ACCEPTED);
     }
 
     /**
@@ -76,7 +77,7 @@ trait Api
      */
     protected function destroyResponse(Model $data)
     {
-        return $this->success($data, 202);
+        return $this->success($data, Response::HTTP_ACCEPTED);
     }
 
     /**
@@ -87,7 +88,7 @@ trait Api
      */
     protected function forceDestroyResponse(Model $data)
     {
-        return $this->success($data, 202);
+        return $this->success($data, Response::HTTP_ACCEPTED);
     }
 
     /**
@@ -98,7 +99,7 @@ trait Api
      */
     protected function destroyManyResponse($deletedCount)
     {
-        return $this->success("$deletedCount item(s) deleted successfully", 202);
+        return $this->success("$deletedCount item(s) deleted successfully", Response::HTTP_ACCEPTED);
     }
 
     /**
@@ -109,6 +110,6 @@ trait Api
      */
     protected function restoreDestroyedResponse(Model $data)
     {
-        return $this->success($data, 202);
+        return $this->success($data, Response::HTTP_ACCEPTED);
     }
 }

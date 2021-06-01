@@ -3,6 +3,7 @@
 namespace Laraquick\Controllers\Traits\Response;
 
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 
 trait Api
 {
@@ -14,7 +15,7 @@ trait Api
      * @param array $meta
      * @return JsonResponse
      */
-    protected function success($response = null, $code = 200, array $meta = [])
+    protected function success($response = null, $code = Response::HTTP_OK, array $meta = [])
     {
         $resp = [
             'status' => is_array($response) && array_key_exists('status', $response)

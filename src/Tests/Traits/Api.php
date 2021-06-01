@@ -3,6 +3,7 @@
 namespace Laraquick\Tests\Traits;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 use Illuminate\Testing\TestResponse;
 use InvalidArgumentException;
@@ -80,7 +81,7 @@ trait Api
      *
      * @return string
      */
-    protected function createUrl($method, $model = null, array &$payload = []): string
+    protected function createUrl($method, Model $model = null, array &$payload = []): string
     {
         if (!in_array($method, $this->methods)) {
             throw new InvalidArgumentException('Unknown method [' . $method . ']');
@@ -171,7 +172,7 @@ trait Api
      */
     protected function assertIndex(TestResponse $response): void
     {
-        $response->assertStatus(200);
+        $response->assertStatus(Response::HTTP_OK);
     }
 
     /**
@@ -183,7 +184,7 @@ trait Api
      */
     protected function assertStore(TestResponse $response, array $payload): void
     {
-        $response->assertStatus(201)
+        $response->assertStatus(Response::HTTP_CREATED)
             ->assertJson($this->makeResponse($payload));
     }
 
@@ -199,7 +200,7 @@ trait Api
     {
         $model->refresh();
 
-        $response->assertStatus(202)
+        $response->assertStatus(Response::HTTP_ACCEPTED)
             ->assertJson($this->makeResponse($payload));
     }
 
@@ -211,7 +212,7 @@ trait Api
      */
     protected function assertShow(TestResponse $response): void
     {
-        $response->assertStatus(200);
+        $response->assertStatus(Response::HTTP_OK);
     }
 
     /**
@@ -223,7 +224,7 @@ trait Api
      */
     protected function assertDestroy(TestResponse $response, Model $model): void
     {
-        $response->assertStatus(202);
+        $response->assertStatus(Response::HTTP_ACCEPTED);
 
         $model = $model->fresh();
 

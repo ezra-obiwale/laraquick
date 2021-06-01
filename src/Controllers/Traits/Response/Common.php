@@ -15,7 +15,7 @@ trait Common
      * @param integer $code
      * @return JsonResponse
      */
-    protected function paginatedList(array $items, $code = 200, array $meta = [])
+    protected function paginatedList(array $items, $code = Response::HTTP_OK, array $meta = [])
     {
         $resp = array_key_exists('data', $items) ? $items['data'] : $items;
 
