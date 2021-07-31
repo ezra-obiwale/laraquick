@@ -35,10 +35,10 @@ trait Authorize
     /**
      * Returns the ability map for the current resource
      */
-    abstract protected function resourceAbilityMap(): array;
+    abstract protected function resourceAbilityMap();
 
     /**
      * Authorizes the action method
      */
-    abstract protected function authorize($method, array $map): void;
+    abstract protected function authorize($method, array $map);
 }
