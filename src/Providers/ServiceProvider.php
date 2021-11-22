@@ -5,7 +5,6 @@ namespace Laraquick\Providers;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
-use Laraquick\Commands\Logs\Backup;
 
 class ServiceProvider extends BaseServiceProvider
 {
@@ -62,12 +61,6 @@ class ServiceProvider extends BaseServiceProvider
         $this->publishes([
             $this->configPath() => config_path('laraquick.php'),
         ], 'config');
-
-        if ($this->app->runningInConsole()) {
-            $this->commands([
-                Backup::class,
-            ]);
-        }
     }
 
     protected function configPath(): string
