@@ -151,7 +151,12 @@ class Database extends Command
 
         foreach ($data as $d) {
             $parts = explode(':', $d);
-            $newData[$parts[0]] = $parts[1];
+
+            if (isset($parts[1]) && $parts[1] === 'null') {
+                $parts[1] = null;
+            }
+
+            $newData[$parts[0]] = $parts[1] ?? null;
         }
 
         return $newData;
