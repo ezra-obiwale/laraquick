@@ -19,8 +19,15 @@
             "role": "Developer"
         }
     ],
+    "repositories": {
+        "laravel-db-command": {
+            "type": "vcs",
+            "url": "https://github.com/ezra-obiwale/laravel-db-command.git"
+        }
+    },
     "require": {
         "php": ">=7.0",
+        "d-scribe/laravel-db-command": "dev-master",
         "guzzlehttp/guzzle": ">=6.0",
         "maatwebsite/excel": "~3.0",
         "predis/predis": "^1.1",
