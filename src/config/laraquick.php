@@ -25,19 +25,4 @@ return [
 
         ],
     ],
-    'websocket' => [
-        // 0.0.0.0 <=> any ip address
-        'allowed_ip_address' => env('WEBSOCKET_ALLOWED_IP_ADDRESS', '0.0.0.0'),
-
-        // The websocket controller
-        'controller' => 'Laraquick\\Controllers\\WebSocketController',
-
-        // port to run websocket on
-        'port' => env('WEBSOCKET_PORT', 8080),
-
-        // the channels to listen to
-        'channels' => [
-            'events'
-        ],
-    ]
 ];

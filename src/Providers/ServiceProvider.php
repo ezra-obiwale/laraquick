@@ -6,8 +6,6 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 use Laraquick\Commands\Logs\Backup;
-use Laraquick\Commands\WebSocketServer\Restart;
-use Laraquick\Commands\WebSocketServer\Start;
 
 class ServiceProvider extends BaseServiceProvider
 {
@@ -68,8 +66,6 @@ class ServiceProvider extends BaseServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 Backup::class,
-                Start::class,
-                Restart::class,
             ]);
         }
     }
