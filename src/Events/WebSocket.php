@@ -4,24 +4,28 @@ namespace Laraquick\Events;
 
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Broadcasting\Channel;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Broadcasting\InteractsWithSockets;
 
 class WebSocket implements ShouldBroadcast
 {
-    protected $event;
+    protected $channel;
+    protected $eventName;
     protected $data;
 
-    public function __construct(Channel $event, array $data)
+    public function __construct(Channel $channel, $eventName, array $data)
     {
-        $this->event = $event;
+        $this->channel = $channel;
+        $this->eventName = $eventName;
         $this->data = $data;
+    }
+
+    public function broadcastAs()
+    {
+        return $this->eventName;
     }
 
     public function broadcastOn()
     {
-        return $this->event;
+        return $this->channel;
     }
 
     public function broadcastWith()
