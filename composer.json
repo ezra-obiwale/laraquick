@@ -27,7 +27,7 @@
     },
     "require": {
         "php": ">=7.0",
-        "d-scribe/laravel-db-command": "dev-master",
+        "d-scribe/laravel-db-command": "dev-main",
         "guzzlehttp/guzzle": ">=6.0",
         "maatwebsite/excel": "~3.0",
         "predis/predis": "^1.1",
