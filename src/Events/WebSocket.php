@@ -4,9 +4,12 @@ namespace Laraquick\Events;
 
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Broadcasting\Channel;
+use Illuminate\Broadcasting\InteractsWithSockets;
 
 class WebSocket implements ShouldBroadcast
 {
+    use InteractsWithSockets;
+
     protected $channel;
     protected $eventName;
     protected $data;
