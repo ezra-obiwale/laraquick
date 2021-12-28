@@ -1,0 +1,11 @@
+version: '3.7'
+
+services:
+  lib:
+    image: d-scribe/laraquick
+    build:
+      context: .
+    restart: unless-stopped
+    volumes:
+      - .:/var/www/html
+      # - ${HOME}/.composer:/

@@ -1,5 +1,17 @@
 # Changelog
 
+## UNVERSIONED
+
+### Added
+
+### Updated
+
+- Replaced Dud usages with optional
+
+### Removed
+
+- Removed Dud class
+
 ## 3.8.0
 
 Added Notfications DBChannel

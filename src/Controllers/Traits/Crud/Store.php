@@ -6,7 +6,6 @@ use Illuminate\Http\Response;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Laraquick\Helpers\DB;
-use Laraquick\Models\Dud;
 use Exception;
 
 /**
@@ -115,7 +114,7 @@ trait Store
                 $message = $ex->getMessage();
 
                 try {
-                    $this->rollbackStore($data, @$item ?: new Dud);
+                    $this->rollbackStore($data, optional($item));
                 } catch (Exception $ex) {
                     $message = $ex->getMessage();
                 }
