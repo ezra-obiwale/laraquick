@@ -4,26 +4,25 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "dca488f849c96130fc59403f015ccff3",
+    "content-hash": "4d464cbd222825e7185cce50724e54c3",
     "packages": [
         {
             "name": "d-scribe/laravel-db-command",
-            "version": "dev-main",
+            "version": "v1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ezra-obiwale/laravel-db-command.git",
-                "reference": "d8658e72ce531cf8cac3e08c1d44cda8fda101b3"
+                "reference": "0b624ae08f78c1f42e9d1a32af9c40059b6c5ce4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ezra-obiwale/laravel-db-command/zipball/d8658e72ce531cf8cac3e08c1d44cda8fda101b3",
-                "reference": "d8658e72ce531cf8cac3e08c1d44cda8fda101b3",
+                "url": "https://api.github.com/repos/ezra-obiwale/laravel-db-command/zipball/0b624ae08f78c1f42e9d1a32af9c40059b6c5ce4",
+                "reference": "0b624ae08f78c1f42e9d1a32af9c40059b6c5ce4",
                 "shasum": ""
             },
             "require": {
                 "php": ">=7.0"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "laravel": {
@@ -37,6 +36,7 @@
                     "DScribe\\": "src/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -57,10 +57,10 @@
                 "script"
             ],
             "support": {
-                "source": "https://github.com/ezra-obiwale/laravel-db-command/tree/main",
-                "issues": "https://github.com/ezra-obiwale/laravel-db-command/issues"
+                "issues": "https://github.com/ezra-obiwale/laravel-db-command/issues",
+                "source": "https://github.com/ezra-obiwale/laravel-db-command/tree/v1.0.0"
             },
-            "time": "2021-12-28T11:43:22+00:00"
+            "time": "2021-12-28T12:15:47+00:00"
         },
         {
             "name": "doctrine/inflector",
@@ -5079,7 +5079,6 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "d-scribe/laravel-db-command": 20,
         "d-scribe/laravel-apidoc-generator": 20
     },
     "prefer-stable": true,
