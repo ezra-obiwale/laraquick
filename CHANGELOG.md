@@ -6,11 +6,7 @@
 
 ### Updated
 
-- Replaced Dud usages with optional
-
 ### Removed
-
-- Removed Dud class
 
 ## 3.8.0
 

@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Laraquick\Helpers\Http;
+use Laraquick\Models\Dud;
 
 /**
  * A collection of methods to assist in quick controller generation
@@ -124,10 +125,10 @@ trait PassThrough
         if ($action !== 'index') {
             if (!$this->http()->hasErrors()) {
                 if (array_key_exists('data', $resp)) {
-                    $resp['data'] = optional()->forceFill($resp['data']);
+                    $resp['data'] = (new Dud())->forceFill($resp['data']);
                     $data =& $resp['data'];
                 } else {
-                    $resp = optional()->forceFill($resp);
+                    $resp = (new Dud())->forceFill($resp);
                     $data = $resp;
                 }
             } else {
@@ -245,7 +246,7 @@ trait PassThrough
         $requestData = $request->all();
         $data = $this->validateRequest($this->validationRules($requestData, $id), $this->validationMessages($requestData, $id));
 
-        if ($resp = $this->beforeUpdate($data, optional()->forceFill($data))) {
+        if ($resp = $this->beforeUpdate($data, (new Dud())->forceFill($data))) {
             return $resp;
         }
 
