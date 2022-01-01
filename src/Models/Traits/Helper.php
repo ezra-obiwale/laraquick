@@ -3,6 +3,9 @@
 namespace Laraquick\Models\Traits;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 trait Helper
 {
@@ -50,6 +53,34 @@ trait Helper
         $this->timestamps = false;
 
         return $query;
+    }
+
+    /**
+     * Determine if the given relation is loaded.
+     *
+     * @param  string  $key
+     * @return bool
+     */
+    public function relationLoaded($key)
+    {
+        if (!Str::contains($key, '.')) {
+            return isset($this->relations[$key]);
+        }
+
+        $firstKey = Str::before($key, '.');
+        $otherKeys = Str::after($key, '.');
+
+        if (!isset($this->relations[$firstKey])) {
+            return false;
+        }
+
+        $relation = $this->relations[$firstKey];
+
+        if ($relation instanceof EloquentCollection) {
+            return $relation->contains(fn (Model $model) => $model->relationLoaded($otherKeys));
+        }
+
+        return optional($relation)->relationLoaded($otherKeys) ?? false;
     }
 
     public function toArray(): array
