@@ -6,7 +6,11 @@
 
 ### Updated
 
+- Fixed toArray issue with snake/camel case relationships.
+
 ### Removed
+
+- Removed Helper/Http. Laravel now has an Http facade.
 
 ## 3.8.0
 

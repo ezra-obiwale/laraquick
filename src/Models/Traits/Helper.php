@@ -91,6 +91,9 @@ trait Helper
         $counts = array_keys($this->withCount ?? []);
         $withArray = $this->withArray ?? [];
 
+        $relations = array_map(fn ($relation) => Str::snake($relation), $relations);
+        $withArray = array_map(fn ($with) => Str::snake($with), $withArray);
+
         array_unshift($fillable, 'id');
         $array = collect(parent::toArray())
             // Show only fillables, appends and relations
