@@ -7,6 +7,7 @@
 ### Updated
 
 - Fixed toArray issue with snake/camel case relationships.
+- Adds method `getMailMessage` to Notifications\Send.
 
 ### Removed
 

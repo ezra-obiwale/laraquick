@@ -89,6 +89,16 @@ class Send extends Notification
     }
 
     /**
+     * Gets the mail message
+     *
+     * @return MailMessage
+     */
+    public function getMailMessage()
+    {
+        return $this->mailMessage;
+    }
+
+    /**
      * Sets the array of data for saving to the database.
      *
      * @param array $data
