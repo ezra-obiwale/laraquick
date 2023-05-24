@@ -52,7 +52,10 @@ trait Validation
      * @param mixed $id Id of the model being updated, if such were the case
      * @return array
      */
-    abstract protected function validationRules(array $data, $id = null): array;
+    protected function validationRules(array $data, $id = null): array
+    {
+        return [];
+    }
 
     /**
      * Should return the validation rules for when using @see storeMany()

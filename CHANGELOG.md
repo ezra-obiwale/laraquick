@@ -8,12 +8,14 @@
 
 - Fixed toArray issue with snake/camel case relationships.
 - Adds method `getMailMessage` to Notifications\Send.
+- Made the validationRules method not required. It returns an empty array by default.
 
 ### Removed
 
 - Removed Helper/Http. Laravel now has an Http facade.
 - Removed Events/WebSocket. Use [Laravel WebSockets](https://beyondco.de/docs/laravel-websockets/getting-started/introduction).
 - Removed Helper::relationLoaded method. Laravel now has a method for that.
+- Removed Helper/Excel.
 
 ## Missed out on a couple of version. Will try to this file up-to-date going forward.
 
