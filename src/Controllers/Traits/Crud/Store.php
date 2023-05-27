@@ -1,4 +1,5 @@
 <?php
+
 namespace Laraquick\Controllers\Traits\Crud;
 
 use Illuminate\Http\Request;
@@ -260,5 +261,5 @@ trait Store
      * @param array $data
      * @return Response|array
      */
-    abstract protected function storeManyResponse(array &$data);
+    abstract protected function storeManyResponse(array $data);
 }

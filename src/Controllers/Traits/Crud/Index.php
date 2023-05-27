@@ -1,4 +1,5 @@
 <?php
+
 namespace Laraquick\Controllers\Traits\Crud;
 
 use Illuminate\Http\Response;
@@ -23,7 +24,7 @@ trait Index
      *
      * @return Response
      */
-    abstract protected function modelNotSetError();
+    abstract protected function modelNotSetError($message = 'Model not set');
 
     /**
      * The model to use in the index method.
