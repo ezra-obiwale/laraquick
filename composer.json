@@ -39,7 +39,7 @@
         }
     },
     "require-dev": {
-        "d-scribe/laravel-apidoc-generator": "dev-master"
+        "knuckleswtf/scribe": "^4.19"
     },
     "minimum-stability": "dev",
     "prefer-stable": true

@@ -44,7 +44,7 @@ trait Common
             $path = Str::before($path, '.json');
         }
 
-        $path = str_replace('.', '/', $path);
+        $path = str_replace('.', '/', $path) . '/' . $response->getStatusCode();
         $storagePath = Config::get('laraquick.tests.responses.storage_path', 'test-responses');
         $format = Config::get('laraquick.tests.responses.format', '');
 

@@ -76,7 +76,10 @@ trait Destroy
     }
 
     /**
-     * Deletes the specified resource.
+     * Delete
+     *
+     * Deletes the specified item.
+     *
      * @param int $id
      * @return Response
      */
@@ -167,7 +170,10 @@ trait Destroy
     {
     }
     /**
-     * Deletes the specified resources.
+     * Delete many
+     *
+     * Deletes the specified items.
+     *
      * @return Response
      */
     public function destroyMany(Request $request)
@@ -261,7 +267,10 @@ trait Destroy
     }
 
     /**
-     * Force deletes the specified resource.
+     * Delete (permanently)
+     *
+     * Permanently deletes the specified item.
+     *
      * @param int $id
      * @return Response
      */
@@ -356,6 +365,14 @@ trait Destroy
     {
     }
 
+    /**
+     * Restore
+     *
+     * Undeletes the specified item which was previously marked as deleted.
+     *
+     * @param int $id
+     * @return Response
+     */
     public function restoreDestroyed($id)
     {
         $model = $this->destroyModel();

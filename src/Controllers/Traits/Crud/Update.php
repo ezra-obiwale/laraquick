@@ -70,7 +70,10 @@ trait Update
     }
 
     /**
-     * Update the specified resource.
+     * Update
+     *
+     * Updates the specified item.
+     *
      * @param  Request $request
      * @param int $id
      * @return Response

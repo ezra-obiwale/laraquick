@@ -19,7 +19,7 @@ trait Common
     {
         $resp = array_key_exists('data', $items) ? $items['data'] : $items;
 
-        if (request()->query('length') != 'all' && count($resp)) {
+        if ((int) request()->query('length') !== -1 && count($resp)) {
             unset($items['data']);
             $meta['pagination'] = $items;
         }

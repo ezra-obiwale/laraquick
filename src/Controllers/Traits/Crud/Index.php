@@ -171,7 +171,9 @@ trait Index
     }
 
     /**
-     * Display a listing of the resource.
+     * List
+     *
+     * Get a list of items
      *
      * @return Response
      */
@@ -185,11 +187,11 @@ trait Index
             return $this->modelNotSetError();
         }
 
-        $length = request('length', $this->defaultPaginationLength());
+        $length = (int) request('length', $this->defaultPaginationLength());
 
         $model = $this->build($model);
 
-        if ($length == 'all') {
+        if ($length === -1) {
             $data = is_object($model) ? $model->get() : $model::all();
         } else {
             $data = is_object($model) ? $model->paginate($length) : $model::paginate($length);
@@ -223,7 +225,11 @@ trait Index
     // ------------------ TRASHED INDEX ---------------------
 
     /**
-     * Display a listing of all resources marked as deleted.
+     *
+     * List (deleted)
+     *
+     * Get a list of items marked as deleted
+     *
      * @return Response
      */
     public function trashedIndex()
@@ -236,11 +242,11 @@ trait Index
             return $this->modelNotSetError();
         }
 
-        $length = request('length', $this->defaultPaginationLength());
+        $length = (int) request('length', $this->defaultPaginationLength());
 
         $model = $this->build($model);
 
-        if ($length == 'all') {
+        if ($length === -1) {
             $data = is_object($model) ?
                 $model->onlyTrashed()->get() :
                 $model::onlyTrashed()->all();

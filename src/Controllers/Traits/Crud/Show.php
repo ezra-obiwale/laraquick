@@ -37,7 +37,10 @@ trait Show
     abstract protected function showModel();
 
     /**
-     * Fetch a resource
+     * Single
+     *
+     * Gets the specified item.
+     *
      * @param int $id
      * @return Response
      */

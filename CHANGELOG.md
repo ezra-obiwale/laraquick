@@ -1,14 +1,21 @@
 # Changelog
 
-## UNVERSIONED
+## Unreleased
 
 ### Added
+
+- Adds method `getMailMessage` to Notifications\Send.
+- Adds [Scribe](https://scribe.knuckles.wtf/laravel) strategy for test responses.
+- Adds [Scribe](https://scribe.knuckles.wtf/laravel) strategy for metadata.
+- Adds documentation doctype to all crud methods
 
 ### Updated
 
 - Fixed toArray issue with snake/camel case relationships.
-- Adds method `getMailMessage` to Notifications\Send.
 - Made the validationRules method not required. It returns an empty array by default.
+- Changes test response path to reflect status codes.
+- Swaps [d-scribe/laravel-apidoc-generator](https://github.com/d-scribe/laravel-apidoc-generator) with [Scribe](https://scribe.knuckles.wtf/laravel).
+- Changes 'all' to `-1` on index action to load all.
 
 ### Removed
 

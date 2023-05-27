@@ -18,7 +18,6 @@ trait Store
 {
     use Authorize;
 
-
     /**
      * Create a model not set error response
      *
@@ -73,7 +72,10 @@ trait Store
     }
 
     /**
-     * Save a new resource.
+     * Create
+     *
+     * Cretes a new item.
+     *
      * @param  Request $request
      * @return Response
      */
@@ -166,7 +168,10 @@ trait Store
     }
 
     /**
-     * Save many new resources.
+     * Create (multiple)
+     *
+     * Creates multiple new items in one request.
+     *
      * @param  Request $request
      * @return Response
      */
