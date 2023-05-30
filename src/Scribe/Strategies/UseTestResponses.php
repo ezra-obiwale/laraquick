@@ -39,7 +39,7 @@ class UseTestResponses extends Strategy
         $controller = Str::beforeLast($controller, 'Controller');
         $controller = Str::kebab($controller);
 
-        $path = $responsesPath . '/' . $controller . '/' . $endpointData->method->name;
+        $path = $responsesPath . '/' . $controller . '/' . Str::kebab($endpointData->method->name);
 
         if ($format = config('laraquick.tests.responses.format')) {
             $path .= '.' . $format;

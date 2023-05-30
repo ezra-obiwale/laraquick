@@ -80,6 +80,8 @@ trait Destroy
      *
      * Deletes the specified item.
      *
+     * @urlParam id integer|string required The id of the item to delete.
+     *
      * @param int $id
      * @return Response
      */
@@ -173,6 +175,8 @@ trait Destroy
      * Delete many
      *
      * Deletes the specified items.
+     *
+     * @bodyParams ids string[]|integer[] required Array of ids of items to delete.
      *
      * @return Response
      */
@@ -271,7 +275,9 @@ trait Destroy
      *
      * Permanently deletes the specified item.
      *
-     * @param int $id
+     * @urlParam id integer|string required The id of the item to delete.
+     *
+     *  @param int $id
      * @return Response
      */
     public function forceDestroy($id)
@@ -369,6 +375,8 @@ trait Destroy
      * Restore
      *
      * Undeletes the specified item which was previously marked as deleted.
+     *
+     * @urlParam id integer|string required The id of the item to undelete.
      *
      * @param int $id
      * @return Response

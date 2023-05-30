@@ -52,7 +52,7 @@ trait Common
             $format = '.' . $format;
         }
 
-        $data = collect($response->json())->merge($overrideWith)->all();
+        $data = $response->getStatusCode() === 204 ? '' : collect($response->json())->merge($overrideWith)->all();
 
         return Storage::put("$storagePath/$path" . $format, json_encode($data, JSON_PRETTY_PRINT));
     }

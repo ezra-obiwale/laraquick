@@ -173,7 +173,10 @@ trait Index
     /**
      * List
      *
-     * Get a list of items
+     * Get a paginated list of items
+     *
+     * @queryParam length number This is the number of items to return per page. If not provided, the default is used. Set as "-1" to return all items at once. Example: 15
+     * @queryParam page number This is the current page to be items to return. Example: 1
      *
      * @return Response
      */
@@ -229,6 +232,9 @@ trait Index
      * List (deleted)
      *
      * Get a list of items marked as deleted
+     *
+     * @queryParam length number This is the number of items to return per page. If not provided, the default is used. Set as "-1" to return all items at once. Example: 15
+     * @queryParam page number This is the current page to be items to return. Example: 1
      *
      * @return Response
      */

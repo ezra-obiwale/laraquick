@@ -16,6 +16,7 @@
 - Changes test response path to reflect status codes.
 - Swaps [d-scribe/laravel-apidoc-generator](https://github.com/d-scribe/laravel-apidoc-generator) with [Scribe](https://scribe.knuckles.wtf/laravel).
 - Changes 'all' to `-1` on index action to load all.
+- Fixes storing test responses with 204 content
 
 ### Removed
 

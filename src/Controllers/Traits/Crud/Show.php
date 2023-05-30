@@ -41,6 +41,8 @@ trait Show
      *
      * Gets the specified item.
      *
+     * @urlParam id integer|string required The id of the item to get.
+     *
      * @param int $id
      * @return Response
      */
