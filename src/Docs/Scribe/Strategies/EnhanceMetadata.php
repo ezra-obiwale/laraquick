@@ -1,6 +1,6 @@
 <?php
 
-namespace Laraquick\Scribe\Strategies;
+namespace Laraquick\Docs\Scribe\Strategies;
 
 use Illuminate\Support\Str;
 use Knuckles\Camel\Extraction\ExtractedEndpointData;

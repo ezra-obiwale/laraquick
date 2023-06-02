@@ -1,6 +1,6 @@
 <?php
 
-namespace Laraquick\Scribe\Strategies;
+namespace Laraquick\Docs\Scribe\Strategies;
 
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;

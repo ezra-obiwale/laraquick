@@ -46,7 +46,7 @@ trait Index
     /**
      * Set allowed types
      *
-     * @param string $type includes | filters | sorts | appends
+     * @param string $type includes | filters | sorts | appends | fields
      * @param string|array $value
      * @return self
      */
