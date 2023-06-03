@@ -67,7 +67,7 @@ class ServiceProvider extends BaseServiceProvider
     {
         $this->publishes([
             $this->configPath() => config_path('laraquick.php'),
-        ], 'config');
+        ], 'laraquick-config');
     }
 
     protected function configPath(): string
