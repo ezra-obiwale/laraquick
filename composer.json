@@ -38,8 +38,8 @@
             "Laraquick\\": "src/"
         }
     },
-    "require-dev": {
-        "knuckleswtf/scribe": "^4.19"
+    "suggest": {
+        "knuckleswtf/scribe": "Generate API documentation for humans"
     },
     "minimum-stability": "dev",
     "prefer-stable": true

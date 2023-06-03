@@ -8,6 +8,7 @@
 - Adds [Scribe](https://scribe.knuckles.wtf/laravel) strategy for test responses.
 - Adds [Scribe](https://scribe.knuckles.wtf/laravel) strategy for metadata.
 - Adds documentation doctype to all crud methods
+- Introduces "actionNames" options for `Route::httpResource(...)`
 
 ### Updated
 

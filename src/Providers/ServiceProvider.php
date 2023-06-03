@@ -19,9 +19,16 @@ class ServiceProvider extends BaseServiceProvider
         $this->mergeConfigFrom($this->configPath(), 'laraquick');
 
         Route::macro('httpResource', function ($path, $controller, array $options = []) {
-            $only = Arr::exists($options, 'only') ? $options['only'] : ['index', 'store', 'show', 'update', 'destroy'];
-            $except = Arr::exists($options, 'except') ? $options['except'] : [];
-            $namePrefix = Arr::exists($options, 'namePrefix') ? $options['namePrefix'] : preg_replace('[^a-zA-Z0-9]', '.', $path);
+            $only = $options['only'] ?? ['index', 'store', 'show', 'update', 'destroy'];
+            $except = $options['except'] ?? [];
+            $namePrefix = $options['namePrefix'] ?? preg_replace('[^a-zA-Z0-9]', '.', $path);
+            $actionNames = ($options['actionNames'] ?? []) + [
+                'index' => 'index',
+                'store' => 'store',
+                'show' => 'show',
+                'update' => 'update',
+                'destroy' => 'destroy',
+            ];
 
             if (!is_array($only)) {
                 $only = [$only];
@@ -32,19 +39,19 @@ class ServiceProvider extends BaseServiceProvider
             }
 
             if (in_array('index', $only) && !in_array('index', $except)) {
-                $this->get($path, $controller . '@getIndex')->name("{$namePrefix}.index");
+                $this->get($path, $controller . '@' . $actionNames['index'])->name("{$namePrefix}.index");
             }
             if (in_array('store', $only) && !in_array('store', $except)) {
-                $this->post($path, $controller . '@postStore')->name("{$namePrefix}.store");
+                $this->post($path, $controller . '@' . $actionNames['store'])->name("{$namePrefix}.store");
             }
             if (in_array('show', $only) && !in_array('show', $except)) {
-                $this->get($path . '/{id}', $controller . '@getShow')->name("{$namePrefix}.show");
+                $this->get($path . '/{id}', $controller . '@' . $actionNames['show'])->name("{$namePrefix}.show");
             }
             if (in_array('update', $only) && !in_array('update', $except)) {
-                $this->put($path . '/{id}', $controller . '@putUpdate')->name("{$namePrefix}.update");
+                $this->put($path . '/{id}', $controller . '@' . $actionNames['update'])->name("{$namePrefix}.update");
             }
             if (in_array('destroy', $only) && !in_array('destroy', $except)) {
-                $this->delete($path . '/{id}', $controller . '@deleteDestroy')->name("{$namePrefix}.destroy");
+                $this->delete($path . '/{id}', $controller . '@' . $actionNames['destroy'])->name("{$namePrefix}.destroy");
             }
 
             return $this;
