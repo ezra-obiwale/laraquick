@@ -50,16 +50,6 @@ trait Http {
      */
     protected function headers(): array
     {
-        $headers = array_merge(['Accept' => 'application/json'], Config::get('laraquick.tests.headers', []));
-
-        $jwt = Config::get('laraquick.tests.jwt', false);
-
-        if ($jwt && $this->user) {
-            $token = JWTAuth::fromUser($this->user);
-            JWTAuth::setToken($token);
-            $headers['Authorization'] = 'Bearer ' . $token;
-        }
-
-        return $headers;
+        return array_merge(['Accept' => 'application/json'], Config::get('laraquick.tests.headers', []));
     }
 }

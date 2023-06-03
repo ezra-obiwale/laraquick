@@ -21,7 +21,6 @@
     ],
     "require": {
         "php": ">=7.0",
-        "d-scribe/laravel-db-command": "^1.0",
         "guzzlehttp/guzzle": ">=6.0",
         "predis/predis": "^1.1",
         "spatie/laravel-query-builder": "^5.0"
@@ -39,6 +38,7 @@
         }
     },
     "suggest": {
+        "d-scribe/laravel-db-command": "A laravel command for database operations",
         "knuckleswtf/scribe": "Generate API documentation for humans"
     },
     "minimum-stability": "dev",

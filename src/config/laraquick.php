@@ -12,9 +12,6 @@ return [
         // Headers to pass into every request
         'headers' => [],
 
-        // Use jwt token based on the tymon/jwt-auth package
-        'jwt' => false,
-
         'responses' => [
 
             // The path in the storage where responses are to be stored

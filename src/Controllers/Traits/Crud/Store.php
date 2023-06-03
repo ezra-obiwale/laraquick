@@ -74,7 +74,7 @@ trait Store
     /**
      * Create
      *
-     * Cretes a new item.
+     * Creates a new item.
      *
      * @param  Request $request
      * @return Response

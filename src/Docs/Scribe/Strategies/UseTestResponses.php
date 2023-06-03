@@ -41,10 +41,6 @@ class UseTestResponses extends Strategy
 
         $path = $responsesPath . '/' . $controller . '/' . Str::kebab($endpointData->method->name);
 
-        if ($format = config('laraquick.tests.responses.format')) {
-            $path .= '.' . $format;
-        }
-
         if (!Storage::exists($path)) {
             return [];
         }
