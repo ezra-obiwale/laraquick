@@ -30,7 +30,7 @@ class EnhanceMetadata extends Strategy
     {
         $controller = basename(str_replace('\\', '/', $endpointData->controller->name));
         $controller = Str::beforeLast($controller, 'Controller');
-        $controller = Str::kebab($controller);
+        $controller = str_replace('-', ' ', Str::kebab($controller));
 
         return [
             'description' => str_replace(

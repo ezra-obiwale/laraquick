@@ -123,6 +123,6 @@ trait Common
      */
     protected function translate(string $text): string
     {
-        return $text;
+        return trans($text);
     }
 }

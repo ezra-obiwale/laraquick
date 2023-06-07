@@ -19,6 +19,8 @@
 - Changes 'all' to `-1` on index action to load all.
 - Fixes storing test responses with 204 content
 - Renames config tag from just 'config' to 'laraquick-config'
+- Updates the indexResponse param type
+- Uses Laravel's default 'trans' function in the translate method
 
 ### Removed
 

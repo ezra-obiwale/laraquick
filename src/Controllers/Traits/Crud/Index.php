@@ -3,6 +3,7 @@
 namespace Laraquick\Controllers\Traits\Crud;
 
 use Illuminate\Http\Response;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Spatie\QueryBuilder\QueryBuilder;
 
 /**
@@ -220,10 +221,11 @@ trait Index
     /**
      * Called for the response to method index()
      *
-     * @param array $data
+     * @param array|LengthAwarePaginator $data
      * @return Response|array
      */
-    abstract protected function indexResponse(array $data);
+    abstract protected function indexResponse(LengthAwarePaginator | array $data);
+
 
     // ------------------ TRASHED INDEX ---------------------
 
