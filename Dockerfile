@@ -1,4 +1,4 @@
-ARG PHP_VERSION=${PHP_VERSION:-7.4.2}
+ARG PHP_VERSION=${PHP_VERSION:-8.2}
 FROM php:${PHP_VERSION}-fpm-alpine AS php-system-setup
 
 # Install system dependencies
