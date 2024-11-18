@@ -1,6 +1,12 @@
 # Changelog
 
-## Unreleased
+## 6.1.0
+
+### Added
+
+- Adds `Config` helper class
+
+## 6.0.0
 
 ### Added
 
@@ -31,7 +37,7 @@
 - Removed [d-scribe/laravel-db-command](https://github.com/ezra-obiwale/laravel-db-command) as a dependency.
 - Removed JWT references entirely
 
-## Missed out on a couple of version. Will try to this file up-to-date going forward.
+## Missed out on a couple of version. Will try to keep this file up-to-date going forward.
 
 ## 3.8.0
 
