@@ -1,5 +1,11 @@
 # Changelog
 
+## Unversioned
+
+### Added
+
+- Adds method 'validationRequest' for controllers.
+
 ## 6.1.0
 
 ### Added
