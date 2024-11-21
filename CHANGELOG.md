@@ -1,5 +1,15 @@
 # Changelog
 
+## 6.3.3
+
+### Added
+
+- Adds method `modelResource` for API controllers
+
+### Updated
+
+- Fixes `paginatedList` for arrays
+
 ## 6.3.2
 
 Fixes a typo bug
@@ -14,7 +24,7 @@ Fixes a typo bug
 
 ### Added
 
-- Adds method 'validationRequest' for controllers.
+- Adds method `validationRequest` for controllers.
 - Removed deprecated `Upload::awsUpload` method.
 
 ## 6.1.0

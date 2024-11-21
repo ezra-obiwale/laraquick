@@ -1,9 +1,11 @@
 <?php
+
 namespace Laraquick\Controllers\Traits;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Laraquick\Controllers\Traits\Response\Api as ApiResponse;
 use Laraquick\Controllers\Traits\Response\Common;
 
@@ -14,15 +16,30 @@ trait Api
 {
     use Crud\Crud, ApiResponse, Common;
 
+    protected function modelResource(): string
+    {
+        return '';
+    }
+
     /**
      * Index method success response
      *
      * @param mixed $data
      * @return JsonResponse
      */
-    protected function indexResponse($data)
+    protected function indexResponse(LengthAwarePaginator | array $data)
     {
-        return $this->paginatedList($data->toArray());
+        if (!empty($this->modelResource())) {
+            if (is_array($data)) {
+                foreach ($data as &$item) {
+                    $item = app($this->modelResource(), ['resource' => $item]);
+                }
+            } else {
+                $data->getCollection()->transform(fn($item) => app($this->modelResource(), ['resource' => $item]));
+            }
+        }
+
+        return $this->paginatedList(is_array($data) ? $data : $data->toArray());
     }
 
     /**
@@ -33,62 +50,83 @@ trait Api
      */
     protected function storeManyResponse(array $data)
     {
+        if (!empty($this->modelResource())) {
+            foreach ($data as &$item) {
+                $item = app($this->modelResource(), ['resource' => $item]);
+            }
+        }
+
         return $this->success($data, Response::HTTP_CREATED);
     }
 
     /**
      * Store method success response
      *
-     * @param Model $data
+     * @param Model $model
      * @return JsonResponse
      */
-    protected function storeResponse(Model $data)
+    protected function storeResponse(Model $model)
     {
-        return $this->success($data, Response::HTTP_CREATED);
+        return $this->success(
+            !empty($this->modelResource()) ? app($this->modelResource(), ['resource' => $model]) : $model,
+            Response::HTTP_CREATED
+        );
     }
 
     /**
      * Show method success response
      *
-     * @param Model $data
+     * @param Model $model
      * @return JsonResponse
      */
-    protected function showResponse(Model $data)
+    protected function showResponse(Model $model)
     {
-        return $this->success($data, Response::HTTP_OK);
+        return $this->success(
+            !empty($this->modelResource()) ? app($this->modelResource(), ['resource' => $model]) : $model,
+            Response::HTTP_OK
+        );
     }
 
     /**
      * Update method success response
      *
-     * @param Model $data
+     * @param Model $model
      * @return JsonResponse
      */
-    protected function updateResponse(Model $data)
+    protected function updateResponse(Model $model)
     {
-        return $this->success($data, Response::HTTP_ACCEPTED);
+        return $this->success(
+            !empty($this->modelResource()) ? app($this->modelResource(), ['resource' => $model]) : $model,
+            Response::HTTP_ACCEPTED
+        );
     }
 
     /**
      * Destroy method success response
      *
-     * @param Model $data
+     * @param Model $model
      * @return JsonResponse
      */
-    protected function destroyResponse(Model $data)
+    protected function destroyResponse(Model $model)
     {
-        return $this->success($data, Response::HTTP_ACCEPTED);
+        return $this->success(
+            !empty($this->modelResource()) ? app($this->modelResource(), ['resource' => $model]) : $model,
+            Response::HTTP_ACCEPTED
+        );
     }
 
     /**
      * ForceDestroy method success response
      *
-     * @param Model $data
+     * @param Model $model
      * @return JsonResponse
      */
-    protected function forceDestroyResponse(Model $data)
+    protected function forceDestroyResponse(Model $model)
     {
-        return $this->success($data, Response::HTTP_ACCEPTED);
+        return $this->success(
+            !empty($this->modelResource()) ? app($this->modelResource(), ['resource' => $model]) : $model,
+            Response::HTTP_ACCEPTED
+        );
     }
 
     /**
@@ -105,11 +143,14 @@ trait Api
     /**
      * RestoreDestroyed method success response
      *
-     * @param Model $data
+     * @param Model $model
      * @return JsonResponse
      */
-    protected function restoreDestroyedResponse(Model $data)
+    protected function restoreDestroyedResponse(Model $model)
     {
-        return $this->success($data, Response::HTTP_ACCEPTED);
+        return $this->success(
+            !empty($this->modelResource()) ? app($this->modelResource(), ['resource' => $model]) : $model,
+            Response::HTTP_ACCEPTED
+        );
     }
 }

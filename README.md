@@ -69,7 +69,7 @@ And with just the above, the controller would take care of listing (w/ paginatio
 and all `CRUD` operations and give the right JSON responses.
 
 ```php
-Route::resource('books', BookController::class);
+Route::httpResource('books', BookController::class);
 ```
 
 ### What if Web and not API?
