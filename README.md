@@ -41,11 +41,20 @@ class BookController extends Controller {
 
     use Api;
 
-    protected function model() {
+    protected function model(): string
+    {
         return Book::class;
     }
 
-    protected function validationRules(array $data, $id = null) {
+    // if you have a custom form request class
+    protected function validationRequest(): string
+    {
+        return BookRequest::class;
+    }
+
+    // if you don't have a custom form request class
+    protected function validationRules(array $data, $id = null): array
+    {
         return [
             'title' => 'required|max:200',
             'author' => 'required|max:50',
@@ -60,7 +69,7 @@ And with just the above, the controller would take care of listing (w/ paginatio
 and all `CRUD` operations and give the right JSON responses.
 
 ```php
-Route::apiResource('books', 'BookController');
+Route::resource('books', BookController::class);
 ```
 
 ### What if Web and not API?

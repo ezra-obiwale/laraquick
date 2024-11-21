@@ -1,7 +1,6 @@
 <?php
 namespace Laraquick\Controllers\Traits\Crud;
 
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
@@ -16,7 +15,7 @@ trait Validation
      * @param array $messages
      * @return array
      */
-    protected function validateData(array $data, array $rules, array $messages = []): array
+    protected function validateData(array $data, array $rules = [], array $messages = []): array
     {
         $validator = Validator::make($data, $rules, $messages);
 
@@ -24,7 +23,7 @@ trait Validation
             throw new ValidationException($validator);
         }
 
-        return Arr::only($data, array_keys($rules));
+        return $validator->validated();
     }
 
     /**
@@ -36,6 +35,12 @@ trait Validation
      */
     protected function validateRequest(array $rules = null, array $messages = null): array
     {
+        if (!empty($this->validationRequest())) {
+            $request = app($this->validateRequest());
+
+            return $request->validated();
+        }
+
         $data = request()->all();
 
         return $this->validateData(
@@ -43,6 +48,11 @@ trait Validation
             $rules ?: $this->validationRules($data),
             $messages ?: $this->validationMessages($data)
         );
+    }
+
+    protected function validationRequest(): string
+    {
+        return '';
     }
 
     /**
