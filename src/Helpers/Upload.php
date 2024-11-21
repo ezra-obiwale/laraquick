@@ -49,19 +49,6 @@ class Upload
         return $absoluteUrl ? self::s3url($pathToFile) : $pathToFile;
     }
 
-    /**
-     * @see toS3Bucket
-     * @deprecated version
-     * @param UploadedFile $file
-     * @param string $path
-     * @param boolean $absoluteUrl Indicates whether to return an absolute url to the upload file or not
-     * @return string|bool
-     */
-    public static function awsUpload(UploadedFile $file, $path = '')
-    {
-        return self::toS3Bucket($file, $path);
-    }
-
     private static function createFileName(UploadedFile $file) : string
     {
         return md5(auth()->id() . time()) . '.' . $file->getClientOriginalExtension();

@@ -1,10 +1,11 @@
 # Changelog
 
-## Unversioned
+## 6.2.0
 
 ### Added
 
 - Adds method 'validationRequest' for controllers.
+- Removed deprecated `Upload::awsUpload` method.
 
 ## 6.1.0
 
