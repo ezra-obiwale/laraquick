@@ -36,7 +36,7 @@ trait Validation
     protected function validateRequest(array $rules = null, array $messages = null): array
     {
         if (!empty($this->validationRequest())) {
-            $request = app($this->validateRequest());
+            $request = app($this->validationRequest());
 
             return $request->validated();
         }

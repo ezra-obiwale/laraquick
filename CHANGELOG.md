@@ -1,5 +1,9 @@
 # Changelog
 
+## 6.3.2
+
+Fixes a typo bug
+
 ## 6.3.1
 
 ### Removed
