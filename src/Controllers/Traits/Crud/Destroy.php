@@ -14,8 +14,6 @@ use Exception;
  */
 trait Destroy
 {
-    use Authorize;
-
     /**
      * Create a 404 not found error response
      *
@@ -61,9 +59,7 @@ trait Destroy
      * @param Model $model
      * @return void
      */
-    protected function beforeDestroy(Model $model)
-    {
-    }
+    protected function beforeDestroy(Model $model) {}
 
     /**
      * Called when an error occurs in a delete operation
@@ -71,9 +67,7 @@ trait Destroy
      * @param Model $model The model to be deleted
      * @return void
      */
-    protected function rollbackDestroy(Model $model)
-    {
-    }
+    protected function rollbackDestroy(Model $model) {}
 
     /**
      * Delete
@@ -99,7 +93,9 @@ trait Destroy
             return $this->notFoundError();
         }
 
-        $this->authorizeMethod('destroy', [$model, $item]);
+        if (method_exists($this, 'authorizeMethod')) {
+            $this->authorizeMethod('destroy', [$model, $item]);
+        }
 
         return DB::transaction(
             function () use (&$item) {
@@ -139,9 +135,7 @@ trait Destroy
      * @param Model $model
      * @return mixed The response to send or null
      */
-    protected function beforeDestroyResponse(Model $model)
-    {
-    }
+    protected function beforeDestroyResponse(Model $model) {}
 
     /**
      * Called for the response to method @see destroy()
@@ -159,18 +153,14 @@ trait Destroy
      * @param array $data
      * @return void
      */
-    protected function beforeDestroyMany(array &$data)
-    {
-    }
+    protected function beforeDestroyMany(array &$data) {}
 
     /**
      * Called when an error occurs in a delete operation
      * @param array $ids The id of the models to be deleted
      * @return void
      */
-    protected function rollbackDestroyMany(array $ids)
-    {
-    }
+    protected function rollbackDestroyMany(array $ids) {}
     /**
      * Delete many
      *
@@ -188,7 +178,9 @@ trait Destroy
             return $this->modelNotSetError('Destroy model undefined');
         }
 
-        $this->authorizeMethod('destroyMany', [$model]);
+        if (method_exists($this, 'authorizeMethod')) {
+            $this->authorizeMethod('destroyMany', [$model]);
+        }
 
         $data = $request->all();
 
@@ -236,9 +228,7 @@ trait Destroy
      * @param integer $deleteCount
      * @return mixed The response to send or null
      */
-    protected function beforeDestroyManyResponse($deletedCount)
-    {
-    }
+    protected function beforeDestroyManyResponse($deletedCount) {}
 
     /**
      * Called for the response to method destroyMany()
@@ -256,9 +246,7 @@ trait Destroy
      * @param Model $model
      * @return void
      */
-    protected function beforeForceDestroy(Model $model)
-    {
-    }
+    protected function beforeForceDestroy(Model $model) {}
 
     /**
      * Called when an error occurs in a force delete operation
@@ -266,9 +254,7 @@ trait Destroy
      * @param Model $model
      * @return void
      */
-    protected function rollbackForceDestroy(Model $model)
-    {
-    }
+    protected function rollbackForceDestroy(Model $model) {}
 
     /**
      * Delete (permanently)
@@ -294,7 +280,9 @@ trait Destroy
             return $this->notFoundError();
         }
 
-        $this->authorizeMethod('forceDestroy', [$model, $item]);
+        if (method_exists($this, 'authorizeMethod')) {
+            $this->authorizeMethod('forceDestroy', [$model, $item]);
+        }
 
         return DB::transaction(
             function () use (&$item) {
@@ -334,9 +322,7 @@ trait Destroy
      * @param mixed $model
      * @return mixed The response to send or null
      */
-    protected function beforeForceDestroyResponse(Model $model)
-    {
-    }
+    protected function beforeForceDestroyResponse(Model $model) {}
 
     /**
      * Called for the response to method @see forceDestroy()
@@ -357,9 +343,7 @@ trait Destroy
      * @param Model $model
      * @return void
      */
-    protected function beforeRestoreDestroyed(Model $model)
-    {
-    }
+    protected function beforeRestoreDestroyed(Model $model) {}
 
     /**
      * Called when an error occurs in a restore destroyed operation
@@ -367,9 +351,7 @@ trait Destroy
      * @param Model $model
      * @return void
      */
-    protected function rollbackRestoreDestroyed(Model $model)
-    {
-    }
+    protected function rollbackRestoreDestroyed(Model $model) {}
 
     /**
      * Restore
@@ -433,9 +415,7 @@ trait Destroy
      * @param Model $model
      * @return mixed The response to send or null
      */
-    protected function beforeRestoreDestroyedResponse(Model $model)
-    {
-    }
+    protected function beforeRestoreDestroyedResponse(Model $model) {}
 
     /**
      * Called for the response to method @see restoreDestroyed()

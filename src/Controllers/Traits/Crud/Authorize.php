@@ -5,6 +5,16 @@ namespace Laraquick\Controllers\Traits\Crud;
 trait Authorize
 {
     /**
+     * Returns the ability map for the current resource
+     */
+    abstract protected function resourceAbilityMap(): array;
+
+    /**
+     * Authorizes the action method
+     */
+    abstract protected function authorize($method, array $map);
+
+    /**
      * Authorizes a method if the map for it exists. @see resourceAbilityMap()
      *
      * @param string $method
@@ -31,14 +41,4 @@ trait Authorize
     {
         return config('laraquick.controllers.use_policies', false);
     }
-
-    /**
-     * Returns the ability map for the current resource
-     */
-    abstract protected function resourceAbilityMap();
-
-    /**
-     * Authorizes the action method
-     */
-    abstract protected function authorize($method, array $map);
 }

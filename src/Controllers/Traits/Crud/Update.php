@@ -5,7 +5,6 @@ namespace Laraquick\Controllers\Traits\Crud;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Arr;
 use Laraquick\Helpers\DB;
 
 /**
@@ -14,8 +13,6 @@ use Laraquick\Helpers\DB;
  */
 trait Update
 {
-    use Authorize;
-
     /**
      * Create a 404 not found error response
      *
@@ -54,9 +51,7 @@ trait Update
      * @param Model $model The model to be updated
      * @return mixed The response to send or null
      */
-    protected function beforeUpdate(array &$data, Model $model)
-    {
-    }
+    protected function beforeUpdate(array &$data, Model $model) {}
 
     /**
      * Called when an error occurs in a update operation
@@ -65,9 +60,7 @@ trait Update
      * @param Model $model The model from the id
      * @return void
      */
-    protected function rollbackUpdate(array &$data, Model $model)
-    {
-    }
+    protected function rollbackUpdate(array &$data, Model $model) {}
 
     /**
      * Update
@@ -91,7 +84,9 @@ trait Update
             return $this->notFoundError();
         }
 
-        $this->authorizeMethod('update', [$model, $item]);
+        if (method_exists($this, 'authorizeMethod')) {
+            $this->authorizeMethod('update', [$model, $item]);
+        }
 
         return DB::transaction(
             function () use (&$data, &$item) {
@@ -131,9 +126,7 @@ trait Update
      * @param Model $model
      * @return mixed The response to send or null
      */
-    protected function beforeUpdateResponse(Model $model)
-    {
-    }
+    protected function beforeUpdateResponse(Model $model) {}
 
     /**
      * Called for the response to method update()
