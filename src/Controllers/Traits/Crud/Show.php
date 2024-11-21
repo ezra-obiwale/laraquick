@@ -11,8 +11,6 @@ use Illuminate\Database\Eloquent\Model;
  */
 trait Show
 {
-    use Authorize;
-
     /**
      * Create a 404 not found error response
      *
@@ -60,7 +58,9 @@ trait Show
             return $this->notFoundError();
         }
 
-        $this->authorizeMethod('show', [$model, $item]);
+        if (method_exists($this, 'authorizeMethod')) {
+            $this->authorizeMethod('show', [$model, $item]);
+        }
 
         if ($resp = $this->beforeShowResponse($item)) {
             return $resp;

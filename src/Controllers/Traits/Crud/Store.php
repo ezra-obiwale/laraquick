@@ -16,8 +16,6 @@ use Laraquick\Models\Dud;
  */
 trait Store
 {
-    use Authorize;
-
     /**
      * Create a model not set error response
      *
@@ -56,9 +54,7 @@ trait Store
      * @param array $data
      * @return mixed The response to send or null
      */
-    protected function beforeStore(array &$data)
-    {
-    }
+    protected function beforeStore(array &$data) {}
 
     /**
      * Called when an error occurs in a store operation
@@ -67,9 +63,7 @@ trait Store
      * @param Model $model The created model
      * @return void
      */
-    protected function rollbackStore(array $data, Model $model)
-    {
-    }
+    protected function rollbackStore(array $data, Model $model) {}
 
     /**
      * Create
@@ -83,7 +77,9 @@ trait Store
     {
         $model = $this->storeModel();
 
-        $this->authorizeMethod('store', [$model]);
+        if (method_exists($this, 'authorizeMethod')) {
+            $this->authorizeMethod('store', [$model]);
+        }
 
         $model = $this->storeModel();
 
@@ -134,9 +130,7 @@ trait Store
      * @param Model $model
      * @return mixed The response to send or null
      */
-    protected function beforeStoreResponse(Model $model)
-    {
-    }
+    protected function beforeStoreResponse(Model $model) {}
 
     /**
      * Called for the response to method store()
@@ -152,9 +146,7 @@ trait Store
      * @param array $data
      * @return mixed The response to send or null
      */
-    protected function beforeStoreMany(array &$data)
-    {
-    }
+    protected function beforeStoreMany(array &$data) {}
 
     /**
      * Called when an error occurs in a storeMany operation
@@ -163,9 +155,7 @@ trait Store
      * @param array $models The created model
      * @return void
      */
-    protected function rollbackStoreMany(array $data, array $models)
-    {
-    }
+    protected function rollbackStoreMany(array $data, array $models) {}
 
     /**
      * Create (multiple)
@@ -183,7 +173,9 @@ trait Store
             return $this->modelNotSetError('Store model undefined');
         }
 
-        $this->authorizeMethod('storeMany', [$model]);
+        if (method_exists($this, 'authorizeMethod')) {
+            $this->authorizeMethod('storeMany', [$model]);
+        }
 
         $rules = $this->manyValidationRules($request->all());
         $messages = $this->manyValidationMessages($request->all());
@@ -256,9 +248,7 @@ trait Store
      * @param array $data
      * @return mixed The response to send or null
      */
-    protected function beforeStoreManyResponse(array &$data)
-    {
-    }
+    protected function beforeStoreManyResponse(array &$data) {}
 
     /**
      * Called for the response to method storeMany()

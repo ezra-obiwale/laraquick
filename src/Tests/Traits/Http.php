@@ -4,11 +4,10 @@ namespace Laraquick\Tests\Traits;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Config;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 trait Http {
 
-    protected $user;
+    protected Authenticatable $user;
 
     /**
      * @inheritDoc
