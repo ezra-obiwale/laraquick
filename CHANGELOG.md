@@ -1,5 +1,11 @@
 # Changelog
 
+## 6.3.0
+
+### Removed
+
+- Makes using Authorize trait optional
+
 ## 6.2.0
 
 ### Added
