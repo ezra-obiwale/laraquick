@@ -1,5 +1,9 @@
 # Changelog
 
+## 6.3.4
+
+Fixes a bug with `Config::s3`
+
 ## 6.3.3
 
 ### Added
