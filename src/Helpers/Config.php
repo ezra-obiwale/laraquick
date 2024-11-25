@@ -37,6 +37,10 @@ class Config
 
     private static function joinPaths(string $path1, string $path2): string
     {
-        return str_replace(DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR, $path1 . $path2);
+        return preg_replace(
+            '/\\' . DIRECTORY_SEPARATOR . '+/',
+            DIRECTORY_SEPARATOR,
+            $path1 . DIRECTORY_SEPARATOR . $path2
+        );
     }
 }

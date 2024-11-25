@@ -1,5 +1,9 @@
 # Changelog
 
+## 6.3.5
+
+Fixes `Config::s3` paths with missing `DIRECTORY_SEPARATOR`
+
 ## 6.3.4
 
 Fixes a bug with `Config::s3`
