@@ -1,5 +1,10 @@
 # Changelog
 
+## 6.3.9
+
+Fixes issue with Config::s3 method
+
+
 ## 6.3.8
 
 Defaults the second param of Config::s3 to empty string
