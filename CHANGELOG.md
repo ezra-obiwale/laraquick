@@ -1,5 +1,9 @@
 # Changelog
 
+## 6.3.8
+
+Defaults the second param of Config::s3 to empty string
+
 ## 6.3.7
 
 Fixes preg_replace null third param deprecation

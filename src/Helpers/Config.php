@@ -4,7 +4,7 @@ namespace Laraquick\Helpers;
 
 class Config
 {
-    public static function s3(array $config = [], ?string $root = null): array
+    public static function s3(array $config = [], ?string $root = ''): array
     {
         $prefix = preg_replace('/[^a-z0-9]/', '-', [env('APP_URL')]);
 
