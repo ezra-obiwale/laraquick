@@ -1,5 +1,11 @@
 # Changelog
 
+## 6.3.10
+
+- Allows picking documentation test response paths for a controller from method `responsePaths`
+- Reorganises Scribe strategies into directories for clearer understanding
+- Deprecates former Scribe strategies
+
 ## 6.3.9
 
 Fixes issue with Config::s3 method
