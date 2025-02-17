@@ -1,5 +1,9 @@
 # Changelog
 
+## 6.3.11
+
+Changes Strategies MetaData directory name to Metadata
+
 ## 6.3.10
 
 - Allows picking documentation test response paths for a controller from method `responsePaths`
