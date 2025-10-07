@@ -16,32 +16,13 @@ class AsyncCall implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $callable;
-    protected $arguments;
-    protected $callback;
-    protected $callbackArguments;
-    protected $tags;
-
-    /**
-     * Create a new job instance
-     *
-     * @param callable|array $callable The function to call. @see call_user_func_array()
-     * @param array $arguments The arguments to the callable. @see call_user_fun_array()
-     * @param callable|array $callback The function to call with the result of the callable. In case of an exception, the second parameter will be the exception object. @see call_user_func_array()
-     * @param array $tags The tags to attach to the job
-     *
-     * @return void
-     */
-    public function __construct(callable $callable, array $arguments = [], callable $callback = null, array $callbackArguments = [], array $tags = [])
-    {
-        $this->callable = $callable;
-        $this->arguments = $arguments;
-        $this->callback = $callback;
-        $this->callbackArguments = $callbackArguments;
-
-        array_unshift($tags, 'async-call');
-
-        $this->tags = $tags;
+    public function __construct(
+        protected string $className,
+        protected string $methodName,
+        protected array $params = [],
+        protected array $tags = []
+    ) {
+        array_unshift($this->tags, 'async-call');
     }
 
     /**
@@ -51,26 +32,9 @@ class AsyncCall implements ShouldQueue
      */
     public function handle()
     {
-        $result = call_user_func_array($this->callable, $this->arguments);
+        $object = resolve($this->className);
 
-        if ($this->callback) {
-            array_unshift($this->callbackArguments, $result);
-            call_user_func_array($this->callback, $this->callbackArguments);
-        }
-    }
-
-    /**
-     * The job failed to process.
-     *
-     * @param  Exception  $exception
-     * @return void
-     */
-    public function failed(Exception $ex)
-    {
-        if ($this->callback) {
-            array_unshift($this->callbackArguments, $ex);
-            call_user_func_array($this->callback, $this->callbackArguments);
-        }
+        call_user_func_array([$object, $this->methodName], $this->params);
     }
 
     /**

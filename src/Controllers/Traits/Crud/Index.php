@@ -191,7 +191,7 @@ trait Index
             return $this->modelNotSetError();
         }
 
-        $length = (int) request('length', $this->defaultPaginationLength());
+        $length = $this->getPaginationLength();
 
         $model = $this->build($model);
 
@@ -206,6 +206,11 @@ trait Index
         }
 
         return $this->indexResponse($data);
+    }
+
+    protected function getPaginationLength(): int
+    {
+        return (int) request('length', $this->defaultPaginationLength());
     }
 
     /**
@@ -250,7 +255,7 @@ trait Index
             return $this->modelNotSetError();
         }
 
-        $length = (int) request('length', $this->defaultPaginationLength());
+        $length = $this->getPaginationLength();
 
         $model = $this->build($model);
 

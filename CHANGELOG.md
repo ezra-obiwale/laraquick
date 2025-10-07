@@ -5,6 +5,11 @@
 ### Added
 
 - Adds method 'validationRequest' for controllers.
+- Adds method 'getPaginationLength' for controllers.
+
+### Updated
+
+- Changes AsyncCall definition to make it serializable.
 
 ## 6.1.0
 

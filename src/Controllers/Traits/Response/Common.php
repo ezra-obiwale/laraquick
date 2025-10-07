@@ -119,10 +119,12 @@ trait Common
      * Translates a given text
      *
      * @param string $text
+     * @param array $replacements
+     *
      * @return string
      */
-    protected function translate(string $text): string
+    protected function translate(string $text, array $replacements = []): string
     {
-        return trans($text);
+        return trans($text, $replacements);
     }
 }
