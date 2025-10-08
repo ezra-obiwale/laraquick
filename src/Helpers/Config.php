@@ -4,9 +4,9 @@ namespace Laraquick\Helpers;
 
 class Config
 {
-    public static function s3(array $config = [], ?string $root = null): array
+    public static function s3(array $config = [], ?string $root = ''): array
     {
-        $prefix = preg_replace('/[^a-z0-9]/', '-', env('APP_URL'));
+        $prefix = preg_replace('/[^a-z0-9]/', '-', env('APP_URL') ?? '');
 
         $defaults = [
             'driver' => 's3',
@@ -15,6 +15,7 @@ class Config
             'region' => env('AWS_DEFAULT_REGION'),
             'bucket' => env('AWS_BUCKET'),
             'endpoint' => env('AWS_ENDPOINT'),
+            'url' => env('AWS_URL'),
             'use_path_style_endpoint' => true,
             'bucket_endpoint' => false,
             'options' => [
@@ -37,6 +38,10 @@ class Config
 
     private static function joinPaths(string $path1, string $path2): string
     {
-        return str_replace($path1 . $path2, DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR);
+        return preg_replace(
+            '/\\' . DIRECTORY_SEPARATOR . '+/',
+            DIRECTORY_SEPARATOR,
+            $path1 . DIRECTORY_SEPARATOR . $path2
+        );
     }
 }

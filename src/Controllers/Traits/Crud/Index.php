@@ -292,7 +292,7 @@ trait Index
      * @param array $data
      * @return Response|array
      */
-    protected function trashedIndexResponse(array $data)
+    protected function trashedIndexResponse(LengthAwarePaginator | array $data)
     {
         return $this->indexResponse($data);
     }

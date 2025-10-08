@@ -72,18 +72,18 @@ trait Show
     /**
      * Called when the model is found but before sending the response
      *
-     * @param mixed $data
+     * @param Model $model
      * @return mixed The response to send or null
      */
-    protected function beforeShowResponse(Model &$data)
+    protected function beforeShowResponse(Model $model)
     {
     }
 
     /**
      * Called for the response to method show()
      *
-     * @param Model $data
+     * @param Model $model
      * @return Response|array
      */
-    abstract protected function showResponse(Model $data);
+    abstract protected function showResponse(Model $model);
 }
