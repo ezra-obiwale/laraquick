@@ -81,7 +81,7 @@ trait Api
      *
      * @return string
      */
-    protected function createUrl($method, Model $model = null, array &$payload = []): string
+    protected function createUrl($method, ?Model $model = null, array &$payload = []): string
     {
         if (!in_array($method, $this->methods)) {
             throw new InvalidArgumentException('Unknown method [' . $method . ']');

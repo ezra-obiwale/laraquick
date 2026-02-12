@@ -68,7 +68,7 @@ class Send extends Notification
      * @param array $broadcastData The array of data to use for broadcasting.
      *
      */
-    public function __construct(MailMessage $mailMessage = null, array $databaseData = [], array $broadcastData = [])
+    public function __construct(?MailMessage $mailMessage = null, array $databaseData = [], array $broadcastData = [])
     {
         $this->mailMessage = $mailMessage;
         $this->databaseData = $databaseData;

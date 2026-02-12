@@ -33,7 +33,7 @@ trait Validation
      * @param array $messages
      * @return array
      */
-    protected function validateRequest(array $rules = null, array $messages = null): array
+    protected function validateRequest(?array $rules = null, ?array $messages = null): array
     {
         if (!empty($this->validationRequest())) {
             $request = app($this->validationRequest());

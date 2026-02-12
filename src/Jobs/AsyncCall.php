@@ -32,7 +32,7 @@ class AsyncCall implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(callable $callable, array $arguments = [], callable $callback = null, array $callbackArguments = [], array $tags = [])
+    public function __construct(callable $callable, array $arguments = [], ?callable $callback = null, array $callbackArguments = [], array $tags = [])
     {
         $this->callable = $callable;
         $this->arguments = $arguments;
