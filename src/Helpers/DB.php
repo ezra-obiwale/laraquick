@@ -50,7 +50,7 @@ class DB
         return $this;
     }
 
-    public static function transaction(callable $func, callable $catch = null)
+    public static function transaction(callable $func, ?callable $catch = null)
     {
         try {
             iDB::beginTransaction();

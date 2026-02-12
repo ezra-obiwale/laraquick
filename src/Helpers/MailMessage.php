@@ -22,7 +22,7 @@ class MailMessage extends iMailMessage
         return $this;
     }
 
-    public function addTableRow(array $rowData, int $rowIndex = null) : self
+    public function addTableRow(array $rowData, ?int $rowIndex = null) : self
     {
         if ($rowIndex) {
             $this->table['rows'][$rowIndex] = $rowData;
