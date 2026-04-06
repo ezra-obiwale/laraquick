@@ -23,7 +23,7 @@
         "php": ">=8.2",
         "guzzlehttp/guzzle": ">=7.7",
         "predis/predis": "^2.2",
-        "spatie/laravel-query-builder": "^5.0"
+        "spatie/laravel-query-builder": "^6.0"
     },
     "extra": {
         "laravel": {
