@@ -6,6 +6,7 @@
 
 - Adds method 'validationRequest' for controllers.
 - Adds method 'getPaginationLength' for controllers.
+- Adds method 'indexPaginate' for controllers.
 
 ### Updated
 
@@ -24,7 +25,6 @@ Changes Strategies MetaData directory name to Metadata
 ## 6.3.9
 
 Fixes issue with Config::s3 method
-
 
 ## 6.3.8
 
@@ -196,8 +196,9 @@ of custom meta fields.
 Created Dud model
 
 PassThrough Trait:
-- Updated methed names with *create* to *store*
-- Updated method names with *delete* to *destroy*
+
+- Updated methed names with _create_ to _store_
+- Updated method names with _delete_ to _destroy_
 - Ensured using validation rules work as expected
 
 ## 3.0.3
@@ -228,3 +229,4 @@ Changed response structure to:
 	"errors": [] // [optional] holds the errors encountered while processing the request
 }
 ```
+
