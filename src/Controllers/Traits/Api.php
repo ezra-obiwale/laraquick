@@ -4,6 +4,7 @@ namespace Laraquick\Controllers\Traits;
 
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Contracts\Pagination\CursorPaginator;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
@@ -25,10 +26,10 @@ trait Api
     /**
      * Index method success response
      *
-     * @param mixed $data
+     * @param Paginator | CursorPaginator | Collection $data
      * @return JsonResponse
      */
-    protected function indexResponse(Paginator | CursorPaginator | array $data)
+    protected function indexResponse(Paginator | CursorPaginator | Collection $data)
     {
         if (!empty($this->modelResource())) {
             if (is_array($data)) {

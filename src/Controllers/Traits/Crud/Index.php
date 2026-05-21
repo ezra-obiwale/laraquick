@@ -117,7 +117,7 @@ trait Index
      */
     protected function defaultSort() {}
 
-    protected function indexPaginate(QueryBuilder $builder, int $length): Paginator | CursorPaginator
+    protected function indexPaginate(QueryBuilder $builder, int $length): Paginator | CursorPaginator | CursorPaginator
     {
         return $builder->paginate($length);
     }
@@ -203,18 +203,18 @@ trait Index
     /**
      * Called before sending the response
      *
-     * @param Paginator|Collection $data
+     * @param Paginator|CursorPaginator|Collection $data
      * @return mixed The response to send or null
      */
-    protected function beforeIndexResponse(Paginator | Collection &$data) {}
+    protected function beforeIndexResponse(Paginator | CursorPaginator | Collection &$data) {}
 
     /**
      * Called for the response to method index()
      *
-     * @param Paginator|Collection $data
+     * @param Paginator|CursorPaginator|Collection $data
      * @return Response|array
      */
-    abstract protected function indexResponse(Paginator | Collection $data);
+    abstract protected function indexResponse(Paginator | CursorPaginator | Collection $data);
 
 
     // ------------------ TRASHED INDEX ---------------------
@@ -260,18 +260,18 @@ trait Index
     /**
      * Called before sending the response
      *
-     * @param Paginator|Collection $data
+     * @param Paginator|CursorPaginator|Collection $data
      * @return mixed The response to send or null
      */
-    protected function beforeTrashedIndexResponse(Paginator|Collection &$data) {}
+    protected function beforeTrashedIndexResponse(Paginator|CursorPaginator|Collection &$data) {}
 
     /**
      * Called for the response to method trashedIndex(). Defaults to @see indexResponse().
      *
-     * @param Paginator|Collection $data
+     * @param Paginator|CursorPaginator|Collection $data
      * @return Response|array
      */
-    protected function trashedIndexResponse(Paginator|Collection $data)
+    protected function trashedIndexResponse(Paginator|CursorPaginator|Collection $data)
     {
         return $this->indexResponse($data);
     }
