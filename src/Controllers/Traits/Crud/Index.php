@@ -2,8 +2,10 @@
 
 namespace Laraquick\Controllers\Traits\Crud;
 
+use Illuminate\Contracts\Pagination\Paginator;
+use Illuminate\Contracts\Pagination\CursorPaginator;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Response;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Spatie\QueryBuilder\QueryBuilder;
 
 /**
@@ -113,59 +115,44 @@ trait Index
      *
      * @return string
      */
-    protected function defaultSort()
+    protected function defaultSort() {}
+
+    protected function indexPaginate(QueryBuilder $builder, int $length): Paginator | CursorPaginator
     {
+        return $builder->paginate($length);
     }
 
     private function isValid($param): bool
     {
-        return $param && ((is_array($param) && count($param)) || is_string($param));
+        return $param && !empty($param);
     }
 
-    private function build($model)
+    private function build($model): QueryBuilder
     {
-        $createBuilder = function ($builder) use ($model) {
-            if ($builder) {
-                return $builder;
-            }
-
-            return QueryBuilder::for($model);
-        };
-
-        $builder = null;
+        $builder = QueryBuilder::for($model);
 
         if ($this->isValid($this->allowedAppends())) {
-            $builder = $createBuilder($builder);
             $builder->allowedAppends($this->allowedAppends());
         }
 
         if ($this->isValid($this->allowedFields())) {
-            $builder = $createBuilder($builder);
             $builder->allowedFields($this->allowedFields());
         }
 
         if ($this->isValid($this->allowedFilters())) {
-            $builder = $createBuilder($builder);
             $builder->allowedFilters($this->allowedFilters());
         }
 
         if ($this->isValid($this->allowedIncludes())) {
-            $builder = $createBuilder($builder);
             $builder->allowedIncludes($this->allowedIncludes());
         }
 
         if ($this->isValid($this->defaultSort())) {
-            $builder = $createBuilder($builder);
             $builder->defaultSort($this->defaultSort());
         }
 
         if ($this->isValid($this->allowedSorts())) {
-            $builder = $createBuilder($builder);
             $builder->allowedSorts($this->allowedSorts());
-        }
-
-        if (!$builder) {
-            $builder = $model;
         }
 
         return $builder;
@@ -196,9 +183,9 @@ trait Index
         $model = $this->build($model);
 
         if ($length === -1) {
-            $data = is_object($model) ? $model->get() : $model::all();
+            $data = $model->get();
         } else {
-            $data = is_object($model) ? $model->paginate($length) : $model::paginate($length);
+            $data = $this->indexPaginate($model, $length);
         }
 
         if ($resp = $this->beforeIndexResponse($data)) {
@@ -216,20 +203,18 @@ trait Index
     /**
      * Called before sending the response
      *
-     * @param mixed $data
+     * @param Paginator|Collection $data
      * @return mixed The response to send or null
      */
-    protected function beforeIndexResponse(&$data)
-    {
-    }
+    protected function beforeIndexResponse(Paginator | Collection &$data) {}
 
     /**
      * Called for the response to method index()
      *
-     * @param array|LengthAwarePaginator $data
+     * @param Paginator|Collection $data
      * @return Response|array
      */
-    abstract protected function indexResponse(LengthAwarePaginator | array $data);
+    abstract protected function indexResponse(Paginator | Collection $data);
 
 
     // ------------------ TRASHED INDEX ---------------------
@@ -260,13 +245,9 @@ trait Index
         $model = $this->build($model);
 
         if ($length === -1) {
-            $data = is_object($model) ?
-                $model->onlyTrashed()->get() :
-                $model::onlyTrashed()->all();
+            $data = $model->onlyTrashed()->get();
         } else {
-            $data = is_object($model) ?
-                $model->onlyTrashed()->paginate($length) :
-                $model::onlyTrashed()->paginate($length);
+            $data = $this->indexPaginate($model->onlyTrashed(), $length);
         }
 
         if ($resp = $this->beforeTrashedIndexResponse($data)) {
@@ -279,20 +260,18 @@ trait Index
     /**
      * Called before sending the response
      *
-     * @param mixed $data
+     * @param Paginator|Collection $data
      * @return mixed The response to send or null
      */
-    protected function beforeTrashedIndexResponse(&$data)
-    {
-    }
+    protected function beforeTrashedIndexResponse(Paginator|Collection &$data) {}
 
     /**
      * Called for the response to method trashedIndex(). Defaults to @see indexResponse().
      *
-     * @param array $data
+     * @param Paginator|Collection $data
      * @return Response|array
      */
-    protected function trashedIndexResponse(LengthAwarePaginator | array $data)
+    protected function trashedIndexResponse(Paginator|Collection $data)
     {
         return $this->indexResponse($data);
     }

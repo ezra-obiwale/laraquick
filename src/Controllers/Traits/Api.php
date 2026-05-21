@@ -2,10 +2,11 @@
 
 namespace Laraquick\Controllers\Traits;
 
+use Illuminate\Contracts\Pagination\Paginator;
+use Illuminate\Contracts\Pagination\CursorPaginator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Laraquick\Controllers\Traits\Response\Api as ApiResponse;
 use Laraquick\Controllers\Traits\Response\Common;
 
@@ -27,7 +28,7 @@ trait Api
      * @param mixed $data
      * @return JsonResponse
      */
-    protected function indexResponse(LengthAwarePaginator | array $data)
+    protected function indexResponse(Paginator | CursorPaginator | array $data)
     {
         if (!empty($this->modelResource())) {
             if (is_array($data)) {
