@@ -11,6 +11,7 @@
 ### Updated
 
 - Changes AsyncCall definition to make it serializable.
+- Fixes type issues on 'indexReponse' method
 
 ## 6.3.11
 
