@@ -2,9 +2,10 @@
 
 namespace Laraquick\Controllers\Traits\Crud;
 
-use Illuminate\Http\Response;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Contracts\Pagination\CursorPaginator;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\Response;
 use Spatie\QueryBuilder\QueryBuilder;
 
 /**
@@ -202,18 +203,18 @@ trait Index
     /**
      * Called before sending the response
      *
-     * @param mixed $data
+     * @param Paginator|CursorPaginator|Collection $data
      * @return mixed The response to send or null
      */
-    protected function beforeIndexResponse(&$data) {}
+    protected function beforeIndexResponse(Paginator | CursorPaginator | Collection &$data) {}
 
     /**
      * Called for the response to method index()
      *
-     * @param array|Paginator $data
+     * @param Paginator|CursorPaginator|Collection $data
      * @return Response|array
      */
-    abstract protected function indexResponse(Paginator | array $data);
+    abstract protected function indexResponse(Paginator | CursorPaginator | Collection $data);
 
 
     // ------------------ TRASHED INDEX ---------------------
@@ -259,18 +260,18 @@ trait Index
     /**
      * Called before sending the response
      *
-     * @param mixed $data
+     * @param Paginator|CursorPaginator|Collection $data
      * @return mixed The response to send or null
      */
-    protected function beforeTrashedIndexResponse(&$data) {}
+    protected function beforeTrashedIndexResponse(Paginator|CursorPaginator|Collection &$data) {}
 
     /**
      * Called for the response to method trashedIndex(). Defaults to @see indexResponse().
      *
-     * @param array $data
+     * @param Paginator|CursorPaginator|Collection $data
      * @return Response|array
      */
-    protected function trashedIndexResponse(Paginator | array $data)
+    protected function trashedIndexResponse(Paginator|CursorPaginator|Collection $data)
     {
         return $this->indexResponse($data);
     }
